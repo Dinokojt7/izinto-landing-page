@@ -1,11 +1,11 @@
-// src/components/services.js/ServiceGrid.js
+// src/components/services/ServiceGrid.js
 'use client'
+import { useServicesWithFallback } from '@/lib/api/services'
 import ServiceCard from './ServiceCard'
 import HorizontalScroll from './HorizontalScroll'
-import { useServices } from '@/app/api/services'
 
 export default function ServiceGrid() {
-  const { data: services, isLoading, error } = useServices()
+  const { data: services, isLoading, error } = useServicesWithFallback()
 
   if (isLoading) {
     return (
