@@ -16,7 +16,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={roboto.className} suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning>
         <ReactQueryProvider>
           <AuthProvider>
             <div className="min-h-screen flex flex-col">

@@ -45,11 +45,11 @@ export default function HeroSection() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex justify-between items-center h-full">
             {/* Left: Hamburger Menu & Logo */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
               <motion.button
                 onClick={() => setIsSidebarOpen(true)}
                 style={{ color: headerTextColor }}
-                className="p-2 rounded-lg hover:bg-white/20 transition-colors"
+                className="p-2 pt-3 rounded-lg hover:bg-white/20 transition-colors"
               >
                 <svg
                   className="w-6 h-6"
@@ -66,12 +66,23 @@ export default function HeroSection() {
                 </svg>
               </motion.button>
 
-              <motion.span
-                style={{ color: headerTextColor }}
-                className="text-xl font-bold"
-              >
-                Izinto
-              </motion.span>
+              {/* Image Logo with light/dark variants */}
+              <motion.div className="flex items-center">
+                {/* Light logo for transparent header */}
+                <motion.img
+                  src="/images/logo-light.png"
+                  alt="Izinto"
+                  style={{ opacity: useTransform(scrollY, [0, 100], [1, 0]) }}
+                  className="h-8 w-auto absolute"
+                />
+                {/* Dark logo for white header */}
+                <motion.img
+                  src="/images/logo-izinto.png"
+                  alt="Izinto"
+                  style={{ opacity: useTransform(scrollY, [0, 100], [0, 1]) }}
+                  className="h-8 w-auto"
+                />
+              </motion.div>
             </div>
 
             {/* Right: Address Search & Login - Always visible */}
@@ -97,19 +108,21 @@ export default function HeroSection() {
                 }}
                 className="flex items-center space-x-2 border-2 px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors"
               >
-                <svg
+                <motion.img
+                  src="/images/user-avatar.png"
+                  alt="User"
+                  style={{
+                    filter: useTransform(
+                      scrollY,
+                      [0, 100],
+                      [
+                        "brightness(0) invert(1)", // White on transparent header
+                        "brightness(0) invert(0)", // Black on white header
+                      ],
+                    ),
+                  }}
                   className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
+                />
                 <span>SIGN IN</span>
               </motion.button>
             </div>
