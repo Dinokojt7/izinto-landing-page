@@ -114,15 +114,15 @@ export default function AddressSearchDialog({ isOpen, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-xl w-11/12 max-w-2xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b">
+        <div className="flex justify-between items-center p-6 text-black">
           <h2
-            className={`text-2xl font-bold italic ${selectedAddress ? "text-primary" : "text-primary"}`}
+            className={`text-3xl font-extrabold italic ${selectedAddress ? "text-primary" : "text-primary"}`}
           >
-            {selectedAddress ? "ADD NEW ADDRESS" : "Add new address"}
+            {!selectedAddress ? "ADD NEW ADDRESS." : "Add new address."}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 p-2"
+            className="text-gray-800 hover:text-gray-900 p-2"
           >
             <svg
               className="w-6 h-6"
@@ -145,7 +145,7 @@ export default function AddressSearchDialog({ isOpen, onClose }) {
           {/* Status Message */}
           {statusText && (
             <div
-              className="mb-4 p-4 rounded-lg text-center"
+              className="mb-4 px-4 py-1 text-white rounded-lg text-center"
               style={{ backgroundColor: COLORS.accent }}
             >
               {statusText}
@@ -153,7 +153,7 @@ export default function AddressSearchDialog({ isOpen, onClose }) {
           )}
 
           {/* Search Input */}
-          <div className="mb-6">
+          <div className="mb-1">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Address
             </label>
@@ -161,19 +161,19 @@ export default function AddressSearchDialog({ isOpen, onClose }) {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Enter your address"
-              className="w-full p-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder=""
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-0"
               style={{ borderColor: COLORS.blue }}
             />
           </div>
 
           {/* Predictions */}
           {predictions.length > 0 && (
-            <div className="border rounded-lg max-h-60 overflow-y-auto">
+            <div className=" rounded-lg max-h-60 overflow-y-auto">
               {predictions.map((prediction) => (
                 <div
                   key={prediction.id}
-                  className="p-4 border-b last:border-b-0 hover:bg-gray-50 cursor-pointer"
+                  className="p-4 hover:bg-gray-50 cursor-pointer"
                   onClick={() => handleSelectAddress(prediction)}
                 >
                   <div className="flex items-center space-x-3">
