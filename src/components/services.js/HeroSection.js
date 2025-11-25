@@ -5,11 +5,13 @@ import { useScroll, useTransform, motion } from "framer-motion";
 import Sidebar from "@/components/layout/Sidebar";
 import LoginDialog from "@/app/auth/login/loginDialog";
 import AddressSearchDialog from "../maps/AddressSearchDialog";
+import { COLORS } from "@/lib/utils/constants";
 
 export default function HeroSection() {
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [savedAddress, setSavedAddress] = useState(null);
 
   const { scrollY } = useScroll();
 
@@ -32,6 +34,16 @@ export default function HeroSection() {
   const addressButtonOpacity = useTransform(scrollY, [0, 50, 100], [0, 0.5, 1]);
   const addressButtonScale = useTransform(scrollY, [0, 100], [0.8, 1]);
 
+  useEffect(() => {
+    const saved = localStorage.getItem("userAddress");
+    if (saved) {
+      setSavedAddress(JSON.parse(saved));
+    }
+  }, []);
+
+  const handleAddressSave = (addressData) => {
+    setSavedAddress(addressData);
+  };
   return (
     <>
       {/* Header - Fixed at top, transparent initially */}
@@ -183,10 +195,53 @@ export default function HeroSection() {
         </div>
       </section>
 
+      {savedAddress && (
+        <div className="w-full bg-white border-y border-gray-200 py-3">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-end space-x-3">
+              <div className="flex items-center space-x-4">
+                <div
+                  className="px-4 py-2 rounded-full font-extrabold italic"
+                  style={{ backgroundColor: COLORS.accent }}
+                >
+                  <span className="text-gray-600">Available</span>
+                </div>
+                <span className="text-gray-600 font-extrabold italic text-lg">
+                  ·
+                </span>
+              </div>
+
+              <button
+                onClick={() => setIsAddressDialogOpen(true)}
+                className="flex items-center space-x-2 text-primary font-semibold hover:text-gray-700 transition-colors"
+              >
+                <span className="text-lg text-black font-extrabold italic">
+                  {savedAddress.street}
+                </span>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Dialogs */}
       <AddressSearchDialog
         isOpen={isAddressDialogOpen}
         onClose={() => setIsAddressDialogOpen(false)}
+        onAddressSave={handleAddressSave}
       />
 
       <LoginDialog
