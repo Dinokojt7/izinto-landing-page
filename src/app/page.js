@@ -1,12 +1,13 @@
-import ServiceGrid from "@/components/services.js/ServiceGrid";
+// src/app/page.js
 
-// src/app/main/page.js
+import HeroSection from "@/components/services.js/HeroSection";
+
+
 export default function Home() {
   return (
-    <div>
-      {/* <HeroSection /> */}
-      <ServiceGrid />
-      {/* <LocationMap /> */}
+    <div className="pt-16"> {/* Add padding to account for fixed header */}
+      <HeroSection />
+      {/* <ServiceGrid /> */}
     </div>
   )
 }

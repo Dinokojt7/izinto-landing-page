@@ -1,0 +1,154 @@
+// src/components/services/HeroSection.js
+'use client'
+import { useState, useEffect } from 'react'
+import { useScroll, useTransform, motion } from 'framer-motion'
+import Sidebar from '@/components/layout/Sidebar'
+import LoginDialog from '@/app/auth/login/loginDialog'
+import AddressSearchDialog from '../maps/AddressSearchDialog'
+
+export default function HeroSection() {
+  const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false)
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  
+  const { scrollY } = useScroll()
+  
+  // Transform values for animations
+  const headerBackground = useTransform(
+    scrollY, 
+    [0, 100], 
+    ['rgba(255,255,255,0)', 'rgba(255,255,255,1)']
+  )
+  const headerTextColor = useTransform(
+    scrollY,
+    [0, 100],
+    ['rgb(255,255,255)', 'rgb(18,18,18)']
+  )
+  const headerBorderColor = useTransform(
+    scrollY,
+    [0, 100],
+    ['rgba(255,255,255,0)', 'rgba(229,231,235,1)']
+  )
+
+  return (
+    <>
+      {/* Header - Fixed at top, transparent initially */}
+      <motion.header 
+        className="fixed top-0 left-0 right-0 z-50 h-16 border-b"
+        style={{ 
+          background: headerBackground,
+          borderColor: headerBorderColor
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+          <div className="flex justify-between items-center h-full">
+            {/* Left: Hamburger Menu & Logo */}
+            <div className="flex items-center space-x-4">
+              <motion.button
+                onClick={() => setIsSidebarOpen(true)}
+                style={{ color: headerTextColor }}
+                className="p-2 rounded-lg hover:bg-white/20 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </motion.button>
+              
+              <motion.span 
+                style={{ color: headerTextColor }}
+                className="text-xl font-bold"
+              >
+                Izinto
+              </motion.span>
+            </div>
+
+            {/* Right: Address Search & Login - Always visible */}
+            <div className="flex items-center space-x-3">
+              {/* Address Search Button - Always visible but styled differently */}
+              <motion.button
+                onClick={() => setIsAddressDialogOpen(true)}
+                style={{ 
+                  color: headerTextColor,
+                  borderColor: headerTextColor
+                }}
+                className="hidden md:flex items-center border-2 px-4 py-2 rounded-lg font-bold italic hover:bg-white/20 transition-colors"
+              >
+                ENTER YOUR ADDRESS
+              </motion.button>
+              
+              {/* Login Button */}
+              <motion.button
+                onClick={() => setIsLoginDialogOpen(true)}
+                style={{ 
+                  color: headerTextColor,
+                  borderColor: headerTextColor
+                }}
+                className="flex items-center space-x-2 border-2 px-4 py-2 rounded-lg font-semibold italic hover:bg-white/20 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>SIGN IN</span>
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      </motion.header>
+
+      {/* Hero Content - Starts from top of viewport */}
+      <section className="relative h-[80vh] bg-gray-900 overflow-hidden -mt-16 pt-16">
+        {/* Background Image - Covers entire section including behind header */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url(/images/hero-bg.jpg)'
+          }}
+        />
+        
+        {/* Overlay - Covers entire section including behind header */}
+        <div className="absolute inset-0 bg-black/40" />
+        
+        {/* Content - Centered in the hero area (excluding header) */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center text-white px-4">
+          {/* Main Text */}
+          <h1 className="text-5xl md:text-7xl font-extrabold italic mb-8 max-w-4xl leading-tight">
+            THE FUTURE OF HOME-CARE IS INSTANT.
+          </h1>
+          
+          {/* Address Search Button - Center (only in hero) */}
+          <button
+            onClick={() => setIsAddressDialogOpen(true)}
+            className="bg-blue-700 text-white px-3 py-2 rounded-4xl text-sm font-extrabold italic hover:bg-blue-800 transition-colors transform "
+          >
+            ENTER YOUR ADDRESS
+          </button>
+        </div>
+
+        {/* Bottom Right Controls */}
+        <div className="absolute bottom-4 right-4 z-20 flex space-x-2">
+          <button className="bg-white/20 backdrop-blur-sm text-white p-3 rounded-lg hover:bg-white/30 transition-colors">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      {/* Dialogs */}
+      <AddressSearchDialog 
+        isOpen={isAddressDialogOpen}
+        onClose={() => setIsAddressDialogOpen(false)}
+      />
+      
+      <LoginDialog
+        isOpen={isLoginDialogOpen}
+        onClose={() => setIsLoginDialogOpen(false)}
+      />
+
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+    </>
+  )
+}

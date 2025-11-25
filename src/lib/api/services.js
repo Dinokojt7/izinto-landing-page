@@ -1,7 +1,7 @@
 // src/lib/api/services.js
 import { useQuery } from '@tanstack/react-query'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://your-netlify-app.netlify.app/.netlify/functions/api'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://gregarious-marshmallow-0b7661.netlify.app/.netlify/functions/api'
 
 const fetchServices = async () => {
   const response = await fetch(`${API_BASE_URL}/home-items`)
