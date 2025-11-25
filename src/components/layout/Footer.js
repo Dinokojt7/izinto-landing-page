@@ -10,7 +10,7 @@ export default function Footer() {
               Professional home services at your doorstep.
             </p>
           </div>
-          
+
           <div>
             <h4 className="text-lg font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-gray-300">
@@ -20,7 +20,7 @@ export default function Footer() {
               <li>Home Cleaning</li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="text-lg font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-gray-300">
@@ -31,11 +31,11 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        
+
         <div className="mt-8 pt-8 border-t border-gray-700 text-center text-gray-300">
           <p>&copy; 2024 Izinto. All rights reserved.</p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

@@ -2,17 +2,17 @@
 export class NewSpecialtyModel {
   constructor(data) {
     this.id = data?.id || this.generateFallbackId(data);
-    this.name = data?.name || 'Unknown Item';
-    this.introduction = data?.introduction || 'No description available';
+    this.name = data?.name || "Unknown Item";
+    this.introduction = data?.introduction || "No description available";
     this.price = this.safeParsePriceList(data?.price);
     this.size = this.safeParseSizeList(data?.size);
-    this.img = data?.img || '/images/placeholder.png';
+    this.img = data?.img || "/images/placeholder.png";
     this.details = data?.details || [];
-    this.type = data?.type || 'General';
-    this.material = data?.material || 'Standard';
-    this.provider = data?.provider || 'Unknown Provider';
-    this.time = data?.time || '';
-    this.selectedSize = data?.selectedSize || '';
+    this.type = data?.type || "General";
+    this.material = data?.material || "Standard";
+    this.provider = data?.provider || "Unknown Provider";
+    this.time = data?.time || "";
+    this.selectedSize = data?.selectedSize || "";
     this.originalId = data?.originalId || this.id;
     this.isSizeVariant = data?.isSizeVariant || false;
   }
@@ -38,11 +38,11 @@ export class NewSpecialtyModel {
   safeParseSizeList(sizeData) {
     try {
       if (Array.isArray(sizeData)) {
-        return sizeData.map(item => item.toString());
+        return sizeData.map((item) => item.toString());
       }
-      return ['Standard'];
+      return ["Standard"];
     } catch (e) {
-      return ['Standard'];
+      return ["Standard"];
     }
   }
 
@@ -77,11 +77,11 @@ export class NewSpecialtyModel {
 }
 
 // Add hashCode method to String prototype for fallback ID generation
-String.prototype.hashCode = function() {
+String.prototype.hashCode = function () {
   let hash = 0;
   for (let i = 0; i < this.length; i++) {
     const char = this.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash;
   }
   return hash;

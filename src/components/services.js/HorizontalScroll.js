@@ -1,6 +1,6 @@
 // src/components/services.js/HorizontalScroll.js
-'use client'
-import ServiceCard from './ServiceCard'
+"use client";
+import ServiceCard from "./ServiceCard";
 
 export default function HorizontalScroll({ services }) {
   return (
@@ -13,5 +13,5 @@ export default function HorizontalScroll({ services }) {
         ))}
       </div>
     </div>
-  )
+  );
 }
