@@ -29,6 +29,16 @@ export default function HeroSection() {
     [0, 100],
     ['rgba(255,255,255,0)', 'rgba(229,231,235,1)']
   )
+  const addressButtonOpacity = useTransform(
+    scrollY,
+    [0, 50, 100], // Start showing at 50px, fully visible at 100px
+    [0, 0.5, 1]
+  )
+  const addressButtonScale = useTransform(
+    scrollY,
+    [0, 100],
+    [0.8, 1]
+  )
 
   return (
     <>
@@ -64,26 +74,28 @@ export default function HeroSection() {
 
             {/* Right: Address Search & Login - Always visible */}
             <div className="flex items-center space-x-3">
-              {/* Address Search Button - Always visible but styled differently */}
+              {/* Address Search Button - Fades in on scroll */}
               <motion.button
                 onClick={() => setIsAddressDialogOpen(true)}
                 style={{ 
-                  color: headerTextColor,
-                  borderColor: headerTextColor
+                  color: '#fffffff',
+                  borderColor: headerTextColor,
+                  opacity: addressButtonOpacity,
+                  scale: addressButtonScale
                 }}
-                className="hidden md:flex items-center border-2 px-4 py-2 rounded-lg font-bold italic hover:bg-white/20 transition-colors"
+                className="hidden md:flex bg-blue-700 text-white px-3 py-2 rounded-4xl text-sm font-extrabold italic hover:bg-blue-800  transform  transition-colors"
               >
                 ENTER YOUR ADDRESS
               </motion.button>
               
-              {/* Login Button */}
+              {/* Login Button - Always visible */}
               <motion.button
                 onClick={() => setIsLoginDialogOpen(true)}
                 style={{ 
                   color: headerTextColor,
                   borderColor: headerTextColor
                 }}
-                className="flex items-center space-x-2 border-2 px-4 py-2 rounded-lg font-semibold italic hover:bg-white/20 transition-colors"
+                className="flex items-center space-x-2 border-2 px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -96,7 +108,7 @@ export default function HeroSection() {
       </motion.header>
 
       {/* Hero Content - Starts from top of viewport */}
-      <section className="relative h-[80vh] bg-gray-900 overflow-hidden -mt-16 pt-16">
+      <section className="relative h-[80vh] bg-grey-400 overflow-hidden -mt-16 pt-16">
         {/* Background Image - Covers entire section including behind header */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
