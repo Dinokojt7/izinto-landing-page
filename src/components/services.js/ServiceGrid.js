@@ -3,7 +3,7 @@
 import { useAllServices } from "@/lib/api/services";
 import RecommendationCarousel from "./RecommendationCarousel";
 
-export default function ServiceGrid({shouldFlowLeft=true}) {
+export default function ServiceGrid({ shouldFlowLeft = true }) {
   const { data: servicesData, isLoading, error } = useAllServices();
 
   const services = servicesData?.Specialties || [];
@@ -38,8 +38,6 @@ export default function ServiceGrid({shouldFlowLeft=true}) {
   return (
     <>
       <RecommendationCarousel isFirstCarousel={shouldFlowLeft} />
-      
-    
     </>
   );
 }

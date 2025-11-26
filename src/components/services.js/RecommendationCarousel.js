@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useServices } from "@/lib/api/services";
 import ServiceCard from "./ServiceCard";
 
-export default function RecommendationCarousel({isFirstCarousel=true}) {
+export default function RecommendationCarousel({ isFirstCarousel = true }) {
   const { data: servicesData, isLoading, error } = useServices();
   const scrollContainerRef = useRef(null);
-const shouldFlowLeft = isFirstCarousel !== undefined ? isFirstCarousel : true;     
+  const shouldFlowLeft = isFirstCarousel !== undefined ? isFirstCarousel : true;
   const services = servicesData?.Specialties || servicesData?.specialties || [];
 
   // CSS animation for smooth scrolling
@@ -22,13 +22,10 @@ const shouldFlowLeft = isFirstCarousel !== undefined ? isFirstCarousel : true;
     const totalWidth = (itemWidth + gap) * totalItems;
 
     // Set CSS custom properties for animation
-    scrollContainer.style.setProperty('--item-width', `${itemWidth}px`);
-    scrollContainer.style.setProperty('--gap-width', `${gap}px`);
-    scrollContainer.style.setProperty('--total-width', `${totalWidth}px`);
-
+    scrollContainer.style.setProperty("--item-width", `${itemWidth}px`);
+    scrollContainer.style.setProperty("--gap-width", `${gap}px`);
+    scrollContainer.style.setProperty("--total-width", `${totalWidth}px`);
   }, [services]);
-
-
 
   if (isLoading) {
     return (
@@ -52,9 +49,7 @@ const shouldFlowLeft = isFirstCarousel !== undefined ? isFirstCarousel : true;
     return (
       <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-primary mb-8">Our Services</h2>
-        <div className="text-center text-gray-500 py-8">
-          {error.message}
-        </div>
+        <div className="text-center text-gray-500 py-8">{error.message}</div>
       </section>
     );
   }
@@ -72,7 +67,6 @@ const shouldFlowLeft = isFirstCarousel !== undefined ? isFirstCarousel : true;
 
   return (
     <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 ">
-     
       <div className="relative overflow-hidden">
         <div
           ref={scrollContainerRef}
@@ -80,42 +74,59 @@ const shouldFlowLeft = isFirstCarousel !== undefined ? isFirstCarousel : true;
             flex space-x-6 pb-4
             animate-infinite-scroll
           `}
-          style={{ 
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
           }}
         >
           {services.map((service, index) => (
-            <div key={`${service.id}-${index}`} className="flex-none w-50 cursor-pointer">
+            <div
+              key={`${service.id}-${index}`}
+              className="flex-none w-50 cursor-pointer"
+            >
               <ServiceCard service={service} />
             </div>
           ))}
-          
+
           {/* Duplicate for seamless scroll */}
           {services.map((service, index) => (
-            <div key={`${service.id}-dup-${index}`} className="flex-none w-50 cursor-pointer">
+            <div
+              key={`${service.id}-dup-${index}`}
+              className="flex-none w-50 cursor-pointer"
+            >
               <ServiceCard service={service} />
             </div>
           ))}
         </div>
       </div>
 
-<style jsx>{`
-  @keyframes infinite-scroll-left {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-344px * ${services.length})); }
-  }
-  
-  @keyframes infinite-scroll-right {
-    0% { transform: translateX(calc(-344px * ${services.length})); }
-    100% { transform: translateX(0); }
-  }
-  
-  .animate-infinite-scroll {
-    animation: ${shouldFlowLeft ? 'infinite-scroll-left' : 'infinite-scroll-right'} 80s linear infinite;
-    width: max-content;
-  }
-`}</style>
+      <style jsx>{`
+        @keyframes infinite-scroll-left {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(calc(-344px * ${services.length}));
+          }
+        }
+
+        @keyframes infinite-scroll-right {
+          0% {
+            transform: translateX(calc(-344px * ${services.length}));
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+
+        .animate-infinite-scroll {
+          animation: ${shouldFlowLeft
+              ? "infinite-scroll-left"
+              : "infinite-scroll-right"}
+            80s linear infinite;
+          width: max-content;
+        }
+      `}</style>
     </section>
   );
 }

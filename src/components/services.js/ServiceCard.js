@@ -1,43 +1,45 @@
 // src/components/services/ServiceCard.js
-'use client'
-import { useState } from 'react'
-import { NewSpecialtyModel } from '@/lib/utils/serviceModels'
-import AddToCart from '@/components/cart/AddToCart'
+"use client";
+import { useState } from "react";
+import { NewSpecialtyModel } from "@/lib/utils/serviceModels";
+import AddToCart from "@/components/cart/AddToCart";
 
 export default function ServiceCard({ service }) {
-  const [selectedService, setSelectedService] = useState(() => new NewSpecialtyModel(service))
-  const [imageError, setImageError] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
+  const [selectedService, setSelectedService] = useState(
+    () => new NewSpecialtyModel(service),
+  );
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleSizeChange = (size) => {
     const updatedService = new NewSpecialtyModel({
       ...service,
       selectedSize: size,
       isSizeVariant: true,
-      originalId: service.id
-    })
-    setSelectedService(updatedService)
-  }
+      originalId: service.id,
+    });
+    setSelectedService(updatedService);
+  };
 
   // Handle different image path structures
   const getImageSrc = () => {
-    if (!service.img) return null
+    if (!service.img) return null;
     // Handle different image path formats
-    if (service.img.startsWith('http')) return service.img
-    if (service.img.startsWith('/')) return service.img
-    if (service.img.startsWith('assets/')) return `/${service.img}`
-    return service.img
-  }
+    if (service.img.startsWith("http")) return service.img;
+    if (service.img.startsWith("/")) return service.img;
+    if (service.img.startsWith("assets/")) return `/${service.img}`;
+    return service.img;
+  };
 
-  const imageSrc = getImageSrc()
+  const imageSrc = getImageSrc();
 
   const handleImageError = () => {
-    setImageError(true)
-  }
+    setImageError(true);
+  };
 
   const handleImageLoad = () => {
-    setImageLoaded(true)
-  }
+    setImageLoaded(true);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
@@ -45,8 +47,8 @@ export default function ServiceCard({ service }) {
       <div className="h-48  relative">
         {imageSrc && !imageError ? (
           <>
-            <img 
-              src={service.img} 
+            <img
+              src={service.img}
               alt={service.name}
               className="w-80% h-80% m-auto p-auto object-center"
               onError={handleImageError}
@@ -60,17 +62,19 @@ export default function ServiceCard({ service }) {
           </>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-accent">
-            <span className="text-primary font-semibold text-center px-2">{service.name}</span>
+            <span className="text-primary font-semibold text-center px-2">
+              {service.name}
+            </span>
           </div>
         )}
       </div>
-      
-{/* Simplified Content */}
-<div className="p-4">
-  <h3 className="text-xs text-gray-500 font-normal mb-3 line-clamp-2 leading-tight">
-    {service.name}
-  </h3>
-</div>
+
+      {/* Simplified Content */}
+      <div className="p-4">
+        <h3 className="text-xs text-gray-500 font-normal mb-3 line-clamp-2 leading-tight">
+          {service.name}
+        </h3>
+      </div>
     </div>
-  )
+  );
 }

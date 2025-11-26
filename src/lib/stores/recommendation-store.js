@@ -1,18 +1,18 @@
 // src/lib/stores/recommendation-store.js
-import { create } from 'zustand'
+import { create } from "zustand";
 
 export const useRecommendationStore = create((set, get) => ({
   recommendations: [],
   isLoading: true,
-  
+
   setRecommendations: (services) => {
-    set({ 
+    set({
       recommendations: services || [],
-      isLoading: false 
-    })
+      isLoading: false,
+    });
   },
-  
+
   setLoading: (loading) => {
-    set({ isLoading: loading })
-  }
-}))
+    set({ isLoading: loading });
+  },
+}));
