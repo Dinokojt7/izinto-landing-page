@@ -413,7 +413,7 @@ export default function AddressSearchDialog({
 
         {/* Save Button - Always visible at bottom when address selected */}
         {selectedAddress && (
-          <div className="p-6 border-t bg-white">
+          <div className="p-6 bg-white">
             <button
               onClick={handleSaveAddress}
               disabled={!isValidAddress}
