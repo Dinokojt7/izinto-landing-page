@@ -148,7 +148,7 @@ export default function HeroSection() {
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url(/images/hero.jpg)",
+            backgroundImage: "url(/images/hero-bg.jpg)",
           }}
         />
 
@@ -195,7 +195,7 @@ export default function HeroSection() {
         </div>
       </section>
 
-      {savedAddress && (
+      {/* {savedAddress && (
         <div className="w-full bg-white border-y border-gray-200 py-3">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-end space-x-3">
@@ -235,7 +235,7 @@ export default function HeroSection() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Dialogs */}
       <AddressSearchDialog

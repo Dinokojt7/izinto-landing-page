@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useServices } from "@/lib/api/services";
 import ServiceCard from "./ServiceCard";
 
-export default function RecommendationCarousel() {
+export default function RecommendationCarousel({isFirstCarousel=true}) {
   const { data: servicesData, isLoading, error } = useServices();
   const scrollContainerRef = useRef(null);
-
+const shouldFlowLeft = isFirstCarousel !== undefined ? isFirstCarousel : true;     
   const services = servicesData?.Specialties || servicesData?.specialties || [];
 
   // CSS animation for smooth scrolling
@@ -100,21 +100,22 @@ export default function RecommendationCarousel() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes infinite-scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(calc(-1 * var(--total-width) / 2));
-          }
-        }
-        
-        .animate-infinite-scroll {
-          animation: infinite-scroll 80s linear infinite;
-          width: max-content;
-        }
-      `}</style>
+<style jsx>{`
+  @keyframes infinite-scroll-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-344px * ${services.length})); }
+  }
+  
+  @keyframes infinite-scroll-right {
+    0% { transform: translateX(calc(-344px * ${services.length})); }
+    100% { transform: translateX(0); }
+  }
+  
+  .animate-infinite-scroll {
+    animation: ${shouldFlowLeft ? 'infinite-scroll-left' : 'infinite-scroll-right'} 80s linear infinite;
+    width: max-content;
+  }
+`}</style>
     </section>
   );
 }

@@ -1,10 +1,9 @@
 // src/components/services/ServiceGrid.js
 "use client";
 import { useAllServices } from "@/lib/api/services";
-import ServiceCard from "./ServiceCard";
 import RecommendationCarousel from "./RecommendationCarousel";
 
-export default function ServiceGrid() {
+export default function ServiceGrid({shouldFlowLeft=true}) {
   const { data: servicesData, isLoading, error } = useAllServices();
 
   const services = servicesData?.Specialties || [];
@@ -38,16 +37,9 @@ export default function ServiceGrid() {
 
   return (
     <>
-      <RecommendationCarousel />
+      <RecommendationCarousel isFirstCarousel={shouldFlowLeft} />
       
-      <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-primary mb-8">All Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service) => (
-            <ServiceCard key={service.id} service={service} />
-          ))}
-        </div>
-      </section>
+    
     </>
   );
 }

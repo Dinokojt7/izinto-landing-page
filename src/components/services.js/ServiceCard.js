@@ -48,7 +48,7 @@ export default function ServiceCard({ service }) {
             <img 
               src={service.img} 
               alt={service.name}
-              className="w-80% h-80% object-cover"
+              className="w-80% h-80% m-auto p-auto object-center"
               onError={handleImageError}
               onLoad={handleImageLoad}
             />
@@ -65,13 +65,12 @@ export default function ServiceCard({ service }) {
         )}
       </div>
       
-      {/* Simplified Content */}
-      <div className="p-4">
-        <h3 className="text-sm text-gray-600 font-medium mb-3 truncate">
-          {service.name}
-        </h3>
-        
-      </div>
+{/* Simplified Content */}
+<div className="p-4">
+  <h3 className="text-xs text-gray-500 font-normal mb-3 line-clamp-2 leading-tight">
+    {service.name}
+  </h3>
+</div>
     </div>
   )
 }
