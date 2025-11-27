@@ -1,11 +1,16 @@
 // src/app/layout.js
-import { Inter } from "next/font/google";
+import { Inter, Roboto } from "next/font/google";
 import "./globals.css";
 import { ServicesProvider } from "@/providers/ServicesProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { AuthProvider } from "@/context/authContext";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
+
+const roboto = Roboto({
+  weight: ["400", "900"],
+  subsets: ["latin"],
+});
 
 export const metadata = {
   title: "Izinto - On-Demand Home Services",

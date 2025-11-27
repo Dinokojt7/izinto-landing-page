@@ -2,30 +2,26 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { COLORS } from "@/lib/utils/constants";
+import { useGoogleMaps } from "@/hooks/useGoogleMaps";
+
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // Make sure this is set
 
 export default function CommunityMap({ onAddressClick }) {
   const mapRef = useRef(null);
   const [map, setMap] = useState(null);
-  const [marker, setMarker] = useState(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapInitError, setMapInitError] = useState(null);
 
-  // Sandton coordinates
+  const { isLoaded: mapsLoaded, loadError } =
+    useGoogleMaps(GOOGLE_MAPS_API_KEY);
   const center = { lat: -26.056, lng: 28.06 };
 
   useEffect(() => {
-    // Check if Google Maps is already loaded
-    if (!window.google) {
-      // If not loaded, you might want to load it here or wait for it
-      console.warn("Google Maps not loaded");
-      return;
-    }
+    if (!mapsLoaded || !mapRef.current) return;
 
-    const initializeMap = () => {
-      const googleMap = new google.maps.Map(mapRef.current, {
+    try {
+      const googleMap = new window.google.maps.Map(mapRef.current, {
         center: center,
         zoom: 13,
-        zoomControl: false,
-
         styles: [
           {
             featureType: "all",
@@ -40,106 +36,74 @@ export default function CommunityMap({ onAddressClick }) {
           {
             featureType: "road",
             elementType: "labels.icon",
-            stylers: [{ visibility: "on" }],
+            stylers: [{ visibility: "off" }],
           },
         ],
         disableDefaultUI: true,
-        minZoom: 10,
-        maxZoom: 16,
-        disableDefaultUI: true,
+        zoomControl: false,
         gestureHandling: "none",
         draggable: false,
-        zoomControl: false,
         scrollwheel: false,
         disableDoubleClickZoom: true,
-        // Add these to your map configuration
         clickableIcons: false,
         keyboardShortcuts: false,
-        streetViewControl: false,
-        scaleControl: false,
-        mapTypeControl: false,
-        fullscreenControl: false,
       });
 
-      // Create pulsing marker
-      const createPulseMarker = () => {
-        // const pulseMarker = new google.maps.Marker({
-        //   position: center,
-        //   map: googleMap,
-        //   icon: {
-        //     path: google.maps.SymbolPath.CIRCLE,
-        //     scale: 10,
-        //     fillColor: COLORS.blue,
-        //     fillOpacity: 0.8,
-        //     strokeColor: "#FFFFFF",
-        //     strokeWeight: 3,
-        //   },
-        // });
-        const imageMarker = new google.maps.Marker({
-          position: center,
-          map: googleMap,
-          icon: {
-            url: "/images/marker.png", // Path to your marker image
-            scaledSize: new google.maps.Size(40, 40), // Adjust size as needed
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(20, 40), // Anchor at bottom center for pin-like behavior
-          },
-        });
-
-        setMarker(imageMarker);
-
-        // Pulsing animation
-        let scale = 1;
-        let growing = true;
-
-        const pulseInterval = setInterval(() => {
-          if (growing) {
-            scale += 0.05;
-            if (scale >= 1.4) growing = false;
-          } else {
-            scale -= 0.05;
-            if (scale <= 1) growing = true;
-          }
-
-          pulseMarker.setIcon({
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 10 * scale,
-            fillColor: COLORS.blue,
-            fillOpacity: 0.9 - (scale - 1) * 0.4,
-            strokeColor: "#FFFFFF",
-            strokeWeight: 3,
-          });
-        }, 150);
-
-        // Cleanup interval on unmount
-        return { marker: pulseMarker, interval: pulseInterval };
-      };
-
-      const { marker: newMarker, interval } = createPulseMarker();
+      // Simple static marker - no animations that could fail
+      const marker = new window.google.maps.Marker({
+        position: center,
+        map: googleMap,
+        icon: {
+          url:
+            "data:image/svg+xml;charset=UTF-8," +
+            encodeURIComponent(`
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 2C12.268 2 6 8.268 6 16C6 26 20 40 20 40C20 40 34 26 34 16C34 8.268 27.732 2 20 2Z" fill="${COLORS.blue}"/>
+              <circle cx="20" cy="16" r="5" fill="white"/>
+            </svg>
+          `),
+          scaledSize: new window.google.maps.Size(40, 40),
+          anchor: new window.google.maps.Point(20, 40),
+        },
+      });
 
       setMap(googleMap);
-      setMarker(newMarker);
-      setMapLoaded(true);
+      setMapInitError(null);
+    } catch (error) {
+      console.error("Map initialization error:", error);
+      setMapInitError(error.message);
+    }
+  }, [mapsLoaded]);
 
-      // Cleanup function
-      return () => {
-        clearInterval(interval);
-      };
-    };
-
-    initializeMap();
-  }, []);
+  // Fallback content if everything fails
+  if (loadError || mapInitError) {
+    return (
+      <section className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-12">
+        <div className="w-full h-[70vh] rounded-2xl shadow-lg overflow-hidden bg-gray-200 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-gray-600 mb-4">Map unavailable</div>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 my-12">
+    <section className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 my-8">
       {/* Map Container */}
       <div
         ref={mapRef}
         className="w-70% h-[110vh] rounded-2xl shadow-lg overflow-hidden bg-gray-200"
       />
 
-      {/* Loading state */}
-      {!mapLoaded && (
+      {/* Loading overlay */}
+      {!mapsLoaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-200 rounded-2xl">
           <div className="text-gray-600">Loading map...</div>
         </div>
@@ -160,11 +124,9 @@ export default function CommunityMap({ onAddressClick }) {
           <p className="text-sm text-gray-800 font-bold mb-4 sm:mb-6 max-w-lg sm:max-w-lg">
             From your trusted service providers. Serviced as fast as 45 minutes.
           </p>
-
-          {/* Address Button */}
           <button
             onClick={onAddressClick}
-            className="bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 w-full rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap"
+            className="bg-blue-700 text-white px-6 sm:px-8 py-2 sm:py-4 w-full rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap"
           >
             ENTER YOUR ADDRESS
           </button>
