@@ -1,10 +1,11 @@
 // src/app/page.js
 "use client";
 import StaggeredHorizontalScroll from "@/components/HorizontalScrollSection";
+import Footer from "@/components/layout/Footer";
 import CommunityMap from "@/components/maps/CommnunityMap";
 import PromoSection from "@/components/PromoSection";
-import HeroSection from "@/components/services.js/HeroSection";
-import ServiceGrid from "@/components/services.js/ServiceGrid";
+import HeroSection from "@/components/services/HeroSection";
+import ServiceGrid from "@/components/services/ServiceGrid";
 import BigText from "@/components/ui/BigText";
 import VerticalCardStack from "@/components/VerticalCardStack";
 
@@ -42,6 +43,7 @@ export default function Home() {
         }
       />
       <StaggeredHorizontalScroll />
+      <Footer />
     </div>
   );
 }

@@ -1,39 +1,294 @@
-// src/components/layout/Footer.js
+// src/components/Footer.js
+"use client";
+import { useState } from "react";
+import { motion } from "framer-motion";
+
 export default function Footer() {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = () => {
+    if (!phoneNumber.trim()) {
+      setError("Enter your mobile number");
+      return;
+    }
+    setError("");
+    // Handle sign in/sign up logic here
+  };
+
+  const socialIcons = [
+    {
+      name: "instagram",
+      svg: (
+        <svg
+          className="w-6 h-6"
+          viewBox="0 0 24 24"
+          fill="#515151"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7zm10 2c1.7 0 3 1.3 3 3v10c0 1.7-1.3 3-3 3H7c-1.7 0-3-1.3-3-3V7c0-1.7 1.3-3 3-3h10zm-5 3a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm4.5-.9a1.1 1.1 0 11-2.2 0 1.1 1.1 0 012.2 0z" />
+        </svg>
+      ),
+      url: "https://instagram.com/brandclique",
+    },
+    {
+      name: "x",
+      svg: (
+        <svg
+          className="w-5 h-5"
+          viewBox="0 0 24 24"
+          fill="#515151"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M18.9 2H22l-8.2 9.1L23 22h-5.6l-5.8-7.6L6 22H2l8.6-9.5L2 2h5.8l5.3 7.1L18.9 2zm-1.4 17.3h2.3L7.3 4.2H4.8l12.7 15.1z" />
+        </svg>
+      ),
+      url: "https://x.com/brandclique",
+    },
+    {
+      name: "tiktok",
+      svg: (
+        <svg
+          className="w-6 h-6"
+          viewBox="0 0 24 24"
+          fill="#515151"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M16.6 5.82s.03.46.13.9c.12.4.32.77.6 1.08.28.3.63.53 1.02.66.42.15.86.18 1.3.12.02 0 .04.01.06.01v2.79a4.3 4.3 0 01-2.27-.63 4.44 4.44 0 01-1.62-1.66v6.45a6.45 6.45 0 11-6.45-6.45h.03v2.21a4.22 4.22 0 103.74 4.15l.03-10.84h2.2a4.9 4.9 0 002.13 3.62v-2.4z" />
+        </svg>
+      ),
+      url: "https://tiktok.com/@brandclique",
+    },
+    {
+      name: "youtube",
+      svg: (
+        <svg
+          className="w-7 h-7"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="#515151"
+        >
+          <path d="M23.498 6.186a2.986 2.986 0 0 0-2.103-2.103C19.479 3.5 12 3.5 12 3.5s-7.479 0-9.395.583a2.986 2.986 0 0 0-2.103 2.103C0.919 8.102 0.919 12 0.919 12s0 3.898.583 5.814a2.986 2.986 0 0 0 2.103 2.103C4.521 20.5 12 20.5 12 20.5s7.479 0 9.395-.583a2.986 2.986 0 0 0 2.103-2.103C24.081 15.898 24.081 12 24.081 12s0-3.898-.583-5.814zM9.75 15.5v-7l6 3.5-6 3.5z" />
+        </svg>
+      ),
+      url: "https://youtube.com/@brandclique",
+    },
+  ];
+
+  const areas = [
+    "Fourways",
+    "North Riding",
+    "Midrand",
+    "Waterfall",
+    "Lonehill",
+    "Rivonia",
+    "Woodmead",
+    "Sandton",
+    "Alexandra",
+    "Lethabong",
+    "Rosebank",
+    "Houghton",
+    "Cresta",
+    "Randburg",
+    "Parktown",
+    "Braamfontein",
+    "Auckland Park",
+    "Melville",
+    "Joburg CBD",
+    "Edenvale",
+    "East Gate",
+    "Linksfield",
+    "Orange Grove",
+    "Johannesburg North",
+    "Johannesburg South",
+  ];
+
   return (
-    <footer className="bg-primary text-white">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Izinto</h3>
-            <p className="text-gray-300">
-              Professional home services at your doorstep.
-            </p>
+    <footer className="bg-gray-50 pt-16 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Logo */}
+        <motion.img
+          src="/images/logo-izinto.png"
+          alt="Izinto"
+          className="h-8 w-auto"
+        />
+
+        {/* Tagline */}
+        <h2 className="text-gray-500 mt-4 text-sm font-semibold">
+          Everyday value in your pocket in as fast as 45 minutes.
+        </h2>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-gray-200 my-8" />
+
+        {/* Call to Action */}
+        <h2 className="text-black mt-4 text-base font-bold uppercase tracking-wide">
+          LET'S GET MOVING. DROP YOUR MOBILE NUMBER TO START YOUR BOOKING OR
+          PICK UP WHERE YOU LEFT OFF.
+        </h2>
+
+        <div className="flex items-start space-x-4 mt-6">
+          {/* Phone Input Section */}
+          <div
+            className={`flex items-center bg-white rounded-lg border ${
+              error ? "border-red-500" : "border-gray-300"
+            } p-3 flex-1 max-w-sm`}
+          >
+            {/* Country Code */}
+            <div className="flex items-center">
+              <span className="text-black text-base font-semibold">+27</span>
+              <span className="text-black mx-2">|</span>
+            </div>
+
+            {/* Phone Input */}
+            <input
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => {
+                setPhoneNumber(e.target.value);
+                setError("");
+              }}
+              placeholder="Mobile number"
+              className="flex-1 text-gray-500 text-base font-semibold outline-none px-2 min-w-0"
+            />
           </div>
 
+          {/* Submit Button - Now inline */}
+          <button
+            onClick={handleSubmit}
+            className="bg-blue-700 text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap flex-shrink-0"
+          >
+            SIGN IN / SIGN UP
+          </button>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <p className="text-red-500 text-xs mt-2">Enter your mobile number</p>
+        )}
+
+        {/* Four Column Section */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-12">
+          {/* Section 1: HELP & SUPPORT */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Services</h4>
-            <ul className="space-y-2 text-gray-300">
-              <li>Laundry & Dry Cleaning</li>
-              <li>Gas Refill</li>
-              <li>Pet Care</li>
-              <li>Home Cleaning</li>
-            </ul>
+            <h2 className="text-xl font-extrabold tracking-tight italic text-black mb-4">
+              HELP & SUPPORT
+            </h2>
+            <div className="space-y-2">
+              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
+                More for Less
+              </h2>
+              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
+                Contact Us
+              </h2>
+            </div>
           </div>
 
+          {/* Section 2: WORK WITH US */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Support</h4>
-            <ul className="space-y-2 text-gray-300">
-              <li>Contact Us</li>
-              <li>Help Center</li>
-              <li>Terms of Service</li>
-              <li>Privacy Policy</li>
-            </ul>
+            <h2 className="text-xl font-extrabold tracking-tight italic text-black mb-4">
+              WORK WITH US
+            </h2>
+            <div className="space-y-2">
+              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
+                Advertise on Izinto
+              </h2>
+              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
+                Partner and Affiliate Requests
+              </h2>
+            </div>
+          </div>
+
+          {/* Section 3: COMPANY */}
+          <div>
+            <h2 className="text-xl font-extrabold tracking-tight italic text-black mb-4">
+              COMPANY
+            </h2>
+            <div className="space-y-2">
+              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
+                About Us
+              </h2>
+              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
+                FAQs
+              </h2>
+              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
+                Career
+              </h2>
+              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
+                Blog
+              </h2>
+            </div>
+          </div>
+
+          {/* Section 4: APP STORES */}
+          <div>
+            <div className="flex h-24 space-x-3">
+              {/* Android Button */}
+              <button className="w-32 h-10">
+                <img
+                  src="/images/google-button.png"
+                  alt="apple store"
+                  className="h-auto w-auto"
+                />
+              </button>
+              {/* iOS Button */}
+              <button className="w-32 h-10">
+                <img
+                  src="/images/apple-button.png"
+                  alt="apple store"
+                  className="h-auto w-auto"
+                />
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-gray-700 text-center text-gray-300">
-          <p>&copy; 2024 Izinto. All rights reserved.</p>
+        {/* Service Areas Text */}
+        <div className="mt-12">
+          <h2 className="text-gray-500 text-sm font-normal leading-relaxed">
+            Izinto provide comprehensive laundry, home care, and gas services
+            across all listed areas. Our radius covers major suburbs in
+            Johannesburg North and surrounding regions. Service availability may
+            vary based on specific location within each area.{" "}
+            <span className="underline font-medium">{areas.join(" , ")}</span>
+          </h2>
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-gray-200 my-8" />
+
+        {/* Bottom Section */}
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          {/* Copyright */}
+          <div className="text-xl italic font-extrabold text-black/80 mb-4 md:mb-0">
+            (c) 2025 IZINTO TECHNOLOGIES
+          </div>
+
+          {/* Legal Links */}
+          <div className="flex space-x-6 mb-4 md:mb-0">
+            <h2 className="text-gray-500 text-xs font-normal underline cursor-pointer">
+              Privacy Policy
+            </h2>
+            <h2 className="text-gray-500 text-xs font-light underline cursor-pointer">
+              Terms and Conditions
+            </h2>
+          </div>
+
+          {/* Social Icons */}
+          <div className="flex space-x-4">
+            {socialIcons.map((icon, i) => (
+              <a
+                key={i}
+                href={icon.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-75 transition-opacity"
+                aria-label={`Follow us on ${icon.name}`}
+              >
+                {icon.svg}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
