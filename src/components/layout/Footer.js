@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function Footer() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -75,6 +76,39 @@ export default function Footer() {
     },
   ];
 
+  const footerLinks = {
+    helpSupport: [
+      { name: "More for Less", href: "/more-for-less" },
+      { name: "Contact Us", href: "/contact" },
+    ],
+    workWithUs: [
+      { name: "Advertise on Izinto", href: "/advertise" },
+      { name: "Partner and Affiliate Requests", href: "/partnerships" },
+    ],
+    company: [
+      { name: "About Us", href: "/about" },
+      { name: "FAQs", href: "/faqs" },
+      { name: "Career", href: "/careers" },
+      { name: "Blog", href: "/blog" },
+    ],
+    legal: [
+      { name: "Privacy Policy", href: "/privacy-policy" },
+      { name: "Terms and Conditions", href: "/terms-and-conditions" },
+    ],
+    appStores: [
+      {
+        name: "Google Play",
+        href: "https://play.google.com/store/apps/details?id=com.izinto.app",
+        image: "/images/google-button.png",
+      },
+      {
+        name: "App Store",
+        href: "https://apps.apple.com/app/izinto",
+        image: "/images/apple-button.png",
+      },
+    ],
+  };
+
   const areas = [
     "Fourways",
     "North Riding",
@@ -127,12 +161,12 @@ export default function Footer() {
           PICK UP WHERE YOU LEFT OFF.
         </h2>
 
-        <div className="flex items-start space-x-4 mt-6">
+        <div className="flex flex-col sm:flex-row items-start space-x-0 sm:space-x-4 space-y-4 sm:space-y-0 mt-6">
           {/* Phone Input Section */}
           <div
             className={`flex items-center bg-white rounded-lg border ${
               error ? "border-red-500" : "border-gray-300"
-            } p-3 flex-1 max-w-sm`}
+            } p-3 w-full sm:flex-1 sm:max-w-sm`}
           >
             {/* Country Code */}
             <div className="flex items-center">
@@ -153,10 +187,10 @@ export default function Footer() {
             />
           </div>
 
-          {/* Submit Button - Now inline */}
+          {/* Submit Button */}
           <button
             onClick={handleSubmit}
-            className="bg-blue-700 text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap flex-shrink-0"
+            className="bg-blue-800 text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-900 transition-all transform whitespace-nowrap w-full sm:w-auto text-center"
           >
             SIGN IN / SIGN UP
           </button>
@@ -167,76 +201,83 @@ export default function Footer() {
           <p className="text-red-500 text-xs mt-2">Enter your mobile number</p>
         )}
 
-        {/* Four Column Section */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-8">
+        {/* Four Column Section - FLEX LAYOUT */}
+        <div className="flex flex-col md:flex-row gap-8 mt-12">
           {/* Section 1: HELP & SUPPORT */}
-          <div>
-            <h2 className="text-xl md:col-span-1 font-extrabold tracking-tight italic text-black mb-4">
+          <div className="flex-1">
+            <h2 className="text-xl font-extrabold tracking-tight italic text-black mb-4">
               HELP & SUPPORT
             </h2>
             <div className="space-y-2">
-              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
-                More for Less
-              </h2>
-              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
-                Contact Us
-              </h2>
+              {footerLinks.helpSupport.map((link, index) => (
+                <Link
+                  key={index}
+                  href={link.href}
+                  className="text-black text-sm font-semibold underline cursor-pointer hover:text-blue-600 transition-colors block"
+                >
+                  {link.name}
+                </Link>
+              ))}
             </div>
           </div>
 
           {/* Section 2: WORK WITH US */}
-          <div>
-            <h2 className="text-xl md:col-span-1 font-extrabold tracking-tight italic text-black mb-4">
+          <div className="flex-1">
+            <h2 className="text-xl font-extrabold tracking-tight italic text-black mb-4">
               WORK WITH US
             </h2>
             <div className="space-y-2">
-              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
-                Advertise on Izinto
-              </h2>
-              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
-                Partner and Affiliate Requests
-              </h2>
+              {footerLinks.workWithUs.map((link, index) => (
+                <Link
+                  key={index}
+                  href={link.href}
+                  className="text-black text-sm font-semibold underline cursor-pointer hover:text-blue-600 transition-colors block"
+                >
+                  {link.name}
+                </Link>
+              ))}
             </div>
           </div>
 
           {/* Section 3: COMPANY */}
-          <div>
-            <h2 className="text-xl font-extrabold md:col-span-1 tracking-tight italic text-black mb-4 max-w-70% ">
+          <div className="flex-1">
+            <h2 className="text-xl font-extrabold tracking-tight italic text-black mb-4">
               COMPANY
             </h2>
             <div className="space-y-2">
-              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
-                About Us
-              </h2>
-              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
-                FAQs
-              </h2>
-              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
-                Career
-              </h2>
-              <h2 className="text-black text-sm font-semibold underline cursor-pointer">
-                Blog
-              </h2>
+              {footerLinks.company.map((link, index) => (
+                <Link
+                  key={index}
+                  href={link.href}
+                  className="text-black text-sm font-semibold underline cursor-pointer hover:text-blue-600 transition-colors block"
+                >
+                  {link.name}
+                </Link>
+              ))}
             </div>
           </div>
 
           {/* Section 4: APP STORES */}
-          <div className="flex flex-col md:col-span-2 justify-between ">
-            <div className="flex space-x-1 w-full">
-              <button className="flex-1 h-14 max-w-full">
-                <img
-                  src="/images/google-button.png"
-                  alt="Google Play"
-                  className="w-full h-full object-fill"
-                />
-              </button>
-              <button className="flex-1 h-14">
-                <img
-                  src="/images/apple-button.png"
-                  alt="App Store"
-                  className="w-full h-full object-contain"
-                />
-              </button>
+          <div className="flex-1 md:flex-2">
+            <h2 className="text-xl font-extrabold tracking-tight italic text-black mb-4">
+              DOWNLOAD OUR APP
+            </h2>
+            <div className="flex space-x-2 w-full">
+              {footerLinks.appStores.map((store, index) => (
+                <a
+                  key={index}
+                  href={store.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 transition-transform hover:scale-105"
+                >
+                  <img
+                    src={store.image}
+                    alt={store.name}
+                    className="w-full h-14 object-contain"
+                  />
+                </a>
+              ))}
             </div>
           </div>
         </div>
@@ -258,18 +299,21 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center">
           {/* Copyright */}
-          <div className="text-xl italic font-extrabold text-black/80 mb-4 md:mb-0">
+          <div className="text-base italic font-extrabold text-black/30 mb-4 md:mb-0">
             (c) 2025 IZINTO TECHNOLOGIES
           </div>
 
           {/* Legal Links */}
           <div className="flex space-x-6 mb-4 md:mb-0">
-            <h2 className="text-gray-500 text-xs font-normal underline cursor-pointer">
-              Privacy Policy
-            </h2>
-            <h2 className="text-gray-500 text-xs font-light underline cursor-pointer">
-              Terms and Conditions
-            </h2>
+            {footerLinks.legal.map((link, index) => (
+              <Link
+                key={index}
+                href={link.href}
+                className="text-gray-500 text-xs font-normal underline cursor-pointer hover:text-blue-600 transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
           </div>
 
           {/* Social Icons */}
@@ -280,7 +324,7 @@ export default function Footer() {
                 href={icon.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`hover:opacity-75 transition-opacity ${i === 1 ? "pt-2" : ""}`}
+                className={`hover:opacity-75 transition-opacity ${i === 1 ? "pt-1" : i === 2 ? "pt-1" : ""}`}
                 aria-label={`Follow us on ${icon.name}`}
               >
                 {icon.svg}

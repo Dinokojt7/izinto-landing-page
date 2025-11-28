@@ -2,7 +2,7 @@
 export const COLORS = {
   // Primary colors
   primary: "#121212", // Main text
-  cartBlue: "rgba(0, 0, 191, 0.737)", // Main buttons
+  cartBlue: "#0000ff", // Main buttons
   accent: "#cfc5a5", // Banners & highlights
   white: "#ffffff", // Backgrounds & secondary
   blue: "#3b82f6", // Notices & information
