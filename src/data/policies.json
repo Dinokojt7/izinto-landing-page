@@ -1,0 +1,107 @@
+{
+  "terms-of-use": {
+    "title": "Terms of Use",
+    "category": "Legal",
+    "lastUpdated": "December 2025",
+    "sections": [
+      {
+        "title": "Changes to this policy",
+        "content": "We may amend this Policy at any time by posting a revised version on our Website. The revised version will apply to Visitors with effect from the time we post it. However, we will provide Customers with at least 60 days' prior notice of any such revision by posting notice of the change on the Website and the revision will then apply to Customers with effect from the date indicated in such notice, provided that if you are a Customer and you are not happy with the revisions made, you should stop using the Website in any way and may request us to deactivate your Account with us (or, if you are a Seller, to terminate the service subscribed for by you in that regard).\n\nSubject to Section 12(h) of this Agreement, the Company reserves the right to modify the terms and conditions of this Agreement or its policies relating to the Website, Software, or Services at any time, effective upon posting of an updated version of this Agreement on the Website or Software. You should regularly review this Agreement, as your continued use of the Services after any such changes constitutes your agreement to such changes.\n\nThe Company uses a network of independent third-party contractors (Izinto Hoppers) who provide delivery services to our users and laundry, sneaker cleaning, and car wash service providers. It is up to each Izinto hopper to provide such delivery services. The Laundry, Sneaker Cleaning, and Car Wash Service Providers available through our Services (\"Service Providers\") also operate independently of the Company. The Company will not assess the suitability, legality, or ability of any Izinto Hopper or Laundry Service Provider. The Company is not responsible for the Laundry, Sneaker Cleaning, and Car Wash Service Providers' services or safety and does not verify their compliance with applicable laws or regulations. The Company has no responsibility or liability for acts by any third-party Laundry Service Provider or Izinto Hopper, other than as stated herein.\n\nHow you can contact us about privacy questions\nIf you have questions or concerns regarding this Policy, you can contact us at info@izinto.africa or Call/WhatsApp +27 81 725 8447. Contact hours are weekdays from 8:00 to 22:00 and Saturdays and Sundays from 8:00 to 22:00."
+      },
+      {
+        "title": "User representations and covenants",
+        "content": "By using the Services, you expressly represent and warrant that you are legally entitled to enter this Agreement. Your participation in using the Services is for your sole, personal, or internal business use. When using the Services, you agree to comply with all applicable laws from your home nation, and the country, state, and city in which you are present while using the Services. You may only access the Services using authorized means. It is your responsibility to check to ensure you download the correct Software for your device. The Company is not liable if you do not have a compatible device or if you have downloaded the wrong version of the Software for your device. The Company reserves the right to terminate your use of the Software and/or Services should you be using the Software or Services with an incompatible or unauthorized device.\n\nYou are the sole authorized User of any account you create through the Services. You are solely and fully responsible for all activities that occur under your password or account. You agree that you shall monitor your account to prevent use by minors, and you will accept full responsibility for any unauthorized use of your password or your account by minors."
+      },
+      {
+        "title": "User Content",
+        "content": "The Company may provide you with interactive opportunities through the Services, including, by way of example, the ability to post User ratings and reviews (collectively, \"User Content\"). You represent and warrant that you are the owner of, or otherwise have the right to provide, all User Content that you submit, post and/or otherwise transmit (\"Make Available\") through the Services. You hereby grant the Company a perpetual, irrevocable, transferable, fully paid, royalty-free, non-exclusive, worldwide, fully sublicenseable right and license to use, copy, display, publish, modify, remove, publicly perform, translate, create derivative works, distribute and/or otherwise use the User Content in connection with the Company's business and in all forms now known or hereafter invented."
+      },
+      {
+        "title": "Third-party interactions",
+        "content": "The Services may contain links to third-party websites (\"Third-Party Websites\") and applications (\"Third-Party Applications\") and advertisements (\"Third-Party Advertisements\") (collectively, \"Third-Party Websites & Advertisements\"). When you click on a link to a Third-Party Website, Third-Party Application or Third-Party Advertisement, the Company will not warn you that you have left the Company's Website or Services and will not warn you that you are subject to the terms and conditions (including privacy policies) of another website or destination. Such Third-Party Websites & Advertisements are not under the control of the Company."
+      },
+      {
+        "title": "Indemnification",
+        "content": "You agree to indemnify and hold harmless Izinto and its officers, directors, employees, and agents from any and all claims, demands, losses, liabilities, and expenses (including attorneys' fees) arising out of or in connection with: (i) your use of the Services or goods obtained through your use of the Services; (ii) your breach or violation of any of these Terms; (iii) Izinto's use of your User Content; or (iv) your violation of the rights of any third party, including Third-Party Providers."
+      },
+      {
+        "title": "Disclaimer of warranties",
+        "content": "The services are provided \"as is\" and \"as available.\" Izinto disclaims all representations and warranties, express, implied, or statutory, not expressly set out in these terms, including the implied warranties of merchantability, fitness for a particular purpose and non-infringement. In addition, Izinto makes no representation, warranty, or guarantee regarding the reliability, timeliness, quality, suitability, or availability of the services or any services or goods requested through the use of the services, or that the services will be uninterrupted or error-free."
+      },
+      {
+        "title": "Limitation of liability",
+        "content": "Izinto shall not be liable for indirect, incidental, special, exemplary, punitive, or consequential damages, including lost profits, lost data, personal injury, or property damage related to, in connection with, or otherwise resulting from any use of the services, even if Izinto has been advised of the possibility of such damages. Izinto shall not be liable for any damages, liability or losses arising out of: (i) your use of or reliance on the services or your inability to access or use the services; or (ii) any transaction or relationship between you and any third-party provider."
+      },
+      {
+        "title": "Payments",
+        "content": "The currency used for payments on Izinto is South African Rand (ZAR). You can use the following methods of payment:\n\n- Yoco Payment Link\n- Credit/Debit Card – Visa, Master, Diners, etc.\n- Cash on Delivery\n\nAll payments are processed securely through our certified payment partners."
+      }
+    ]
+  },
+  "privacy-policy": {
+    "title": "Privacy Policy",
+    "category": "Legal",
+    "lastUpdated": "December 2025",
+    "sections": [
+      {
+        "title": "Information We Collect",
+        "content": "We collect information you provide directly to us when you register for an account, use our services, or communicate with us. This includes:\n\n- Personal identification information (name, email, phone number)\n- Delivery addresses and location data\n- Payment information and transaction history\n- Service preferences and usage patterns\n- Communications, feedback, and support requests\n- Device information and IP addresses"
+      },
+      {
+        "title": "How We Use Your Information",
+        "content": "We use the information we collect to:\n\n- Provide, maintain, and improve our services\n- Process transactions and send order confirmations\n- Personalize your experience and service recommendations\n- Communicate with you about services, offers, and updates\n- Monitor and analyze trends, usage, and activities\n- Detect, prevent, and address technical issues and fraud\n- Comply with legal obligations and enforce our terms"
+      },
+      {
+        "title": "Information Sharing and Disclosure",
+        "content": "We do not sell your personal information to third parties. We may share your information in the following circumstances:\n\n- With service providers who perform services on our behalf (payment processors, delivery partners)\n- To comply with legal obligations or respond to lawful requests\n- To protect and defend our rights, property, and safety\n- In connection with a business transfer, merger, or acquisition\n- With your consent or at your direction\n\nAll third-party service providers are bound by confidentiality agreements."
+      },
+      {
+        "title": "Data Security",
+        "content": "We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. These measures include:\n\n- Encryption of sensitive data in transit and at rest\n- Regular security assessments and vulnerability testing\n- Access controls and authentication mechanisms\n- Secure data storage and backup procedures\n- Employee training on data protection practices\n\nWhile we strive to protect your information, no method of transmission over the Internet is 100% secure."
+      },
+      {
+        "title": "Your Rights and Choices",
+        "content": "You have the following rights regarding your personal information:\n\n- Access and receive a copy of your personal information\n- Correct or update inaccurate information\n- Delete your information (subject to legal requirements)\n- Object to processing of your information\n- Data portability in a machine-readable format\n- Withdraw consent where processing is based on consent\n- Opt-out of marketing communications\n\nTo exercise these rights, contact us at info@izinto.africa."
+      },
+      {
+        "title": "Data Retention",
+        "content": "We retain your personal information only for as long as necessary to fulfill the purposes for which it was collected, including to provide our services, comply with legal obligations, resolve disputes, and enforce our agreements. Typical retention periods include:\n\n- Account information: While account is active plus 3 years\n- Transaction data: 7 years for tax and legal compliance\n- Service records: 3 years after service completion\n- Marketing data: Until consent is withdrawn\n\nWe regularly review our retention practices to ensure compliance."
+      },
+      {
+        "title": "International Data Transfers",
+        "content": "Izinto is based in South Africa and processes data primarily within South Africa. However, we may transfer and process your information in other countries where our service providers operate. When we transfer information across borders, we implement appropriate safeguards to ensure your data receives adequate protection, including:\n\n- Standard contractual clauses approved by regulatory authorities\n- Data processing agreements with third-party providers\n- Security assessments of international partners\n- Compliance with applicable data protection laws"
+      }
+    ]
+  },
+  "imprint": {
+    "title": "Imprint",
+    "category": "Legal",
+    "lastUpdated": "December 2025",
+    "sections": [
+      {
+        "title": "Registered Address",
+        "content": "123 Innovation Street\nTech Park\nJohannesburg, 2196\nGauteng Province\nSouth Africa"
+      },
+      {
+        "title": "Contact Information",
+        "content": "Customer Support Email: info@izinto.africa\nBusiness Inquiries: business@izinto.africa\nPhone: +27 81 725 8447\nWebsite: www.izinto.africa\nOperating Hours: Monday - Sunday, 8:00 - 22:00"
+      },
+      {
+        "title": "Leadership Team",
+        "content": "Chief Executive Officer: [CEO Name]\nChief Technology Officer: [CTO Name]\nHead of Operations: [Operations Lead Name]\nCustomer Experience Manager: [CX Manager Name]"
+      },
+      {
+        "title": "Legal Notices",
+        "content": "© 2025 Izinto (Pty) Ltd. All rights reserved.\n\nAll content, trademarks, logos, and intellectual property on this platform are the property of Izinto (Pty) Ltd or its licensors. Unauthorized use, reproduction, or distribution of any materials is strictly prohibited.\n\nThis platform operates under the laws of the Republic of South Africa. Any disputes shall be subject to the exclusive jurisdiction of the South African courts."
+      },
+      {
+        "title": "Regulatory Compliance",
+        "content": "Izinto (Pty) Ltd complies with the following South African regulations:\n\n- Protection of Personal Information Act (POPIA)\n- Consumer Protection Act (CPA)\n- Electronic Communications and Transactions Act\n- Companies Act of South Africa\n- Value-Added Tax Act\n\nOur services are licensed and regulated under applicable South African business and service regulations."
+      },
+      {
+        "title": "Service Areas",
+        "content": "Currently operating in:\n\n- Gauteng Province (Primary)\n- Major metropolitan areas including:\n  • Johannesburg\n  • Pretoria\n  • Centurion\n  • Midrand\n  • Sandton\n  • Randburg\n\nExpansion plans to other provinces are underway. Service availability may vary by location and service type."
+      }
+    ]
+  }
+}

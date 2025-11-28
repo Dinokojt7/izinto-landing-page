@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-export default function Footer() {
+export default function LinkFooter() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
 
@@ -93,18 +93,18 @@ export default function Footer() {
     ],
     legal: [
       { name: "Privacy Policy", href: "/policy/privacy-policy" },
-      { name: "Terms of Use", href: "/policy/terms-of-use" },
+      { name: "Terms and Conditions", href: "/policy/terms-and-conditions" },
     ],
     appStores: [
       {
         name: "Google Play",
         href: "https://play.google.com/store/apps/details?id=com.izinto.dev",
-        image: "/images/google-button.png",
+        image: "/images/google.png",
       },
       {
         name: "App Store",
         href: "https://apps.apple.com/app/izinto",
-        image: "/images/apple-button.png",
+        image: "/images/apple.png",
       },
     ],
   };
@@ -138,7 +138,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-gray-50 pt-16 pb-8">
+    <footer className="bg-gray-200 pt-4 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <motion.img
@@ -146,60 +146,6 @@ export default function Footer() {
           alt="Izinto"
           className="h-8 w-auto"
         />
-
-        {/* Tagline */}
-        <h2 className="text-gray-500 mt-4 text-sm">
-          Everyday value in your pocket in as fast as 45 minutes.
-        </h2>
-
-        {/* Divider */}
-        <div className="w-full h-px bg-gray-200 my-8" />
-
-        {/* Call to Action */}
-        <h2 className="text-black mt-4 text-lg italic font-extrabold uppercase tracking-wide">
-          LET'S GET MOVING. DROP YOUR MOBILE NUMBER TO START YOUR BOOKING OR
-          PICK UP WHERE YOU LEFT OFF.
-        </h2>
-
-        <div className="flex flex-col sm:flex-row items-start space-x-0 sm:space-x-4 space-y-4 sm:space-y-0 mt-6">
-          {/* Phone Input Section */}
-          <div
-            className={`flex items-center bg-white rounded-lg border ${
-              error ? "border-red-500" : "border-gray-300"
-            } p-3 w-full sm:flex-1 sm:max-w-sm`}
-          >
-            {/* Country Code */}
-            <div className="flex items-center">
-              <span className="text-black text-base font-semibold">+27</span>
-              <span className="text-black mx-2">|</span>
-            </div>
-
-            {/* Phone Input */}
-            <input
-              type="tel"
-              value={phoneNumber}
-              onChange={(e) => {
-                setPhoneNumber(e.target.value);
-                setError("");
-              }}
-              placeholder="Mobile number"
-              className="flex-1 text-gray-500 text-base font-semibold outline-none px-2 min-w-0"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-800 text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-900 transition-all transform whitespace-nowrap w-full sm:w-auto text-center"
-          >
-            SIGN IN / SIGN UP
-          </button>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <p className="text-red-500 text-xs mt-2">Enter your mobile number</p>
-        )}
 
         {/* Four Column Section - FLEX LAYOUT */}
         <div className="flex flex-col md:flex-row gap-8 mt-12">
@@ -257,21 +203,21 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Section 4: APP STORES */}
-          <div className="flex-1 md:flex-2">
-            <div className="flex space-x-2 w-full">
+          {/* Section 4: APP STORES - Optimized Layout */}
+          <div className="flex-1">
+            <div className="flex flex-col gap-4 md:gap-3 w-full max-w-xs">
               {footerLinks.appStores.map((store, index) => (
                 <a
                   key={index}
                   href={store.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 transition-transform "
+                  className="block "
                 >
                   <img
                     src={store.image}
                     alt={store.name}
-                    className="w-full h-14 object-contain"
+                    className="w-full h-10 object-contain"
                   />
                 </a>
               ))}
@@ -279,24 +225,10 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Service Areas Text */}
-        <div className="mt-12">
-          <h2 className="text-gray-500 text-sm font-normal leading-relaxed">
-            Izinto provide comprehensive laundry, home care, and gas services
-            across all listed areas. Our radius covers major suburbs in
-            Johannesburg North and surrounding regions. Service availability may
-            vary based on specific location within each area.{" "}
-            <span className="underline font-medium">{areas.join(" , ")}</span>
-          </h2>
-        </div>
-
-        {/* Divider */}
-        <div className="w-full h-px bg-gray-200 my-8" />
-
         {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center">
+        <div className="flex flex-col md:flex-row mt-4 justify-between items-center">
           {/* Copyright */}
-          <div className="text-base italic font-extrabold text-black/30 mb-4 md:mb-0">
+          <div className="text-sm text-black/80 font-semibold mb-4 md:mb-0">
             (c) 2025 IZINTO TECHNOLOGIES
           </div>
 
@@ -306,7 +238,6 @@ export default function Footer() {
               <Link
                 key={index}
                 href={link.href}
-                target="_blank"
                 className="text-gray-500 text-xs font-normal underline cursor-pointer hover:text-blue-600 transition-colors"
               >
                 {link.name}

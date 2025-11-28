@@ -89,7 +89,7 @@ export default function HeroSection() {
                 />
                 {/* Dark logo for white header */}
                 <motion.img
-                  src="/images/logo-izinto.png"
+                  src="/images/try-retro.png"
                   alt="Izinto"
                   style={{ opacity: useTransform(scrollY, [0, 100], [0, 1]) }}
                   className="h-8 w-auto"
