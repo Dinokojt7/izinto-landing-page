@@ -2,6 +2,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { COLORS } from "@/lib/utils/constants";
+import { useGoogleMaps } from "@/providers/GoogleMapsProvider"; // Import from provider
 
 export default function AddressSearchDialog({
   isOpen,
@@ -16,46 +17,29 @@ export default function AddressSearchDialog({
   const [isLoading, setIsLoading] = useState(false);
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
-  const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
   const [showSearching, setShowSearching] = useState(false);
 
   const mapRef = useRef(null);
   const autocompleteService = useRef(null);
   const placesService = useRef(null);
-  const scriptRef = useRef(null);
 
-  // Load Google Maps script
+  // Use the shared Google Maps hook from provider
+  const { isLoaded: isGoogleLoaded, loadError } = useGoogleMaps();
+
+  // Initialize Google services when loaded
   useEffect(() => {
-    if (isOpen && !isGoogleLoaded) {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        setIsGoogleLoaded(true);
-        autocompleteService.current =
-          new google.maps.places.AutocompleteService();
-        placesService.current = new google.maps.places.PlacesService(
-          document.createElement("div"),
-        );
-      };
-      script.onerror = () => {
-        console.error("Failed to load Google Maps script");
-      };
-      document.head.appendChild(script);
-      scriptRef.current = script;
+    if (isGoogleLoaded && window.google) {
+      autocompleteService.current =
+        new google.maps.places.AutocompleteService();
+      placesService.current = new google.maps.places.PlacesService(
+        document.createElement("div"),
+      );
     }
-
-    return () => {
-      if (scriptRef.current && scriptRef.current.parentNode) {
-        scriptRef.current.parentNode.removeChild(scriptRef.current);
-      }
-    };
-  }, [isOpen, isGoogleLoaded]);
+  }, [isGoogleLoaded]);
 
   // Initialize map when address is selected
   useEffect(() => {
-    if (selectedAddress && mapRef.current && !map && window.google) {
+    if (selectedAddress && mapRef.current && !map && isGoogleLoaded) {
       const googleMap = new google.maps.Map(mapRef.current, {
         center: { lat: selectedAddress.lat, lng: selectedAddress.lng },
         zoom: 15,
@@ -149,13 +133,13 @@ export default function AddressSearchDialog({
   const handleSearch = async (query) => {
     if (!query.trim()) {
       setPredictions([]);
-      setShowSearching(false); // Add this
+      setShowSearching(false);
       return;
     }
 
     if (!autocompleteService.current || !isGoogleLoaded) {
       setPredictions([]);
-      setShowSearching(false); // Add this
+      setShowSearching(false);
       return;
     }
 
@@ -186,13 +170,13 @@ export default function AddressSearchDialog({
             setPredictions([]);
           }
           setIsLoading(false);
-          setShowSearching(false); // Add this
+          setShowSearching(false);
         },
       );
     } catch (error) {
       console.error("Error fetching predictions:", error);
       setIsLoading(false);
-      setShowSearching(false); // Add this
+      setShowSearching(false);
     }
   };
 
