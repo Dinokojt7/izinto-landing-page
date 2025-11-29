@@ -79,7 +79,7 @@ export default function PromoSection() {
   }
 
   return (
-    <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center bg-blue-400">
+    <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center bg-[#0096FF]">
       {/* Main Grid Container - Text before image on mobile */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-96">
         {/* Image Container - Comes after text on mobile */}
@@ -101,7 +101,7 @@ export default function PromoSection() {
             Your friend gets R50 off their first service order when they spend
             R500 or more.
           </p>
-          <button className="bg-blue-700 text-white px-6 sm:px-8 py-3 lg:py-4 rounded-full text-sm lg:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full lg:w-auto text-center">
+          <button className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 lg:py-4 rounded-full text-sm lg:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full lg:w-auto text-center">
             LEARN MORE & EARN
           </button>
         </div>

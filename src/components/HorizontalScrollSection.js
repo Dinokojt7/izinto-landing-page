@@ -46,7 +46,7 @@ export default function CleanOverlayScroll() {
           </div>
 
           <div className="text-center">
-            <h2 className="text-4xl font-black italic text-blue-400 mb-4">
+            <h2 className="text-4xl font-black italic text-[#0096FF] mb-4">
               EVERYTHING. ON-DEMAND.
             </h2>
             <div className="flex flex-col space-y-2 items-center mb-6">
@@ -61,7 +61,7 @@ export default function CleanOverlayScroll() {
               </span>
             </div>
 
-            <button className="bg-blue-700 text-white px-6 py-3.5 rounded-full text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap text-center tracking-tighter flex items-center justify-center gap-2 mx-auto">
+            <button className="bg-[#0000ff] text-white px-6 py-3.5 rounded-full text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap text-center tracking-tighter flex items-center justify-center gap-2 mx-auto">
               GET STARTED
               <svg
                 width="24"
@@ -180,7 +180,7 @@ const CTOSection = () => {
 
 const BigText = ({ text }) => {
   return (
-    <h2 className="text-9xl text-[16rem] whitespace-nowrap text-blue-400 font-black italic relative z-50">
+    <h2 className="text-9xl text-[16rem] whitespace-nowrap text-[#0096FF] font-black italic relative z-50">
       {text}
     </h2>
   );

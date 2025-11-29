@@ -5,7 +5,7 @@ export const COLORS = {
   cartBlue: "#0000ff", // Main buttons
   accent: "#cfc5a5", // Banners & highlights
   white: "#ffffff", // Backgrounds & secondary
-  blue: "#3b82f6", // Notices & information
+  blue: "#0096FF", // Notices & information
 
   // Semantic colors
   success: "#10b981",

@@ -190,7 +190,7 @@ export default function Footer() {
           {/* Submit Button */}
           <button
             onClick={handleSubmit}
-            className="bg-blue-800 text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-900 transition-all transform whitespace-nowrap w-full sm:w-auto text-center"
+            className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-900 transition-all transform whitespace-nowrap w-full sm:w-auto text-center"
           >
             SIGN IN / SIGN UP
           </button>

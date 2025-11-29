@@ -10,6 +10,14 @@ import ServiceGrid from "@/components/services/ServiceGrid";
 import BigText from "@/components/ui/BigText";
 import VerticalCardStack from "@/components/VerticalCardStack";
 import AddressSearchDialog from "@/components/maps/AddressSearchDialog";
+import { Inter, Roboto } from "next/font/google";
+
+const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
+
+const roboto = Roboto({
+  weight: ["400", "900"],
+  subsets: ["latin"],
+});
 
 export default function Home() {
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
@@ -21,7 +29,7 @@ export default function Home() {
   };
 
   return (
-    <div className="pt-16 pb-20 sm:pb-0">
+    <div className={`pt-16 pb-20 sm:pb-0 ${inter.className} `}>
       {" "}
       {/* Added bottom padding for mobile nav */}
       <HeroSection />
@@ -57,10 +65,10 @@ export default function Home() {
       <StaggeredHorizontalScroll />
       <Footer />
       {/* Mobile Bottom Nav Address Button - Fixed position */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white border-t border-gray-200 p-4 shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden  p-4">
         <button
           onClick={() => setIsAddressDialogOpen(true)}
-          className="bg-blue-700 text-white px-6 py-4 rounded-full text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full text-center"
+          className="bg-[#0000ff] text-white px-6 py-3 rounded-full text-sm font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full text-center"
         >
           ENTER YOUR ADDRESS
         </button>
