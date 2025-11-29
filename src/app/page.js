@@ -11,6 +11,7 @@ import BigText from "@/components/ui/BigText";
 import VerticalCardStack from "@/components/VerticalCardStack";
 import AddressSearchDialog from "@/components/maps/AddressSearchDialog";
 import { Inter, Roboto } from "next/font/google";
+import VerticalCardParallax from "@/components/VerticalCardParallax";
 
 const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
 
@@ -38,30 +39,7 @@ export default function Home() {
       <ServiceGrid shouldFlowLeft={false} />
       <CommunityMap onAddressClick={() => setIsAddressDialogOpen(true)} />
       <PromoSection />
-      <VerticalCardStack
-        tagline={"IMMEDIATE."}
-        header={"GET IT FAST."}
-        punchline={"Built for speed and convenience."}
-        description={
-          "Our proprietary network and real-time tech move as fast as you do—getting your order to your door in minutes."
-        }
-      />
-      <VerticalCardStack
-        tagline={"SEAMLESS."}
-        header={"GET IT DONE."}
-        punchline={"Designed with intention."}
-        description={
-          "Each order is instantly routed to the relevant serivce provider - where it's analyzed, prepped for, and attended with zero wasted motion."
-        }
-      />
-      <VerticalCardStack
-        tagline={"DEPENDABLE."}
-        header={"GET IT RIGHT."}
-        punchline={"Driven by precision."}
-        description={
-          "From start to finish, our platform ensures every detail is accounted for—so your service is completed accurately and to your satisfaction."
-        }
-      />
+      <VerticalCardParallax />
       <StaggeredHorizontalScroll />
       <Footer />
       {/* Mobile Bottom Nav Address Button - Fixed position */}

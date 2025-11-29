@@ -1,0 +1,76 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "slug": "how-to-wash-electric-blankets",
+      "title": "How to Safely Wash and Maintain Your Electric Blankets",
+      "excerpt": "Learn the proper techniques to clean your electric blankets without damaging the wiring or compromising safety.",
+      "content": "Electric blankets require special care when cleaning...",
+      "image": "/images/blog/electric-blanket.jpg",
+      "category": "Home Care",
+      "readTime": "5 min read",
+      "date": "2024-12-15",
+      "author": "Izinto Care Team"
+    },
+    {
+      "id": 2,
+      "slug": "house-plants-care-guide",
+      "title": "Essential House Plant Care Tips for Busy Homeowners",
+      "excerpt": "Keep your indoor plants thriving with these simple maintenance routines that fit into your busy schedule.",
+      "content": "House plants can transform your living space...",
+      "image": "/images/blog/house-plants.jpg",
+      "category": "Home Care",
+      "readTime": "4 min read",
+      "date": "2024-12-12",
+      "author": "Izinto Care Team"
+    },
+    {
+      "id": 3,
+      "slug": "odor-management-solutions",
+      "title": "Effective Odor Management Solutions for Modern Homes",
+      "excerpt": "Combat common household odors with professional tips and natural solutions.",
+      "content": "Unpleasant odors can make any home feel less inviting...",
+      "image": "/images/blog/odor-management.jpg",
+      "category": "Home Care",
+      "readTime": "6 min read",
+      "date": "2024-12-10",
+      "author": "Izinto Care Team"
+    },
+    {
+      "id": 4,
+      "slug": "gas-canister-safety",
+      "title": "Gas Canister Safety Measures Every Home Should Know",
+      "excerpt": "Essential safety guidelines for storing and using gas canisters in your home.",
+      "content": "Gas canisters are convenient but require proper handling...",
+      "image": "/images/blog/gas-safety.jpg",
+      "category": "Safety",
+      "readTime": "7 min read",
+      "date": "2024-12-08",
+      "author": "Izinto Safety Team"
+    },
+    {
+      "id": 5,
+      "slug": "laundry-organization-tips",
+      "title": "Smart Laundry Organization for Efficient Home Management",
+      "excerpt": "Streamline your laundry routine with these organization hacks and time-saving tips.",
+      "content": "A well-organized laundry system can save you hours each week...",
+      "image": "/images/blog/laundry-organization.jpg",
+      "category": "Home Care",
+      "readTime": "5 min read",
+      "date": "2024-12-05",
+      "author": "Izinto Care Team"
+    },
+    {
+      "id": 6,
+      "slug": "eco-friendly-cleaning",
+      "title": "Eco-Friendly Cleaning Solutions for a Healthier Home",
+      "excerpt": "Discover natural cleaning alternatives that are effective and environmentally friendly.",
+      "content": "Switching to eco-friendly cleaning products benefits both your home and the environment...",
+      "image": "/images/blog/eco-cleaning.jpg",
+      "category": "Sustainability",
+      "readTime": "4 min read",
+      "date": "2024-12-03",
+      "author": "Izinto Green Team"
+    }
+  ]
+}
