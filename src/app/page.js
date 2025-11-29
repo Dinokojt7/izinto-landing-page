@@ -40,6 +40,7 @@ export default function Home() {
       <CommunityMap onAddressClick={() => setIsAddressDialogOpen(true)} />
       <PromoSection />
       <VerticalCardParallax />
+      <div className="my-20" />
       <StaggeredHorizontalScroll />
       <Footer />
       {/* Mobile Bottom Nav Address Button - Fixed position */}

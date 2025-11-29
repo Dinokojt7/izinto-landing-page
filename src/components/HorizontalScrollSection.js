@@ -35,7 +35,7 @@ export default function CleanOverlayScroll() {
   // Now we can safely return conditionally after all hooks
   if (isMobile) {
     return (
-      <section className="relative min-h-screen  py-12 px-4">
+      <section className="relative min-h-screen mt-20 py-12 px-4">
         <div className="flex flex-col items-center justify-center space-y-8">
           <div className="w-full max-w-md">
             <img

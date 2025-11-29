@@ -14,13 +14,13 @@ export default function VerticalCardParallax() {
   // Clean movement without fading - just stacking
   const firstCardY = useTransform(
     scrollYProgress,
-    [0, 0.33, 1],
+    [0, 0.66, 1],
     ["0%", "0%", "0%"],
   );
   const secondCardY = useTransform(
     scrollYProgress,
-    [0, 0.33, 0.66, 1],
-    ["100%", "0%", "0%", "0%"],
+    [0, 0.66, 1],
+    ["100%", "0%", "0%"],
   );
   const thirdCardY = useTransform(
     scrollYProgress,
@@ -42,9 +42,9 @@ export default function VerticalCardParallax() {
             header={"GET IT FAST."}
             punchline={"Built for speed and convenience."}
             description={
-              "Our proprietary network and real-time tech move as fast as you do—getting your order to your door in minutes."
+              "Our proprietary network and real-time tech move as fast as you do—getting your booking attended within 45 minutes."
             }
-            image="/images/card1.webp"
+            image="/images/card3.webp"
           />
         </motion.div>
 
@@ -65,7 +65,7 @@ export default function VerticalCardParallax() {
         </motion.div>
 
         {/* Third Card - Slides up last and stays */}
-        <motion.div
+        {/* <motion.div
           style={{ y: thirdCardY }}
           className="absolute inset-0 flex items-center justify-center"
         >
@@ -78,7 +78,7 @@ export default function VerticalCardParallax() {
             }
             image="/images/card3.webp"
           />
-        </motion.div>
+        </motion.div> */}
       </div>
     </div>
   );

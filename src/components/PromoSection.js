@@ -79,7 +79,7 @@ export default function PromoSection() {
   }
 
   return (
-    <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center bg-[#0096FF]">
+    <section className="max-w-7xl mx-auto py-12 mb-10 px-4 sm:px-6 lg:px-8 text-center bg-[#0096FF]">
       {/* Main Grid Container - Text before image on mobile */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-96">
         {/* Image Container - Comes after text on mobile */}

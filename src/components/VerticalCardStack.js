@@ -19,9 +19,9 @@ export default function VerticalCardStack({
 }) {
   return (
     <div
-      className={`w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${inter.className}`}
+      className={`w-full max-w-7xl mx-auto mt-4 px-4 sm:px-6 lg:px-8 ${inter.className}`}
     >
-      <div className="bg-white rounded-3xl shadow-sm p-8 sm:p-12 lg:p-16 border border-gray-100">
+      <div className="bg-white p-8 sm:p-12 lg:p-16 border-b border-gray-100">
         <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight italic text-black">
           {tagline}
         </h2>
@@ -36,7 +36,7 @@ export default function VerticalCardStack({
         </h2>
 
         {/* Full-width image at the bottom - 1005x250 size */}
-        <div className="mt-8 lg:mt-12 -mx-8 sm:-mx-12 lg:-mx-16 rounded-b-3xl overflow-hidden">
+        <div className="mt-8 lg:mt-12 -mx-8 sm:-mx-12 lg:-mx-16 overflow-hidden">
           <div
             className="w-full bg-gray-100 flex items-center justify-center"
             style={{ height: "250px" }}
