@@ -121,7 +121,7 @@ export default function CommunityMap({ onAddressClick }) {
           {/* Button - Full width within container */}
           <button
             onClick={onAddressClick}
-            className="bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 w-full max-w-xs sm:max-w-sm rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap"
+            className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 sm:py-4 w-full max-w-xs sm:max-w-sm rounded-full text-sm sm:text-base font-extrabold italic hover:bg-[#0000cc] transition-all transform whitespace-nowrap"
           >
             ENTER YOUR ADDRESS
           </button>

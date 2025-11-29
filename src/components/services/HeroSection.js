@@ -34,6 +34,9 @@ export default function HeroSection() {
   const addressButtonOpacity = useTransform(scrollY, [0, 50, 100], [0, 0.5, 1]);
   const addressButtonScale = useTransform(scrollY, [0, 100], [0.8, 1]);
 
+  // Hero button opacity - visible on desktop, fades out as header button appears
+  const heroButtonOpacity = useTransform(scrollY, [0, 50, 100], [1, 0.5, 0]);
+
   useEffect(() => {
     const saved = localStorage.getItem("userAddress");
     if (saved) {
@@ -107,7 +110,7 @@ export default function HeroSection() {
                   opacity: addressButtonOpacity,
                   scale: addressButtonScale,
                 }}
-                className="hidden sm:flex bg-[#0000ff] text-white px-3 py-2 rounded-4xl text-xs sm:text-sm font-extrabold italic hover:bg-blue-800 transform transition-colors"
+                className="hidden sm:flex bg-[#0000ff] text-white px-3 py-2 rounded-4xl text-xs sm:text-sm font-extrabold italic hover:bg-[#0000cc] transform transition-colors"
               >
                 ENTER YOUR ADDRESS
               </motion.button>
@@ -163,14 +166,14 @@ export default function HeroSection() {
             THE FUTURE OF HOME-CARE IS INSTANT.
           </h1>
 
-          {/* Address Search Button - Center (only in hero) - Hidden on desktop, shown on mobile */}
+          {/* Address Search Button - Center - Shows on all screens, fades out on desktop scroll */}
           <motion.button
             onClick={() => setIsAddressDialogOpen(true)}
             style={{
-              opacity: useTransform(scrollY, [0, 100], [1, 0]),
+              opacity: heroButtonOpacity,
               scale: useTransform(scrollY, [0, 100], [1, 0.8]),
             }}
-            className="sm:hidden bg-[#0000ff] text-white px-4 py-3 rounded-4xl text-sm font-extrabold italic hover:bg-blue-800 transition-colors transform w-full max-w-xs"
+            className="bg-[#0000ff] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-4xl text-sm sm:text-base font-extrabold italic hover:bg-[#0000cc] transition-colors transform w-full max-w-xs"
           >
             ENTER YOUR ADDRESS
           </motion.button>
