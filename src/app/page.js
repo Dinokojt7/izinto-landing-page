@@ -21,7 +21,9 @@ export default function Home() {
   };
 
   return (
-    <div className="pt-16 pb-20 sm:pb-0"> {/* Added bottom padding for mobile nav */}
+    <div className="pt-16 pb-20 sm:pb-0">
+      {" "}
+      {/* Added bottom padding for mobile nav */}
       <HeroSection />
       <ServiceGrid />
       <BigText />
@@ -54,17 +56,15 @@ export default function Home() {
       />
       <StaggeredHorizontalScroll />
       <Footer />
-
       {/* Mobile Bottom Nav Address Button - Fixed position */}
       <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white border-t border-gray-200 p-4 shadow-lg">
-        <button 
+        <button
           onClick={() => setIsAddressDialogOpen(true)}
           className="bg-blue-700 text-white px-6 py-4 rounded-full text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full text-center"
         >
           ENTER YOUR ADDRESS
         </button>
       </div>
-
       {/* Address Search Dialog */}
       <AddressSearchDialog
         isOpen={isAddressDialogOpen}

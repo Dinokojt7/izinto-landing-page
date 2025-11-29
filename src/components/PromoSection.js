@@ -81,8 +81,8 @@ export default function PromoSection() {
   return (
     <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center bg-blue-400">
       {/* Main Grid Container - Text before image on mobile */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-96">
-               {/* Image Container - Comes after text on mobile */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-96">
+        {/* Image Container - Comes after text on mobile */}
         <div className="w-full h-64 lg:h-96 bg-gray-300 rounded-2xl overflow-hidden order-2 lg:order-3">
           <img
             src="/images/onboard_wash.jpg"
@@ -92,7 +92,7 @@ export default function PromoSection() {
         </div>
         {/* Text Content Container - Comes first on mobile */}
         <div className="w-full flex flex-col justify-center items-start text-left order-1">
-          <h2 className="text-4xl lg:text-6xl font-extrabold italic text-black mb-4 lg:mb-6 leading-tight">
+          <h2 className="text-4xl lg:text-6xl font-black italic text-black mb-4 lg:mb-6 leading-tight">
             EARN WITH OUR
             <br />
             REFERRAL PROGRAM
@@ -105,8 +105,6 @@ export default function PromoSection() {
             LEARN MORE & EARN
           </button>
         </div>
-
-       
       </div>
 
       {/* Services Carousel Section */}
@@ -143,7 +141,7 @@ export default function PromoSection() {
             <>
               <button
                 onClick={scrollLeft}
-                disabled={currentIndex === services.length -1}
+                disabled={currentIndex === services.length - 1}
                 className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-black/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 disabled:opacity-30"
               >
                 <svg

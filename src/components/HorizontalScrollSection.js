@@ -1,141 +1,187 @@
-import React, { useRef, useEffect } from "react";
+"use client";
+import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useRef, useEffect, useState } from "react";
 
-const CleanOverlayScroll = () => {
-  const scrollContainerRef = useRef(null);
+export default function CleanOverlayScroll() {
+  const targetRef = useRef(null);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const handleWheel = (e) => {
-      const container = scrollContainerRef.current;
-      if (!container) return;
-
-      const atStart = container.scrollLeft <= 0;
-      const atEnd =
-        container.scrollLeft + container.clientWidth >=
-        container.scrollWidth - 1;
-
-      if ((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)) return;
-
-      e.preventDefault();
-      container.scrollLeft += e.deltaY * 1.5;
-    };
-
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener("wheel", handleWheel, { passive: false });
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener("wheel", handleWheel);
-      }
-    };
+    setIsMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // All hooks must be called before any conditional returns
+  const { scrollYProgress } = useScroll({
+    target: isMounted && !isMobile ? targetRef : null, // Only target when not mobile
+    offset: ["start start", "end end"],
+  });
+
+  const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"]);
+
   const images = [
-    "images/onboard_wash.jpg", // Laundry - top
-    "https://images.unsplash.com/photo-1566888596782-c7f41cc184c5?w=300&h=200&fit=crop", // Gas - bottom
-    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop", // Car wash - top
-    "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=200&fit=crop", // Service - bottom
+    "images/onboarding-wash2.png",
+    "images/onboard_wash1.jpg",
+    "images/onboard_wash2.jpg",
+    "images/onboard_wash.jpg",
   ];
 
-  const largeText = "WANT IT. GET IT.";
+  const largeText = "EVERYTHING.  ON-DEMAND.";
 
+  // Now we can safely return conditionally after all hooks
+  if (isMobile) {
+    return (
+      <section className="relative min-h-screen  py-12 px-4">
+        <div className="flex flex-col items-center justify-center space-y-8">
+          <div className="w-full max-w-md">
+            <img
+              src="images/onboard_wash.jpg"
+              alt="Car Wash Service"
+              className="w-full h-64 object-cover rounded-lg shadow-xl"
+            />
+          </div>
+
+          <div className="text-center">
+            <h2 className="text-4xl font-black italic text-blue-400 mb-4">
+              EVERYTHING. ON-DEMAND.
+            </h2>
+            <div className="flex flex-col space-y-2 items-center mb-6">
+              <span className="text-xl font-black italic text-black/80">
+                ALL YOUR ESSENTIALS.
+              </span>
+              <span className="text-xl font-black italic text-black/80">
+                WHERE YOU NEED THEM.
+              </span>
+              <span className="text-xl font-black italic text-black/80">
+                ANYTIME.
+              </span>
+            </div>
+
+            <button className="bg-blue-700 text-white px-6 py-3.5 rounded-full text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap text-center tracking-tighter flex items-center justify-center gap-2 mx-auto">
+              GET STARTED
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M5 12h14m-4-6l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Desktop version
   return (
-    <div className="min-h-screen bg-white">
-      <div
-        ref={scrollContainerRef}
-        className="w-full h-screen overflow-x-auto scrollbar-hide"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        <div className="flex min-w-max h-full items-center">
-          {/* Section 1: First image on top */}
-          <div className="flex-shrink-0 w-screen flex items-center justify-center">
-            <div className="relative">
-              <span className="text-9xl font-black z-50 text-blue-400">
-                {largeText}
-              </span>
-              <div className="absolute -top-32 left-1/2 transform -translate-x-1/2 w-64 h-48">
-                <img
-                  src={images[0]}
-                  alt="Laundry Service"
-                  className="w-full h-full object-cover rounded-lg shadow-xl"
-                />
-              </div>
+    <section ref={targetRef} className="relative h-[300vh]">
+      <div className="sticky top-0 flex items-center h-screen overflow-hidden">
+        <motion.div
+          style={{ x }}
+          className="flex min-w-max gap-24 items-center"
+        >
+          {/* Your original desktop layout */}
+          <div className="relative">
+            <div className="relative z-50">
+              <BigText text={largeText} />
+            </div>
+
+            <div className="absolute top-0 left-0 w-88 h-60 z-40 transform translate-x-10 -translate-y-45">
+              <img
+                src={images[0]}
+                alt="Service 1"
+                className="w-full h-full object-cover rounded-lg shadow-xl"
+              />
+            </div>
+
+            <div className="absolute top-1 right-0 w-88 h-60 z-40 transform -translate-x-550 -translate-y-45">
+              <img
+                src={images[1]}
+                alt="Service 2"
+                className="w-full h-full object-cover rounded-lg shadow-xl"
+              />
+            </div>
+
+            <div className="absolute top-1 right-0 w-88 h-60 z-40 transform -translate-x-150 -translate-y-45">
+              <img
+                src={images[1]}
+                alt="Service 2"
+                className="w-full h-full object-cover rounded-lg shadow-xl"
+              />
+            </div>
+
+            <div className="absolute bottom-0 left-0 w-88 h-60 z-40 transform translate-x-100 translate-y-40">
+              <img
+                src={images[2]}
+                alt="Service 3"
+                className="w-full h-full object-cover rounded-lg shadow-xl"
+              />
+            </div>
+
+            <div className="absolute bottom-0 right-0 w-88 h-60 z-40 transform -translate-x-350 translate-y-40">
+              <img
+                src={images[3]}
+                alt="Service 4"
+                className="w-full h-full object-cover rounded-lg shadow-xl"
+              />
             </div>
           </div>
 
-          {/* Section 2: First image on bottom */}
-          <div className="flex-shrink-0 w-screen flex items-center justify-center">
-            <div className="relative">
-              <span className="text-9xl font-black text-blue-400">
-                {largeText}
-              </span>
-              <div className="absolute -bottom-32 left-1/2 transform -translate-x-1/2 w-64 h-48">
-                <img
-                  src={images[1]}
-                  alt="Gas Refill"
-                  className="w-full h-full object-cover rounded-lg shadow-xl"
-                />
-              </div>
-            </div>
+          <div className="shrink-0">
+            <CTOSection />
           </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
-          {/* Section 3: Second image on top */}
-          <div className="flex-shrink-0 w-screen flex items-center justify-center">
-            <div className="relative">
-              <span className="text-9xl font-black text-blue-400">
-                {largeText}
-              </span>
-              <div className="absolute -top-32 right-32 w-64 h-48 transform -rotate-6">
-                <img
-                  src={images[2]}
-                  alt="Car Wash"
-                  className="w-full h-full object-cover rounded-lg shadow-xl"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Section 4: Second image on bottom */}
-          <div className="flex-shrink-0 w-screen flex items-center justify-center">
-            <div className="relative">
-              <span className="text-9xl font-black text-blue-400">
-                {largeText}
-              </span>
-              <div className="absolute -bottom-32 left-32 w-64 h-48 transform rotate-6">
-                <img
-                  src={images[3]}
-                  alt="Service"
-                  className="w-full h-full object-cover rounded-lg shadow-xl"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Final Section: Services and Button */}
-          <div className="flex-shrink-0 w-screen flex items-center justify-center">
-            <div className="text-center">
-              <div className="flex flex-col space-y-6 items-center">
-                <span className="text-2xl font-bold text-gray-800">
-                  ON-DEMAND LAUNDRY
-                </span>
-                <span className="text-2xl font-bold text-gray-800">
-                  SPEEDY GAS REFILL
-                </span>
-                <span className="text-2xl font-bold text-gray-800">
-                  CAR WASH SERVICES
-                </span>
-
-                <button className="bg-blue-500 text-white px-12 py-4 rounded-lg text-xl font-semibold hover:bg-blue-600 transition-colors mt-6">
-                  GET STARTED
-                </button>
-              </div>
-            </div>
-          </div>
+// Keep your existing CTOSection and BigText components unchanged
+const CTOSection = () => {
+  return (
+    <div className="shrink-0 flex items-center justify-center pl-8">
+      <div className="text-center">
+        <div className="flex flex-col tracking-tighter -space-y-1 items-start">
+          <span className="text-3xl font-black italic text-black/80">
+            ALL YOUR ESSENTIALS.
+          </span>
+          <span className="text-3xl font-black italic text-black/80">
+            WHERE YOU NEED THEM.
+          </span>
+          <span className="text-3xl font-black italic text-black/80">
+            ANYTIME.
+          </span>
+          <button className="bg-blue-700 text-white px-6 py-3.5 rounded-full text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-1/2 text-center my-4 tracking-tighter flex items-center justify-center gap-2">
+            GET STARTED
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M5 12h14m-4-6l6 6-6 6" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default CleanOverlayScroll;
+const BigText = ({ text }) => {
+  return (
+    <h2 className="text-9xl text-[16rem] whitespace-nowrap text-blue-400 font-black italic relative z-50">
+      {text}
+    </h2>
+  );
+};
