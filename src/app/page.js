@@ -1,5 +1,6 @@
 // src/app/page.js
 "use client";
+import { useState } from "react";
 import StaggeredHorizontalScroll from "@/components/HorizontalScrollSection";
 import Footer from "@/components/layout/Footer";
 import CommunityMap from "@/components/maps/CommnunityMap";
@@ -8,10 +9,19 @@ import HeroSection from "@/components/services/HeroSection";
 import ServiceGrid from "@/components/services/ServiceGrid";
 import BigText from "@/components/ui/BigText";
 import VerticalCardStack from "@/components/VerticalCardStack";
+import AddressSearchDialog from "@/components/maps/AddressSearchDialog";
 
 export default function Home() {
+  const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
+
+  const handleAddressSave = (address) => {
+    // Handle address save logic here
+    console.log("Address saved:", address);
+    setIsAddressDialogOpen(false);
+  };
+
   return (
-    <div className="pt-16">
+    <div className="pt-16 pb-20 sm:pb-0"> {/* Added bottom padding for mobile nav */}
       <HeroSection />
       <ServiceGrid />
       <BigText />
@@ -44,6 +54,23 @@ export default function Home() {
       />
       <StaggeredHorizontalScroll />
       <Footer />
+
+      {/* Mobile Bottom Nav Address Button - Fixed position */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white border-t border-gray-200 p-4 shadow-lg">
+        <button 
+          onClick={() => setIsAddressDialogOpen(true)}
+          className="bg-blue-700 text-white px-6 py-4 rounded-full text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full text-center"
+        >
+          ENTER YOUR ADDRESS
+        </button>
+      </div>
+
+      {/* Address Search Dialog */}
+      <AddressSearchDialog
+        isOpen={isAddressDialogOpen}
+        onClose={() => setIsAddressDialogOpen(false)}
+        onAddressSave={handleAddressSave}
+      />
     </div>
   );
 }

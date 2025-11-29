@@ -5,6 +5,7 @@ import { useServices } from "@/lib/api/services";
 import { COLORS } from "@/lib/utils/constants";
 import { Inter, Roboto } from "next/font/google";
 import MainServiceCard from "./ui/MainServiceCard";
+import CircularProgressIndicator from "./ui/CircularProgessIndicator";
 
 const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
 
@@ -54,12 +55,23 @@ export default function PromoSection() {
         className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center rounded-lg"
         style={{ backgroundColor: COLORS.blue }}
       >
-        <div className="grid grid-cols-2 gap-12 items-center h-96 px-12">
-          <div className="w-full h-96 bg-gray-300 rounded-2xl overflow-hidden animate-pulse"></div>
-          <div className="w-full space-y-4 animate-pulse">
-            <div className="h-12 bg-gray-300 rounded w-3/4"></div>
-            <div className="h-6 bg-gray-300 rounded w-1/2"></div>
-            <div className="h-14 bg-gray-300 rounded w-48"></div>
+        <div className="flex justify-center items-center h-96">
+          <CircularProgressIndicator />
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !services.length) {
+    return (
+      <section
+        className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center rounded-lg"
+        style={{ backgroundColor: COLORS.blue }}
+      >
+        <div className="flex justify-center items-center h-96">
+          <div className="text-center">
+            <p className="text-white text-lg mb-4">No services available</p>
+            <CircularProgressIndicator />
           </div>
         </div>
       </section>
@@ -67,43 +79,44 @@ export default function PromoSection() {
   }
 
   return (
-    <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center bg-blue-400 ">
-      {/* Main Grid Container */}
-      <div className="grid grid-cols-2 gap-12 items-center h-96 ">
-        {/* Image Container */}
-        <div className="w-full h-96 bg-gray-300 rounded-2xl overflow-hidden">
+    <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center bg-blue-400">
+      {/* Main Grid Container - Text before image on mobile */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-96">
+               {/* Image Container - Comes after text on mobile */}
+        <div className="w-full h-64 lg:h-96 bg-gray-300 rounded-2xl overflow-hidden order-2 lg:order-3">
           <img
             src="/images/onboard_wash.jpg"
             alt="Referral Program"
             className="w-full h-full object-cover"
           />
         </div>
-
-        {/* Text Content Container */}
-        <div className="w-full flex flex-col justify-center items-start text-left">
-          <h2 className="text-6xl font-extrabold italic text-black mb-6 ">
+        {/* Text Content Container - Comes first on mobile */}
+        <div className="w-full flex flex-col justify-center items-start text-left order-1">
+          <h2 className="text-4xl lg:text-6xl font-extrabold italic text-black mb-4 lg:mb-6 leading-tight">
             EARN WITH OUR
             <br />
             REFERRAL PROGRAM
           </h2>
-          <p className="text-base text-gray-800 font-bold mb-6 max-w-lg">
+          <p className="text-base lg:text-lg text-gray-800 font-bold mb-6 max-w-lg">
             Your friend gets R50 off their first service order when they spend
             R500 or more.
           </p>
-          <button className="bg-blue-700 text-white px-6 sm:px-8 py-2 sm:py-4 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap">
+          <button className="bg-blue-700 text-white px-6 sm:px-8 py-3 lg:py-4 rounded-full text-sm lg:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full lg:w-auto text-center">
             LEARN MORE & EARN
           </button>
         </div>
+
+       
       </div>
 
       {/* Services Carousel Section */}
-      <div className="mt-20 w-full">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-3xl font-extrabold italic text-black">
+      <div className="mt-12 lg:mt-20 w-full">
+        {/* Header - Responsive */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 lg:mb-4 gap-4 lg:gap-0">
+          <h3 className="text-2xl lg:text-3xl font-extrabold italic text-black leading-tight lg:leading-normal text-left">
             BROWSE AND BOOK YOUR FAVOURITE SERVICES.
           </h3>
-          <button className="flex text-black text-sm font-bold hover:underline cursor-pointer hover:text-gray-900 transition-colors">
+          <button className="flex text-black text-sm font-bold hover:underline cursor-pointer hover:text-gray-900 transition-colors self-start lg:self-auto">
             MORE ITEMS
             <svg
               width="20"
@@ -125,12 +138,12 @@ export default function PromoSection() {
 
         {/* Carousel Container */}
         <div className="relative group">
-          {/* Left Arrow */}
+          {/* Left Arrow - Hidden on mobile */}
           {services.length > 0 && (
             <>
               <button
                 onClick={scrollLeft}
-                disabled={currentIndex === 0}
+                disabled={currentIndex === services.length -1}
                 className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-black/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 disabled:opacity-30"
               >
                 <svg
@@ -148,11 +161,11 @@ export default function PromoSection() {
                 </svg>
               </button>
 
-              {/* Right Arrow */}
+              {/* Right Arrow - Hidden on mobile */}
               <button
                 onClick={scrollRight}
                 disabled={currentIndex === services.length - 1}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-black/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 disabled:opacity-30"
+                className=" absolute right-2 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-black/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 disabled:opacity-30"
               >
                 <svg
                   className="w-6 h-6 text-white"
@@ -171,14 +184,14 @@ export default function PromoSection() {
             </>
           )}
 
-          {/* Services Grid */}
+          {/* Services Grid - Edge to edge on mobile */}
           <div
             ref={scrollContainerRef}
-            className="flex space-x-6 overflow-x-auto scrollbar-hide px-2 snap-x snap-mandatory"
+            className="flex space-x-6 overflow-x-auto scrollbar-hide px-0 lg:px-2 snap-x snap-mandatory"
             style={{
               scrollBehavior: "smooth",
-              msOverflowStyle: "none", // IE and Edge
-              scrollbarWidth: "none", // Firefox
+              msOverflowStyle: "none",
+              scrollbarWidth: "none",
             }}
           >
             {services.map((service, index) => (
