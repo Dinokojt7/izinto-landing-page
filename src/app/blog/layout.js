@@ -4,7 +4,9 @@ import BlogHeader from "./BlogHeader";
 
 export default function BlogLayout({ children }) {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pb-20 sm:pb-0">
+      {" "}
+      {/* Added bottom padding for mobile nav */}
       <BlogHeader />
       <main>{children}</main>
       <LinkFooter />

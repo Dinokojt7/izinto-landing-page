@@ -98,7 +98,7 @@ export default function PromoSection() {
             REFERRAL PROGRAM
           </h2>
           <p className="text-base lg:text-lg text-gray-800 font-bold mb-6 max-w-lg">
-            Your friend gets R50 off their first service order when they spend
+            Your friend gets R50 off their first service booking when they spend
             R500 or more.
           </p>
           <button className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 lg:py-4 rounded-full text-sm lg:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full lg:w-auto text-center">

@@ -30,7 +30,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`pt-16 pb-20 sm:pb-0 ${inter.className} `}>
+    <div className={`pt-16 pb-20 sm:pb-0 bg-white ${inter.className} `}>
       {" "}
       {/* Added bottom padding for mobile nav */}
       <HeroSection />
