@@ -58,7 +58,7 @@ export default function VerticalCardParallax() {
             header={"GET IT DONE."}
             punchline={"Designed with intention."}
             description={
-              "Each order is instantly routed to the relevant service provider - where it's analyzed, prepped for, and attended with zero wasted motion."
+              "Each booking is instantly routed to the relevant service provider - where it's analyzed, prepped for, and attended with zero wasted motion."
             }
             image="/images/card2.webp"
           />

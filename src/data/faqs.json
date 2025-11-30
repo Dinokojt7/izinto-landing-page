@@ -1,0 +1,116 @@
+{
+  "faqs": [
+    {
+      "category": "Laundry Services",
+      "slug": "laundry",
+      "questions": [
+        {
+          "title": "Who will wash my clothes?",
+          "text": "Izinto works with only the best professional cleaners in Gauteng. All of our cleaners are eco-friendly, with over ten years of experience and quality is always guaranteed. Your clothes are safe with us."
+        },
+        {
+          "title": "Must I be home for the pickup?",
+          "text": "You have the option to leave your clothing either at the reception or with the security guard in your building, and kindly inform them that Izinto will be arriving."
+        },
+        {
+          "title": "When will my laundry be back?",
+          "text": "All laundry orders are fulfilled within 24 hours of picking them up; they will be returned in a professional packaged manner."
+        },
+        {
+          "title": "Who washes my sneakers?",
+          "text": "Izinto collaborates exclusively with top-tier professional sneaker laundry partners listed in our recommended section of the app. You can choose any service provider from this list. All of our cleaners are environmentally friendly, with a proven track record of delivering high-quality service. Your sneakers are always in safe hands with us."
+        },
+        {
+          "title": "What are your popular laundry services?",
+          "text": "Our popular services include Sneaker Wash, Rug and Carpet Care, Dry Cleaning, Onsite Curtain Cleaning, Blankets Laundry, and Leather Care. Each service is handled by specialized professionals to ensure the best results."
+        },
+        {
+          "title": "How do I schedule a laundry service?",
+          "text": "You can easily schedule a laundry service through our mobile app or website. Simply select your preferred service, choose a pickup time, and our team will handle the rest."
+        }
+      ]
+    },
+    {
+      "category": "Car Wash Services",
+      "slug": "car-wash",
+      "questions": [
+        {
+          "title": "Who will wash my car?",
+          "text": "Izinto partners with Easy Wash, our in-house car wash division made up of carefully selected experts with excellent experience in automotive care."
+        },
+        {
+          "title": "What are the operating hours?",
+          "text": "We operate Monday to Sunday, including holidays with our first slot at 8AM and last slot at 5PM."
+        },
+        {
+          "title": "How long does a car wash take?",
+          "text": "A typical car wash takes about 1 hour and 30 minutes to complete once our Easy Wash team is on site."
+        },
+        {
+          "title": "Where do you operate?",
+          "text": "We are currently operating throughout the Gauteng province."
+        },
+        {
+          "title": "What are the vehicle categories?",
+          "text": "To streamline our scheduling process, we've categorized vehicles into four classifications: Hatchbacks, Sedans, SUVs (which include bakkies and other large vehicles), and Minibuses."
+        },
+        {
+          "title": "Can I schedule a car wash in advance?",
+          "text": "Yes, you can schedule your car wash in advance through our app or website. We recommend booking at least 24 hours ahead for your preferred time slot."
+        }
+      ]
+    },
+    {
+      "category": "Gas Refill Services",
+      "slug": "gas-refill",
+      "questions": [
+        {
+          "title": "How safe is the gas refill process?",
+          "text": "The gas refill process is conducted by trained professionals who adhere to strict safety protocols to ensure the safety of both the customer and the environment."
+        },
+        {
+          "title": "What types of gas can be refilled?",
+          "text": "We offer refills for a variety of gases including but not limited to LPG, CNG, and other specialty gases. Please check with your service provider for specific options."
+        },
+        {
+          "title": "How long does a gas refill take?",
+          "text": "The duration of a gas refill can vary depending on the type and amount of gas being refilled, but typically it takes between 15 to 30 minutes."
+        },
+        {
+          "title": "Are there any regulations I should be aware of?",
+          "text": "Yes, there are regulations regarding the storage and handling of gases. Our service providers comply with all local and national regulations to ensure safe and legal operations."
+        },
+        {
+          "title": "Do you provide emergency gas refill services?",
+          "text": "Yes, we offer emergency gas refill services for urgent situations. Contact our support team for immediate assistance."
+        }
+      ]
+    },
+    {
+      "category": "General Services",
+      "slug": "general",
+      "questions": [
+        {
+          "title": "How do I book a service?",
+          "text": "You can book any of our services through our mobile app or website. Simply select the service you need, choose your preferred time slot, and confirm your booking."
+        },
+        {
+          "title": "What areas do you serve?",
+          "text": "We currently serve major areas across Gauteng including Johannesburg, Pretoria, Sandton, Randburg, and surrounding suburbs."
+        },
+        {
+          "title": "What payment methods do you accept?",
+          "text": "We accept various payment methods including credit/debit cards, Yoco payment links, and cash on delivery for certain services."
+        },
+        {
+          "title": "Can I cancel or reschedule my booking?",
+          "text": "Yes, you can cancel or reschedule your booking through the app or by contacting our customer support team. Please refer to our cancellation policy for specific terms."
+        },
+        {
+          "title": "How do I contact customer support?",
+          "text": "You can reach our customer support team through the app, via email at info@izinto.africa, or by calling/WhatsApp at +27 81 725 8447. We're available weekdays from 8:00 to 22:00 and weekends from 8:00 to 22:00."
+        }
+      ]
+    }
+  ]
+}
