@@ -5,6 +5,7 @@ import { ServicesProvider } from "@/providers/ServicesProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { AuthProvider } from "@/context/authContext";
 import { GoogleMapsProvider } from "@/providers/GoogleMapsProvider";
+import ClientLayoutWrapper from "@/components/layout/ClientLayoutWrapper";
 
 const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export const metadata = {
   title: "Izinto - On-Demand Home Services",
   description: "Professional home services at your doorstep",
 };
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -26,7 +28,9 @@ export default function RootLayout({ children }) {
         <ReactQueryProvider>
           <GoogleMapsProvider apiKey={GOOGLE_MAPS_API_KEY}>
             <AuthProvider>
-              <ServicesProvider>{children}</ServicesProvider>
+              <ServicesProvider>
+                <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+              </ServicesProvider>
             </AuthProvider>
           </GoogleMapsProvider>
         </ReactQueryProvider>

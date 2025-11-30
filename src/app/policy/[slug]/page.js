@@ -56,7 +56,7 @@ export default async function PolicyPage({ params }) {
 
         {/* Category Header - Big Blue Bold */}
         <div className="text-left mb-4">
-          <h1 className="text-4xl font-extrabold text-blue-800">
+          <h1 className="text-4xl font-extrabold text-[#0096FF] ">
             {policy.title || "Policy"}
           </h1>
         </div>

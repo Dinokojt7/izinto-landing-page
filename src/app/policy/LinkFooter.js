@@ -93,7 +93,7 @@ export default function LinkFooter() {
     ],
     legal: [
       { name: "Privacy Policy", href: "/policy/privacy-policy" },
-      { name: "Terms and Conditions", href: "/policy/terms-and-conditions" },
+      { name: "Terms of Use", href: "/policy/terms-of-use" },
     ],
     appStores: [
       {
