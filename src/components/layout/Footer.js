@@ -210,7 +210,7 @@ export default function Footer() {
                 <Link
                   key={index}
                   href={link.href}
-                  className="text-black text-sm font-semibold underline cursor-pointer hover:text-blue-600 transition-colors block"
+                  className="text-black text-sm font-semibold underline cursor-pointer transition-colors block"
                 >
                   {link.name}
                 </Link>
@@ -228,7 +228,7 @@ export default function Footer() {
                 <Link
                   key={index}
                   href={link.href}
-                  className="text-black text-sm font-semibold underline cursor-pointer hover:text-blue-600 transition-colors block"
+                  className="text-black text-sm font-semibold underline cursor-pointer transition-colors block"
                 >
                   {link.name}
                 </Link>
@@ -246,7 +246,7 @@ export default function Footer() {
                 <Link
                   key={index}
                   href={link.href}
-                  className="text-black text-sm font-semibold underline cursor-pointer hover:text-blue-600 transition-colors block"
+                  className="text-black text-sm font-semibold underline cursor-pointer transition-colors block"
                 >
                   {link.name}
                 </Link>
@@ -304,7 +304,7 @@ export default function Footer() {
                 key={index}
                 href={link.href}
                 target="_blank"
-                className="text-gray-500 text-xs font-normal underline cursor-pointer hover:text-blue-600 transition-colors"
+                className="text-gray-500 text-xs font-normal underline cursor-pointer transition-colors"
               >
                 {link.name}
               </Link>

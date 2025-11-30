@@ -1,4 +1,3 @@
-// src/lib/stores/cart-store.js
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -6,48 +5,73 @@ export const useCartStore = create(
   persist(
     (set, get) => ({
       items: [],
-      addItem: (item) => {
-        const { items } = get();
-        const existingItem = items.find((i) => i.id === item.id);
+      totalItems: 0,
 
-        if (existingItem) {
-          const updatedItems = items.map((i) =>
-            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
-          );
-          set({ items: updatedItems });
-        } else {
-          set({ items: [...items, { ...item, quantity: 1 }] });
-        }
-      },
-      removeItem: (id) => {
-        const { items } = get();
-        set({ items: items.filter((i) => i.id !== id) });
-      },
-      updateQuantity: (id, quantity) => {
-        const { items } = get();
-        if (quantity <= 0) {
-          set({ items: items.filter((i) => i.id !== id) });
-        } else {
+      addItem: (service, quantity = 1) => {
+        const items = get().items;
+        const existingItemIndex = items.findIndex(
+          (item) =>
+            item.id === service.id &&
+            item.selectedSize === service.selectedSize,
+        );
+
+        if (existingItemIndex > -1) {
+          // Update quantity
+          const updatedItems = [...items];
+          updatedItems[existingItemIndex].quantity += quantity;
           set({
-            items: items.map((i) => (i.id === id ? { ...i, quantity } : i)),
+            items: updatedItems,
+            totalItems: get().totalItems + quantity,
+          });
+        } else {
+          // Add new item
+          const newItem = {
+            ...service,
+            quantity,
+            cartId: `${service.id}-${service.selectedSize || "default"}-${Date.now()}`,
+          };
+          set({
+            items: [...items, newItem],
+            totalItems: get().totalItems + quantity,
           });
         }
       },
-      clearCart: () => set({ items: [] }),
-      getTotalPrice: () => {
-        const { items } = get();
-        return items.reduce(
-          (total, item) => total + item.price * item.quantity,
-          0,
-        );
+
+      removeItem: (cartId) => {
+        const items = get().items;
+        const itemToRemove = items.find((item) => item.cartId === cartId);
+        if (itemToRemove) {
+          const updatedItems = items.filter((item) => item.cartId !== cartId);
+          set({
+            items: updatedItems,
+            totalItems: Math.max(0, get().totalItems - itemToRemove.quantity),
+          });
+        }
       },
-      getTotalItems: () => {
-        const { items } = get();
-        return items.reduce((total, item) => total + item.quantity, 0);
+
+      updateQuantity: (cartId, newQuantity) => {
+        const items = get().items;
+        const itemIndex = items.findIndex((item) => item.cartId === cartId);
+
+        if (itemIndex > -1 && newQuantity > 0) {
+          const updatedItems = [...items];
+          const quantityDiff = newQuantity - updatedItems[itemIndex].quantity;
+          updatedItems[itemIndex].quantity = newQuantity;
+          set({
+            items: updatedItems,
+            totalItems: get().totalItems + quantityDiff,
+          });
+        } else if (newQuantity === 0) {
+          get().removeItem(cartId);
+        }
+      },
+
+      clearCart: () => {
+        set({ items: [], totalItems: 0 });
       },
     }),
     {
-      name: "izinto-cart-storage",
+      name: "cart-storage",
     },
   ),
 );

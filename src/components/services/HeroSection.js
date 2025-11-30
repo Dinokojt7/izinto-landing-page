@@ -34,9 +34,6 @@ export default function HeroSection() {
   const addressButtonOpacity = useTransform(scrollY, [0, 50, 100], [0, 0.5, 1]);
   const addressButtonScale = useTransform(scrollY, [0, 100], [0.8, 1]);
 
-  // Hero button opacity - visible on desktop, fades out as header button appears
-  const heroButtonOpacity = useTransform(scrollY, [0, 50, 100], [1, 0.5, 0]);
-
   useEffect(() => {
     const saved = localStorage.getItem("userAddress");
     if (saved) {
@@ -47,7 +44,6 @@ export default function HeroSection() {
   const handleAddressSave = (addressData) => {
     setSavedAddress(addressData);
   };
-
   return (
     <>
       {/* Header - Fixed at top, transparent initially */}
@@ -89,40 +85,40 @@ export default function HeroSection() {
                   src="/images/logo-light.png"
                   alt="Izinto"
                   style={{ opacity: useTransform(scrollY, [0, 100], [1, 0]) }}
-                  className="h-6 sm:h-8 w-auto absolute"
+                  className="h-8 w-auto absolute"
                 />
                 {/* Dark logo for white header */}
                 <motion.img
-                  src="/images/try-retro.png"
+                  src="/images/logo-izinto.png"
                   alt="Izinto"
                   style={{ opacity: useTransform(scrollY, [0, 100], [0, 1]) }}
-                  className="h-6 sm:h-8 w-auto"
+                  className="h-8 w-auto"
                 />
               </motion.div>
             </div>
 
-            {/* Right: Address Search & Login - Responsive */}
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              {/* Address Search Button - Hidden on mobile, shows on tablet+ */}
+            {/* Right: Address Search & Login - Always visible */}
+            <div className="flex items-center space-x-3">
+              {/* Address Search Button - Fades in on scroll with always white text */}
               <motion.button
                 onClick={() => setIsAddressDialogOpen(true)}
                 style={{
                   opacity: addressButtonOpacity,
                   scale: addressButtonScale,
                 }}
-                className="hidden sm:flex bg-[#0000ff] text-white px-3 py-2 rounded-4xl text-xs sm:text-sm font-extrabold italic hover:bg-[#0000cc] transform transition-colors"
+                className="hidden md:flex bg-blue-700 text-white px-3 py-2 rounded-4xl text-sm font-extrabold italic hover:bg-blue-800  transform  transition-colors"
               >
                 ENTER YOUR ADDRESS
               </motion.button>
 
-              {/* Login Button - Always visible, responsive text */}
+              {/* Login Button - Always visible */}
               <motion.button
                 onClick={() => setIsLoginDialogOpen(true)}
                 style={{
                   color: headerTextColor,
                   borderColor: headerTextColor,
                 }}
-                className="flex items-center space-x-1 sm:space-x-2 border-2 px-2 sm:px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors text-xs sm:text-base"
+                className="flex items-center space-x-2 border-2 px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors"
               >
                 <motion.img
                   src="/images/user-avatar.png"
@@ -137,7 +133,7 @@ export default function HeroSection() {
                       ],
                     ),
                   }}
-                  className="w-4 h-4 sm:w-5 sm:h-5"
+                  className="w-5 h-5"
                 />
                 <span>SIGN IN</span>
               </motion.button>
@@ -146,44 +142,44 @@ export default function HeroSection() {
         </div>
       </motion.header>
 
-      {/* Hero Content - Responsive height */}
-      <section className="relative h-[70vh] sm:h-[80vh] bg-grey-400 overflow-hidden -mt-16 pt-16">
+      {/* Hero Content - Starts from top of viewport */}
+      <section className="relative h-[80vh] bg-grey-400 overflow-hidden -mt-16 pt-16">
         {/* Background Image - Covers entire section including behind header */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url(/images/home2.webp)",
+            backgroundImage: "url(/images/hero.jpg)",
           }}
         />
 
         {/* Overlay - Covers entire section including behind header */}
         <div className="absolute inset-0 bg-black/40" />
 
-        {/* Content - Responsive text and spacing */}
-        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center text-white px-4 sm:px-6">
-          {/* Main Text - Responsive sizing */}
-          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold italic mb-6 sm:mb-8 max-w-4xl leading-tight px-2">
+        {/* Content - Centered in the hero area (excluding header) */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center text-white px-4">
+          {/* Main Text */}
+          <h1 className="text-5xl md:text-7xl font-extrabold italic mb-8 max-w-4xl leading-tight">
             THE FUTURE OF HOME-CARE IS INSTANT.
           </h1>
 
-          {/* Address Search Button - Center - Shows on all screens, fades out on desktop scroll */}
+          {/* Address Search Button - Center (only in hero) */}
           <motion.button
             onClick={() => setIsAddressDialogOpen(true)}
             style={{
-              opacity: heroButtonOpacity,
+              opacity: useTransform(scrollY, [0, 100], [1, 0]),
               scale: useTransform(scrollY, [0, 100], [1, 0.8]),
             }}
-            className="bg-[#0000ff] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-4xl text-sm sm:text-base font-extrabold italic hover:bg-[#0000cc] transition-colors transform w-full max-w-xs"
+            className="bg-blue-700 text-white px-3 py-2 rounded-4xl text-sm font-extrabold italic hover:bg-blue-800 transition-colors transform"
           >
             ENTER YOUR ADDRESS
           </motion.button>
         </div>
 
-        {/* Bottom Right Controls - Responsive positioning */}
-        <div className="absolute bottom-4 right-2 sm:right-4 z-20 flex space-x-2">
-          <button className="bg-white/20 backdrop-blur-sm text-white p-2 sm:p-3 rounded-lg hover:bg-white/30 transition-colors">
+        {/* Bottom Right Controls */}
+        <div className="absolute bottom-4 right-4 z-20 flex space-x-2">
+          <button className="bg-white/20 backdrop-blur-sm text-white p-3 rounded-lg hover:bg-white/30 transition-colors">
             <svg
-              className="w-5 h-5 sm:w-6 sm:h-6"
+              className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

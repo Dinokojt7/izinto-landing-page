@@ -1,8 +1,7 @@
-// src/components/services/ServiceCard.js
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { NewSpecialtyModel } from "@/lib/utils/serviceModels";
-import AddToCart from "@/components/cart/AddToCart";
 
 export default function ServiceCard({ service }) {
   const [selectedService, setSelectedService] = useState(
@@ -10,6 +9,7 @@ export default function ServiceCard({ service }) {
   );
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const router = useRouter();
 
   const handleSizeChange = (size) => {
     const updatedService = new NewSpecialtyModel({
@@ -21,10 +21,13 @@ export default function ServiceCard({ service }) {
     setSelectedService(updatedService);
   };
 
-  // Handle different image path structures
+  const handleCardClick = () => {
+    const serviceSlug = service.name.toLowerCase().replace(/\s+/g, "-");
+    router.push(`/p/${serviceSlug}`);
+  };
+
   const getImageSrc = () => {
     if (!service.img) return null;
-    // Handle different image path formats
     if (service.img.startsWith("http")) return service.img;
     if (service.img.startsWith("/")) return service.img;
     if (service.img.startsWith("assets/")) return `/${service.img}`;
@@ -42,9 +45,12 @@ export default function ServiceCard({ service }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <div
+      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+      onClick={handleCardClick}
+    >
       {/* Service Image */}
-      <div className="h-48  relative">
+      <div className="h-48 relative">
         {imageSrc && !imageError ? (
           <>
             <img

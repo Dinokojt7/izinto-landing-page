@@ -1,11 +1,24 @@
+"use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
 
 export default function MainServiceCard({ service }) {
   const [quantity, setQuantity] = useState(0);
+  const router = useRouter();
 
   const addToCart = () => {
     setQuantity((prev) => prev + 1);
+  };
+
+  const handleCardClick = () => {
+    const serviceSlug = service.name.toLowerCase().replace(/\s+/g, "-");
+    router.push(`/p/${serviceSlug}`);
+  };
+
+  const handleAddToCartClick = (e) => {
+    e.stopPropagation(); // Prevent card click when clicking add to cart button
+    addToCart();
   };
 
   // Helper functions to get service data (adjust based on your API response structure)
@@ -31,7 +44,10 @@ export default function MainServiceCard({ service }) {
   };
 
   return (
-    <div className="flex-none w-42 h-64 bg-white pt-4 rounded-2xl shadow-sm border border-black/10 px-4 hover:shadow-md transition-shadow duration-300 snap-start">
+    <div
+      className="flex-none w-42 h-64 bg-white pt-4 rounded-2xl shadow-sm border border-black/10 px-4 hover:shadow-md transition-shadow duration-300 snap-start cursor-pointer"
+      onClick={handleCardClick}
+    >
       {/* Service Image */}
       <div className="flex justify-center mb-4">
         <div className="w-24 h-24 rounded-lg flex items-center justify-center">
@@ -71,12 +87,14 @@ export default function MainServiceCard({ service }) {
 
       {/* Action Row */}
       <div className="flex justify-between items-center">
-        <button className="text-sm text-gray-900 font-bold mb-3 line-clamp-2 leading-tight   ">
+        <button className="text-sm text-gray-900 font-bold mb-3 line-clamp-2 leading-tight">
           R{service.price[0]}.00*
         </button>
 
         {/* Add to Cart Button */}
-        <AddToCartButton specialty={service} />
+        <div onClick={handleAddToCartClick}>
+          <AddToCartButton specialty={service} />
+        </div>
       </div>
     </div>
   );

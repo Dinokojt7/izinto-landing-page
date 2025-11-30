@@ -110,11 +110,11 @@ export default function PromoSection() {
       {/* Services Carousel Section */}
       <div className="mt-12 lg:mt-20 w-full">
         {/* Header - Responsive */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 lg:mb-4 gap-4 lg:gap-0">
-          <h3 className="text-2xl lg:text-3xl font-extrabold italic text-black leading-tight lg:leading-normal text-left">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-2 lg:mb-2 gap-4 lg:gap-0">
+          <h3 className="text-xl lg:text-2xl font-black italic text-black leading-tight lg:leading-normal text-left">
             BROWSE AND BOOK YOUR FAVOURITE SERVICES.
           </h3>
-          <button className="flex text-black text-sm font-bold hover:underline cursor-pointer hover:text-gray-900 transition-colors self-start lg:self-auto">
+          <button className="flex text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors self-start lg:self-auto">
             MORE ITEMS
             <svg
               width="20"
