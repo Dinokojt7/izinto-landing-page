@@ -1,6 +1,5 @@
-// src/app/page.js
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import StaggeredHorizontalScroll from "@/components/HorizontalScrollSection";
 import Footer from "@/components/layout/Footer";
 import CommunityMap from "@/components/maps/CommnunityMap";
@@ -22,6 +21,29 @@ const roboto = Roboto({
 
 export default function Home() {
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
+  const [showBottomButton, setShowBottomButton] = useState(false);
+  const heroSectionRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (heroSectionRef.current) {
+        const heroRect = heroSectionRef.current.getBoundingClientRect();
+        // Show bottom button when hero section is completely out of view (scrolled past)
+        const isHeroOutOfView = heroRect.bottom <= 0;
+        setShowBottomButton(isHeroOutOfView);
+      }
+    };
+
+    // Initial check
+    handleScroll();
+
+    // Add scroll listener
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleAddressSave = (address) => {
     // Handle address save logic here
@@ -33,7 +55,9 @@ export default function Home() {
     <div className={`pt-16 pb-20 sm:pb-0 bg-white ${inter.className} `}>
       {" "}
       {/* Added bottom padding for mobile nav */}
-      <HeroSection />
+      <div ref={heroSectionRef}>
+        <HeroSection />
+      </div>
       <ServiceGrid />
       <BigText />
       <ServiceGrid shouldFlowLeft={false} />
@@ -44,14 +68,17 @@ export default function Home() {
       <StaggeredHorizontalScroll />
       <Footer />
       {/* Mobile Bottom Nav Address Button - Fixed position */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden  p-4">
-        <button
-          onClick={() => setIsAddressDialogOpen(true)}
-          className="bg-[#0000ff] text-white px-6 py-3 rounded-full text-sm font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full text-center"
-        >
-          ENTER YOUR ADDRESS
-        </button>
-      </div>
+      {/* Only show when user has scrolled past hero section */}
+      {showBottomButton && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden p-4">
+          <button
+            onClick={() => setIsAddressDialogOpen(true)}
+            className="bg-[#0000ff] text-white px-6 py-3 rounded-full text-sm font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full text-center"
+          >
+            ENTER YOUR ADDRESS
+          </button>
+        </div>
+      )}
       {/* Address Search Dialog */}
       <AddressSearchDialog
         isOpen={isAddressDialogOpen}
