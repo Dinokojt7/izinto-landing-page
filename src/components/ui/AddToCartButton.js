@@ -1,17 +1,30 @@
-// AddToCartButton component
 "use client";
-import { useState } from "react";
-export default function AddToCartButton({ specialty }) {
-  const [quantity, setQuantity] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+import { useState, useEffect } from "react";
+import { useCartStore } from "@/lib/stores/cart-store";
 
+export default function AddToCartButton({ specialty }) {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const { items, addItem } = useCartStore();
+
+  // Find current item in cart to get quantity
+  const cartItem = items.find(
+    (item) =>
+      item.id === specialty.id &&
+      item.selectedSize === (specialty.selectedSize || "default"),
+  );
+
+  const quantity = cartItem?.quantity || 0;
   const _isInCart = quantity > 0;
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e) => {
+    if (e) {
+      e.stopPropagation(); // Prevent event bubbling
+    }
+
     setIsAnimating(true);
-    setQuantity((prev) => prev + 1);
-    // Call your cart controller here
-    // cartController.addItem(specialty, 1);
+
+    // Add item to cart using the store
+    addItem(specialty, 1);
 
     setTimeout(() => setIsAnimating(false), 300);
   };

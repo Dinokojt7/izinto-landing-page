@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import ServiceCard from "@/components/services/ServiceCard";
+import MainServiceCard from "../ui/MainServiceCard";
 
 export default function SimilarServices({
   services,
@@ -112,8 +113,8 @@ export default function SimilarServices({
           }}
         >
           {services.map((service, index) => (
-            <div key={service.id} className="flex-none w-80 snap-start">
-              <ServiceCard service={service} />
+            <div key={service.id} className="flex-none w-42 snap-start">
+              <MainServiceCard service={service} />
             </div>
           ))}
         </div>

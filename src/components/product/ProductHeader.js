@@ -25,7 +25,7 @@ export default function ProductHeader() {
   return (
     <>
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50 h-16 border-b bg-white"
+        className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-gray-100 bg-white"
         style={{
           background: headerBackground,
         }}

@@ -1,33 +1,12 @@
 "use client";
 import { useState } from "react";
 import { getProviderDetails } from "@/lib/utils/providerExplanations";
+import { getDetailIcon } from "@/lib/utils/svgIcons";
 import AddToCartControllers from "../cart/AddToCartController";
 
 export default function ProductInfoSection({ service }) {
   const [imageError, setImageError] = useState(false);
   const details = getProviderDetails(service.provider, service.details);
-
-  const getDetailIcon = (key) => {
-    const iconMap = {
-      "Service Description": "🧼",
-      "Warm water wash": "🧼",
-      Diameter: "📏",
-      Height: "📏",
-      "Service Includes": "✨",
-      "Fabric Care": "👕",
-      Small: "📏",
-      Medium: "📏",
-      Large: "📏",
-      "Fastest Service": "⏱️",
-      "Best Value": "💸",
-      "Additional 1": "✂️",
-      "Additional 2": "🦷",
-      "Additional 3": "✂️",
-      "Additional 4": "💨",
-      "Additional 5": "🎀",
-    };
-    return iconMap[key] || "✓";
-  };
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -80,7 +59,7 @@ export default function ProductInfoSection({ service }) {
               {details.map((detail, index) => (
                 <div key={index} className="space-y-1">
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm">
+                    <span className="text-gray-600">
                       {getDetailIcon(
                         typeof detail === "object"
                           ? detail.key

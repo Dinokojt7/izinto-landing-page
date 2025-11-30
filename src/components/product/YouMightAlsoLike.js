@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import ServiceCard from "@/components/services/ServiceCard";
+import MainServiceCard from "../ui/MainServiceCard";
 
 export default function SimilarServices({
   services,
@@ -31,7 +32,7 @@ export default function SimilarServices({
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-lg font-black italic text-black">
-          SIMILAR SERVICES
+          YOU MIGHT ALSO LIKE
         </h2>
         <button className="flex items-center text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors">
           MORE ITEMS
@@ -112,8 +113,8 @@ export default function SimilarServices({
           }}
         >
           {services.map((service, index) => (
-            <div key={service.id} className="flex-none w-80 snap-start">
-              <ServiceCard service={service} />
+            <div key={service.id} className="flex-none w-42 snap-start">
+              <MainServiceCard service={service} />
             </div>
           ))}
         </div>

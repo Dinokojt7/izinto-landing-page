@@ -2,7 +2,7 @@ export const getProviderExplanation = (provider) => {
   const explanations = {
     "Easy Laundry":
       "We collect, wash, dry, pack, and deliver all your laundry, blankets, and sneaker items.",
-    "Gas Refill":
+    Wegas:
       "We come to you for the exchange. You will need an exchange cylinder in order to swop with us.",
     "Clean Paws":
       "Professional pet grooming with warm water wash and conditioning for your furry friends. We come to you!",
@@ -17,14 +17,14 @@ export const getProviderExplanation = (provider) => {
 };
 
 export const getProviderDetails = (provider, details) => {
-  // Convert details to consistent format
-  const formattedDetails = details.map((detail) => {
+  // Convert details to consistent format with null safety
+  const formattedDetails = (details || []).map((detail) => {
     if (typeof detail === "object") {
       const key = Object.keys(detail)[0];
       const value = detail[key];
       return { key, value };
     }
-    return detail;
+    return { key: detail, value: "" };
   });
 
   // Return first 2 details + fixed service details

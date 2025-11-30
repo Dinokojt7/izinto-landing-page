@@ -30,10 +30,10 @@ export default function CategoryBanner({ service }) {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           {/* Left Content */}
           <div className="flex-1">
-            <h2 className="text-xl font-black italic text-black/70 mb-4">
+            <h2 className="text-4xl font-black italic text-black/70 mb-4">
               {service.provider}
             </h2>
-            <p className="text-[#0096FF] font-bold text-sm">
+            <p className="text-black/60 font-semibold text-base">
               {providerExplanation}
             </p>
           </div>

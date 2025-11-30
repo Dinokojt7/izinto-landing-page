@@ -35,17 +35,19 @@ export default function BreadcrumbSection({ service }) {
 
             {/* Address Section */}
             <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-4">
-                <div
-                  className="px-4 py-2 rounded-full font-extrabold italic"
-                  style={{ backgroundColor: COLORS.accent }}
-                >
-                  <span className="text-gray-600">Available</span>
+              {savedAddress && (
+                <div className="flex items-center space-x-4">
+                  <div
+                    className="px-4 py-2 rounded-full font-extrabold italic"
+                    style={{ backgroundColor: COLORS.accent }}
+                  >
+                    <span className="text-gray-600">Available</span>
+                  </div>
+                  <span className="text-gray-600 font-extrabold italic text-lg">
+                    ·
+                  </span>
                 </div>
-                <span className="text-gray-600 font-extrabold italic text-lg">
-                  ·
-                </span>
-              </div>
+              )}
 
               {savedAddress ? (
                 <button
@@ -72,7 +74,7 @@ export default function BreadcrumbSection({ service }) {
               ) : (
                 <button
                   onClick={() => setIsAddressDialogOpen(true)}
-                  className="bg-[#0000ff] text-white px-6 py-2 rounded-full text-sm font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap"
+                  className="text-[#0000ff]  px-6 py-2 rounded-full text-sm font-extrabold italic transition-all transform whitespace-nowrap"
                 >
                   ADD ADDRESS
                 </button>
