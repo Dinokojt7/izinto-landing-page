@@ -12,8 +12,6 @@ export default function ProductInfoSection({ service }) {
     if (!service.img) return null;
 
     // Handle different image path formats
-    if (service.img.startsWith("http")) return service.img;
-    if (service.img.startsWith("/")) return service.img;
     if (service.img.startsWith("assets/"))
       return `/assets/image/${service.img.split("assets/image")[1]}`;
     if (service.img.startsWith("public/"))
