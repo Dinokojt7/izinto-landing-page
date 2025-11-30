@@ -51,7 +51,7 @@ export default async function BlogPost({ params }) {
 
       {/* Featured Image */}
       <div className="mb-8 sm:mb-12 rounded-xl sm:rounded-2xl overflow-hidden">
-        <div className="h-48 sm:h-64 lg:h-80 xl:h-96 bg-gradient-to-br from-blue-100 to-green-100 flex items-center justify-center">
+        <div className="h-48 sm:h-64 lg:h-80 xl:h-96 bg-linear-to-br from-blue-100 to-green-100 flex items-center justify-center">
           <span className="text-gray-400 text-sm sm:text-base">
             Featured Image: {post.title}
           </span>

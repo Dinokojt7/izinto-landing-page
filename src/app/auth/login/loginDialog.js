@@ -105,9 +105,9 @@ export default function LoginDialog({ isOpen, onClose }) {
 
             {/* Divider */}
             <div className="relative flex items-center py-4">
-              <div className="flex-grow border-t border-gray-300"></div>
-              <span className="flex-shrink mx-4 text-gray-500 text-sm">or</span>
-              <div className="flex-grow border-t border-gray-300"></div>
+              <div className="grow border-t border-gray-300"></div>
+              <span className="shrink mx-4 text-gray-500 text-sm">or</span>
+              <div className="grow border-t border-gray-300"></div>
             </div>
 
             {/* Google Auth Button */}

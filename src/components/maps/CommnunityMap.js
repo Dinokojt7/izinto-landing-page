@@ -107,14 +107,14 @@ export default function CommunityMap({ onAddressClick }) {
         <div className="bg-white/70 rounded-2xl shadow-xl p-5 sm:p-6 lg:p-8 h-64 sm:h-72 lg:h-80 flex flex-col justify-center items-center text-center">
           {/* Main Blue Text - Properly truncated */}
           <h2
-            className="text-xl sm:text-2xl lg:text-4xl font-extrabold italic mb-4 sm:mb-6 leading-tight break-words overflow-hidden"
+            className="text-xl sm:text-2xl lg:text-4xl font-extrabold italic mb-4 sm:mb-6 leading-tight wrap-break-words overflow-hidden"
             style={{ color: COLORS.blue }}
           >
             YOUR COMMUNITY COUNTS ON IZINTO - JOIN THEM.
           </h2>
 
           {/* Smaller Grey Text - Proper width */}
-          <p className="text-sm sm:text-base text-gray-800 font-bold mb-6 sm:mb-8 max-w-xs sm:max-w-sm lg:max-w-lg break-words">
+          <p className="text-sm sm:text-base text-gray-800 font-bold mb-6 sm:mb-8 max-w-xs sm:max-w-sm lg:max-w-lg warap-break-words">
             From your trusted service providers. Serviced as fast as 45 minutes.
           </p>
 

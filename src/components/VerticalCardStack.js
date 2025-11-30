@@ -54,7 +54,7 @@ export default function VerticalCardStack({
               />
             ) : (
               <div
-                className="w-full h-full bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center"
+                className="w-full h-full bg-linear-to-br from-blue-50 to-gray-100 flex items-center justify-center"
                 style={{ width: "1005px", height: "250px" }}
               >
                 <span className="text-gray-400 text-sm">{header} Image</span>
