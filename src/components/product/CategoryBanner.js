@@ -26,7 +26,7 @@ export default function CategoryBanner({ service }) {
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="bg-blue-50 border border-blue-200 rounded-2xl p-8">
+      <div className="bg-blue-50 border border-blue-200 rounded-2xl px-4 py-2">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           {/* Left Content */}
           <div className="flex-1">
@@ -42,7 +42,7 @@ export default function CategoryBanner({ service }) {
           <div className="mt-4 lg:mt-0 lg:ml-8">
             <button
               onClick={handleViewMore}
-              className="bg-[#0000ff] text-white px-6 py-3.5 rounded-full text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap text-center tracking-tighter flex items-center justify-center gap-2 mx-auto"
+              className="bg-[#0000ff] text-white px-6 py-2 rounded-full text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap text-center tracking-tighter flex items-center justify-center gap-2 mx-auto"
             >
               View More
               <svg

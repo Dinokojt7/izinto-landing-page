@@ -10,6 +10,15 @@ import CategoryBanner from "@/components/product/CategoryBanner";
 import ProductInfoSection from "@/components/product/ProductInfoSection";
 import SimilarServices from "@/components/product/SimilarServices";
 import YouMightAlsoLike from "@/components/product/YouMightAlsoLike";
+import { Poppins } from "next/font/google";
+
+// Configure Poppins font
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
@@ -63,7 +72,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`min-h-screen bg-white ${poppins.className}`}>
       <ProductHeader />
       <BreadcrumbSection service={currentService} />
       <CategoryBanner service={currentService} />

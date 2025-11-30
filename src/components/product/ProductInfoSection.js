@@ -49,9 +49,9 @@ export default function ProductInfoSection({ service }) {
 
           {/* Details Grid */}
           <div className="border border-[#0096FF] rounded-2xl p-6 bg-white mt-8">
-            <div className="h-24 flex items-center">
-              <p className="text-sm font-bold italic text-gray-700">
-                We've got you covered.
+            <div className="h-6 flex items-center">
+              <p className="text-sm font-bold italic text-black">
+                WE'VE GOT YOU COVERED.
               </p>
             </div>
 
@@ -82,10 +82,10 @@ export default function ProductInfoSection({ service }) {
             </div>
           </div>
 
-          {/* Description */}
-          <div className="pt-6 border-t border-gray-300">
-            <h3 className="text-sm font-semibold text-black underline mb-2">
-              Description
+          {/* Introduction */}
+          <div className="pt-6  border-gray-300">
+            <h3 className="text-sm font-semibold text-black w-full border-b border-gray-300 mb-2">
+              Introduction
             </h3>
             <p className="text-sm text-gray-700 line-clamp-3">
               {service.introduction}

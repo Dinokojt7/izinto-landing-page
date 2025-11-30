@@ -1,5 +1,5 @@
 // src/app/layout.js
-import { Inter, Roboto } from "next/font/google";
+import { Inter, Poppins, Roboto } from "next/font/google";
 import "./globals.css";
 import { ServicesProvider } from "@/providers/ServicesProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
@@ -14,6 +14,12 @@ const roboto = Roboto({
   subsets: ["latin"],
 });
 
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 export const metadata = {
@@ -23,8 +29,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className} suppressHydrationWarning>
+    <html lang="en" className={poppins.className} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <ReactQueryProvider>
           <GoogleMapsProvider apiKey={GOOGLE_MAPS_API_KEY}>
             <AuthProvider>
