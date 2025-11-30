@@ -82,13 +82,10 @@ export default function LinkFooter() {
       { name: "Contact Us", href: "/contact" },
     ],
     workWithUs: [
-      { name: "Advertise on Izinto", href: "/policy/advertise" },
       { name: "Partner and Affiliate Requests", href: "/policy/partnerships" },
     ],
     company: [
-      { name: "About Us", href: "/about" },
       { name: "FAQs", href: "/faqs" },
-      { name: "Career", href: "/careers" },
       { name: "Blog", href: "/blog" },
     ],
     legal: [
