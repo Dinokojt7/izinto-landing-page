@@ -22,43 +22,49 @@ export default function BreadcrumbSection({ service }) {
   return (
     <>
       <div className="w-full bg-white border-y border-gray-200 py-3 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            {/* Breadcrumbs */}
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <span>Home</span>
+        <div className="max-w-7xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            {/* Breadcrumbs - Left Side */}
+            <div className="flex items-center flex-wrap gap-1 xs:gap-2 text-xs xs:text-sm text-gray-600">
+              <span className="whitespace-nowrap">Home</span>
               <span>•</span>
-              <span className="capitalize">{service.provider}</span>
+              <span className="capitalize whitespace-nowrap">
+                {service.provider}
+              </span>
               <span>•</span>
-              <span className="font-semibold text-black">{service.name}</span>
+              <span className="font-semibold text-black whitespace-nowrap truncate max-w-[120px] xs:max-w-none">
+                {service.name}
+              </span>
             </div>
 
-            {/* Address Section */}
-            <div className="flex items-center space-x-3">
+            {/* Right Side - Available Flag + Address */}
+            <div className="flex items-center justify-between sm:justify-end gap-2 xs:gap-3">
+              {/* Available Flag - Now part of the right side group */}
               {savedAddress && (
-                <div className="flex items-center space-x-4">
+                <>
                   <div
-                    className="px-4 py-2 rounded-full font-extrabold italic"
+                    className="px-2 xs:px-3 py-1 xs:py-1.5 rounded-full font-extrabold italic text-xs xs:text-sm shrink-0"
                     style={{ backgroundColor: COLORS.accent }}
                   >
                     <span className="text-gray-600">Available</span>
                   </div>
-                  <span className="text-gray-600 font-extrabold italic text-lg">
+                  <span className="text-gray-600 font-extrabold italic text-base xs:text-lg hidden sm:inline">
                     ·
                   </span>
-                </div>
+                </>
               )}
 
+              {/* Address Button */}
               {savedAddress ? (
                 <button
                   onClick={() => setIsAddressDialogOpen(true)}
-                  className="flex items-center space-x-2 text-primary font-semibold hover:text-gray-700 transition-colors"
+                  className="flex items-center gap-1 xs:gap-2 text-primary font-semibold hover:text-gray-700 transition-colors min-w-0"
                 >
-                  <span className="text-lg text-black font-extrabold italic">
+                  <span className="text-sm xs:text-base text-black font-extrabold italic truncate max-w-[100px] xs:max-w-[150px] sm:max-w-[180px] lg:max-w-none">
                     {savedAddress.street}
                   </span>
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4 xs:w-5 xs:h-5 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -74,7 +80,7 @@ export default function BreadcrumbSection({ service }) {
               ) : (
                 <button
                   onClick={() => setIsAddressDialogOpen(true)}
-                  className="text-[#0000ff]  px-6 py-2 rounded-full text-sm font-extrabold italic transition-all transform whitespace-nowrap"
+                  className="text-[#0000ff] px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 rounded-full text-xs xs:text-sm font-extrabold italic transition-all transform whitespace-nowrap hover:bg-blue-50 active:scale-95 shrink-0"
                 >
                   ADD ADDRESS
                 </button>

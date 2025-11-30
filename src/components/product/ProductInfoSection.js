@@ -8,6 +8,24 @@ export default function ProductInfoSection({ service }) {
   const [imageError, setImageError] = useState(false);
   const details = getProviderDetails(service.provider, service.details);
 
+  const getImageSrc = () => {
+    if (!service.img) return null;
+
+    // Handle different image path formats
+    if (service.img.startsWith("http")) return service.img;
+    if (service.img.startsWith("/")) return service.img;
+    if (service.img.startsWith("assets/"))
+      return `/assets/image/${service.img.split("assets/image")[1]}`;
+    if (service.img.startsWith("public/"))
+      return service.img.replace("public/", "/");
+
+    // Default case - assume it's in public/assets
+    return `/assets/image/
+    ${service.img}`;
+  };
+
+  const imageSrc = getImageSrc();
+
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -16,7 +34,7 @@ export default function ProductInfoSection({ service }) {
           <div className="w-full max-w-md aspect-square rounded-2xl overflow-hidden bg-gray-100">
             {service.img && !imageError ? (
               <img
-                src={service.img}
+                src={imageSrc}
                 alt={service.name}
                 className="w-full h-full object-cover"
                 onError={() => setImageError(true)}
