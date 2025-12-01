@@ -43,7 +43,7 @@ export default function FAQPage() {
             Find answers to common questions about our services. Can't find what
             you're looking for?{" "}
             <Link
-              href="/contact"
+              href="/help"
               className="text-[#0096FF] hover:text-[#007acc] underline font-semibold"
             >
               Contact our support team
@@ -101,7 +101,7 @@ export default function FAQPage() {
               you might have about our services.
             </p>
             <Link
-              href="/contact"
+              href="/help"
               className="inline-block bg-[#0096FF] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-[#007acc] transition-colors transform"
             >
               CONTACT SUPPORT

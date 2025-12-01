@@ -1,10 +1,16 @@
 import Link from "next/link";
 import HelpCenterHeader from "./HelpCenterHeader";
 import HelpCenterFooter from "./HelpCenterFooter";
+import { Poppins } from "next/font/google";
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const topics = [
   {
-    name: "Your Bookings",
+    name: "Your Booking",
     href: "/categories/your-bookings",
     img: "/images/bookings.png",
   },
@@ -22,7 +28,7 @@ const topics = [
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`min-h-screen bg-white ${poppins.className}`}>
       {/* Header Section */}
       <HelpCenterHeader />
 
@@ -44,7 +50,7 @@ export default function ContactPage() {
                 key={index}
                 className="flex-col items-center mx-auto text-center"
               >
-                <div className="bg-[#0096FF] rounded-lg p-2 flex mb-4 w-40 h-40">
+                <div className="bg-[#0096FF] p-2 flex mb-4 w-40 h-40">
                   <img
                     src={topic.img}
                     alt={topic.name}
