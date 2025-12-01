@@ -79,7 +79,7 @@ export default function Footer() {
   const footerLinks = {
     helpSupport: [
       { name: "More for Less", href: "/policy/more-for-less" },
-      { name: "Contact Us", href: "/contact" },
+      { name: "Contact Us", href: "/help" },
     ],
     workWithUs: [
       { name: "Partner and Affiliate Requests", href: "/policy/partnerships" },

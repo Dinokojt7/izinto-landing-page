@@ -79,7 +79,7 @@ export default function LinkFooter() {
   const footerLinks = {
     helpSupport: [
       { name: "More for Less", href: "/policy/more-for-less" },
-      { name: "Contact Us", href: "/contact" },
+      { name: "Contact Us", href: "/help" },
     ],
     workWithUs: [
       { name: "Partner and Affiliate Requests", href: "/policy/partnerships" },
@@ -135,7 +135,7 @@ export default function LinkFooter() {
   ];
 
   return (
-    <footer className="bg-gray-200 pt-4 pb-8">
+    <footer className="bg-gray-100 pt-4 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <motion.img
