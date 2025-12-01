@@ -1,6 +1,13 @@
 // src/app/blog/[slug]/page.js
 import { notFound } from "next/navigation";
 import blogPosts from "@/data/blog-posts.json";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export async function generateStaticParams() {
   return blogPosts.posts.map((post) => ({
@@ -25,7 +32,9 @@ export default async function BlogPost({ params }) {
   };
 
   return (
-    <article className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <article
+      className={`w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 ${poppins.className}`}
+    >
       {/* Header */}
       <header className="text-center mb-8 sm:mb-12">
         <div className="mb-3 sm:mb-4">

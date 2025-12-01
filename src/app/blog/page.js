@@ -1,10 +1,17 @@
 // src/app/blog/page.js
 import blogPosts from "@/data/blog-posts.json";
 import BlogPostCard from "./BlogPostCard";
-
+import { Poppins } from "next/font/google";
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+});
 export default function BlogPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div
+      className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12  ${poppins.className}`}
+    >
       {/* Page Header */}
       <div className="text-center mb-16">
         <h1 className="text-4xl sm:text-5xl font-extrabold italic text-gray-900 mb-4">

@@ -11,8 +11,8 @@ import ProductInfoSection from "@/components/product/ProductInfoSection";
 import SimilarServices from "@/components/product/SimilarServices";
 import YouMightAlsoLike from "@/components/product/YouMightAlsoLike";
 import { Poppins } from "next/font/google";
+import Footer from "@/components/layout/Footer";
 
-// Configure Poppins font
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
@@ -87,6 +87,7 @@ export default function ProductPage() {
         currentService={currentService}
         onServiceSelect={handleServiceSelect}
       />
+      <Footer />
     </div>
   );
 }

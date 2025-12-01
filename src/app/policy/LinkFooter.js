@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-
+import { Poppins } from "next/font/google";
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+});
 export default function LinkFooter() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
@@ -135,7 +140,7 @@ export default function LinkFooter() {
   ];
 
   return (
-    <footer className="bg-gray-100 pt-4 pb-8">
+    <footer className={`bg-gray-100 pt-4 pb-8  ${poppins.className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <motion.img

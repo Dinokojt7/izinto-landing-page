@@ -2,7 +2,12 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import blogPosts from "@/data/blog-posts.json";
-
+import { Poppins } from "next/font/google";
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+});
 export default function BlogHeader() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -20,7 +25,9 @@ export default function BlogHeader() {
 
   return (
     <>
-      <header className="bg-white border-b border-gray-200">
+      <header
+        className={`bg-white border-b border-gray-200 ${poppins.className}`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 sm:h-20">
             {/* Left: Logo and Blog Text */}
