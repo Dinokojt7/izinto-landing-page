@@ -75,7 +75,7 @@ export default async function PolicyPage({ params }) {
         </div>
       </div>
 
-      {/* Policy Content - Responsive spacing and typography */}
+      {/* Policy Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="text-left">
           {policy.sections.map((section, index) => (

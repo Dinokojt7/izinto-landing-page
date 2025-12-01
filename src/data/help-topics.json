@@ -1,0 +1,88 @@
+{
+  "your-bookings": {
+    "title": "Your Booking",
+    "category": "help",
+    "img": "/images/bookings.png",
+    "lastUpdated": "December 2025",
+    "sections": [
+      {
+        "title": "I have missing or damaged items after my order was fulfilled.",
+
+        "content": "We're really sorry to hear that there was an issue with the completion of your service! That's definitely not the quality we aim to deliver.\n\nPlease reach out to our Customer Service Team as soon as possible. The quickest way is through Live Chat in the izinto.africa app: Navigate to Account > Help > Chat with Support. We're here to help! Prefer email? You can also contact us at support@izinto.africa.\n\nTo help us investigate, please include clear photos showing the problem with the service result (e.g., the damage to the item, furniture, or vehicle).\n\nReports for issues with a completed service must be made within 12 hours of your booking being fulfilled. If it's outside that timeframe, we may not be able to review the report.\n\nOnce we've reviewed your case, a member of our team will be in touch directly to resolve the situation.",
+
+        "updatedAt": "posted in 2025"
+      },
+      {
+        "title": "Why was my booking cancelled?",
+        "content": "We're really sorry that your service booking couldn't be completed as planned. There are various circumstances that may prevent a booking from being fulfilled, including but not limited to weather conditions, local access issues, safety concerns at the property, or the inability to contact you at the time of the scheduled service.\n\nAn automated notification will be sent to you via the izinto.africa app if a booking is cancelled by us or our service partner.\n\nPlease note, once a booking has been cancelled, an automatic refund will be processed and will reach your original payment method within 5-10 business days. In some instances, the funds may be returned as a reversed transaction. In these cases, the pending charge should simply drop off your account instead of appearing as a separate credit.\n\nIf you have any questions, please reach out to our Customer Service Team. The quickest way is through Live Chat in the izinto.africa app: Navigate to Account > Help > Chat with Support. We're here to help!\n\nPrefer email? You can also contact us at support@izinto.africa.",
+        "updatedAt": "posted in 2025"
+      },
+      {
+        "title": "I experienced a problem with my service provider.",
+        "content": "We're so sorry that you had a poor experience with the professional assigned to your booking. We want you to have an excellent and reliable service experience every time you book with izinto.africa.\n\nPlease reach out to our Customer Service Team to report the issue, and we'll be happy to help. The quickest way is through Live Chat in the izinto.africa app: Navigate to Account > Help > Chat with Support. We're here to help!\n\nPrefer email? You can also contact us at support@izinto.africa.",
+        "updatedAt": "posted in 2025"
+      },
+      {
+        "title": "My entire service booking was missed or not completed.",
+        "content": "We're really sorry to hear that your scheduled service was not carried out! That's definitely not the seamless experience we want you to have with izinto.africa.\n\nPlease reach out to our Customer Service Team as soon as possible. The quickest way is through Live Chat in the izinto.africa app: Navigate to Account > Help > Chat with Support. We're here to help!\n\nReports for a missed or unfulfilled service must be made within 12 hours of your scheduled booking time. If it's outside that timeframe, we may not be able to review the report.\n\nPrefer email? You can also contact us at support@izinto.africa.\n\nOnce we've reviewed your case, a member of our team will be in touch to resolve the situation.",
+        "updatedAt": "posted in 2025"
+      },
+      {
+        "title": "How can I cancel a booking?",
+        "content": "If your service booking hasn't been started or the service provider hasn't been assigned, you can cancel it directly in the izinto.africa app: Go to My Bookings > Select the booking > 'Cancel Booking'.\n\nIf your booking status shows that the service professional is en route or the service has already started, please contact our Customer Service Team immediately. The quickest way is through Live Chat in the izinto.africa app: Navigate to Account > Help > Chat with Support. We're here to help!\n\nPlease note, once a booking is successfully cancelled, an automatic refund will be processed and will reach your original payment method within 5-10 business days. In some cases, the funds may be returned as a reversed transaction. If so, the pending charge will simply drop off your account instead of appearing as a separate credit.",
+        "updatedAt": "posted in 2025"
+      },
+      {
+        "title": "My booking's scheduled time changed, is there an issue?",
+        "content": "We're sorry your service couldn't be provided within the timeframe initially scheduled. We understand that reliability is important! Changes may occur due to service professional availability, traffic, previous job delays, or other unforeseen circumstances.\n\nThe booking status page in the izinto.africa app will provide you with the most up-to-date estimated time of arrival for the service professional. A change in timing doesn't necessarily mean there's a problem; we want to be as accurate and transparent as possible about when to expect your service.\n\nIf the information on your booking status page seems incorrect or doesn't make sense, please feel free to reach out to our Customer Service Team for clarification. Please understand that our agents typically have the same scheduling information that is displayed in your app.\n\nYou can contact us via Live Chat anytime in the izinto.africa app by navigating to Account > Help > Chat with Support.",
+        "updatedAt": "posted in 2025"
+      }
+    ]
+  },
+  "feedback-and-questions": {
+    "title": "Feedback & Questions",
+    "category": "help",
+    "img": "/images/questions.png",
+    "lastUpdated": "December 2025",
+    "sections": [
+      {
+        "title": "You're not yet available in my area.",
+        "content": "We appreciate your interest in Izinto! Currently, our on-demand services are not available in all locations as we expand our partner network.\n\nPlease get in touch with our Customer Service Team via Live Chat in the app (Account > Help > Chat with Support) and let us know your suburb or area. We use this feedback to help plan our future service expansions.\n\nPrefer to email? You can also contact us at support@izinto.africa.",
+        "updatedAt": "posted in 2025"
+      },
+      {
+        "title": "Can I request a new service?",
+        "content": "Absolutely! If you have a service suggestion you'd like us to consider adding to the Izinto app, please get in touch with our Customer Service Team. We will gladly pass on your feedback to our partnerships and expansion team.\n\nThe quickest way is through Live Chat in the izinto.africa app: Navigate to Account > Help > Chat with Support. We're here to help!\n\nPrefer to email? You can also contact us at support@izinto.africa.",
+        "updatedAt": "posted in 2025"
+      },
+      {
+        "title": "Do you offer franchise opportunities?",
+        "content": "Izinto is not a franchisor and does not offer franchising opportunities.",
+        "updatedAt": "posted in 2025"
+      }
+    ]
+  },
+  "your-account": {
+    "title": "Your Account",
+    "category": "help",
+    "img": "/images/account.png",
+    "lastUpdated": "December 2025",
+    "sections": [
+      {
+        "title": "I lost my phone or can't access my Izinto account.",
+        "content": "If you have an existing Izinto account but no longer have access to the phone number associated with it, please contact our Customer Support Team for assistance in updating your account details.\n\nThe quickest way to reach us is through Live Chat. You can access this on a web browser or a new device by visiting our help page and selecting 'Chat with Support'.\n\nPrefer email? You can also contact us at support@izinto.africa.",
+        "updatedAt": "posted in 2025"
+      },
+      {
+        "title": "I cannot log in to the Izinto app.",
+        "content": "Please ensure you are entering the correct phone number associated with your Izinto account. A 6-digit verification code will be sent to that phone number to confirm your login.\n\nIf you are not receiving the code or are having any other trouble logging in, please reach out to our Customer Service Team for assistance. The quickest way is through the Help section: you can access Live Chat support via our website or the app's login screen by selecting 'Need Help?'.\n\nPrefer email? You can also contact us at support@izinto.africa.",
+        "updatedAt": "posted in 2025"
+      },
+      {
+        "title": "How do I update my account information (phone, email, name)?",
+        "content": "To update your personal details, such as your phone number, email address, or name, please go to the Account section in the Izinto app. Tap on the Profile tab, where you can edit and save your information.\n\nFor security, changing certain details may require verification via a code sent to your current phone or email.\n\nIf you encounter any issues or need assistance, please reach out to our Customer Service Team. The quickest way is through Live Chat in the app: Navigate to Account > Help > Chat with Support.\n\nPrefer email? You can also contact us at support@izinto.africa.",
+        "updatedAt": "posted in 2025"
+      }
+    ]
+  }
+}

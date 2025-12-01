@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import topics from "@/data/help-topics";
 
 const socialIcons = [
   {
@@ -59,25 +61,38 @@ const socialIcons = [
   },
 ];
 
-const topics = [
-  {
-    name: "Your Bookings",
-    href: "/categories/your-bookings",
-    img: "/images/bookings.png",
-  },
-  {
-    name: "Feedback & Questions",
-    href: "/categories/feedback-and-questions",
-    img: "/images/questions.png",
-  },
-  {
-    name: "Your Account",
-    href: "/categories/your-account",
-    img: "/images/account.png",
-  },
-];
+export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
+  const topic = topics[slug];
 
-export default function ContactPage() {
+  if (!topic) {
+    return {
+      title: "Page Not Found",
+    };
+  }
+
+  return {
+    title: `${topic.title} | Izinto`,
+    description: `Get help on ${topic.title.toLowerCase()}.`,
+  };
+}
+
+export async function generateStaticParams() {
+  return Object.keys(topics).map((slug) => ({
+    slug: slug,
+  }));
+}
+
+export default async function TopicPage({ params }) {
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
+  const topic = topics[slug];
+
+  if (!topic) {
+    notFound();
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header Section */}
@@ -127,27 +142,19 @@ export default function ContactPage() {
 
       {/* Contact Tiles Section */}
       <section className="py-16">
-        <div className="max-w-4xl mx-auto px-8 sm:px-12 lg:px-16">
-          <div className="grid grid-cols-1 mx-auto items-center md:grid-cols-3 gap-12">
+        <div className="max-w-3xl mx-auto px-8 sm:px-12 lg:px-16">
+          <div className=" mx-auto items-start">
             {/* Help Center Items */}
-            {topics.map((topic, index) => (
-              <Link
-                href={topic.href}
-                key={index}
-                className="flex-col items-center mx-auto text-center"
-              >
-                <div className="bg-[#0096FF] rounded-lg p-2 flex mb-4 w-40 h-40">
-                  <img
-                    src={topic.img}
-                    alt={topic.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-sm font-bold capitalize text-gray-900">
-                  {topic.name}
-                </h3>
-              </Link>
-            ))}
+            <div className="flex-col items-center mx-auto text-center">
+              <div className="bg-[#0096FF] rounded-lg p-2 flex mb-4 w-36 h-36">
+                <img
+                  src={topic.img}
+                  alt={topic.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <h1 className="text-4xl font-bold text-black">{topic.title}</h1>
+            </div>
           </div>
         </div>
       </section>
@@ -168,7 +175,7 @@ export default function ContactPage() {
             {/* Column 2 - Terms  */}
             <div className="flex flex-col mt-2 items-center md:items-start space-y-2">
               <Link
-                href="/policy/terms-of-use"
+                href="/topic/terms-of-use"
                 className="text-[#0096FF] transition-colors font-bold"
               >
                 TERMS OF USE
@@ -178,10 +185,10 @@ export default function ContactPage() {
             {/* Column 3 -  Privacy */}
             <div className="flex flex-col mt-2 items-center md:items-start space-y-2">
               <Link
-                href="/policy/privacy-policy"
+                href="/topic/privacy-topic"
                 className="text-[#0096FF] transition-colors font-bold"
               >
-                PRIVACY POLICY
+                PRIVACY topic
               </Link>
             </div>
 
