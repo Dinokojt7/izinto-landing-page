@@ -138,7 +138,7 @@ export default function ProfilePage() {
           {/* Page Header */}
           <div className="mb-10">
             <h1 className="text-3xl sm:text-4xl font-black italic text-black mb-2">
-              Complete Your Profile
+              Your Profile
             </h1>
             <p className="text-gray-600">
               Tell us a bit more about yourself to personalize your experience
@@ -234,7 +234,7 @@ export default function ProfilePage() {
                     name="notifications"
                     checked={profile.preferences.notifications}
                     onChange={handleCheckboxChange}
-                    className="w-5 h-5 text-black border-gray-300 rounded focus:ring-0"
+                    className="w-5 h-5 accent-black border-gray-300 rounded focus:ring-0"
                   />
                   <span className="text-gray-700">
                     Receive service notifications and updates
@@ -247,7 +247,7 @@ export default function ProfilePage() {
                     name="marketing"
                     checked={profile.preferences.marketing}
                     onChange={handleCheckboxChange}
-                    className="w-5 h-5 text-black border-gray-300 rounded focus:ring-0"
+                    className="w-5 h-5 accent-black border-gray-300 rounded focus:ring-0"
                   />
                   <span className="text-gray-700">
                     Receive promotional offers and news
@@ -260,10 +260,10 @@ export default function ProfilePage() {
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
               <button
                 type="button"
-                onClick={handleSkipForNow}
-                className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-50 transition-colors"
+                onClick={handleLogoutClick}
+                className="flex-1 border border-red-300 text-red-500 py-3 rounded-lg font-bold hover:bg-red-50 transition-colors"
               >
-                Skip for Now
+                Log out
               </button>
 
               <button
@@ -277,22 +277,9 @@ export default function ProfilePage() {
                     Saving...
                   </div>
                 ) : (
-                  "Save & Continue"
+                  "Save changes"
                 )}
               </button>
-            </div>
-
-            {/* Sign Out Button */}
-            <div className="mt-12 pt-8 border-t border-gray-200">
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={handleLogoutClick}
-                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 hover:text-black transition-colors"
-                >
-                  Sign Out
-                </button>
-              </div>
             </div>
           </form>
         </main>
