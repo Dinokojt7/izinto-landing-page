@@ -8,6 +8,7 @@ import CategoryBreadcrumbSection from "./ProviderBreadcrumbSection";
 import MainServiceCard from "@/components/ui/MainServiceCard";
 import ProductHeader from "@/components/product/ProductHeader";
 import Link from "next/link";
+import MobileServiceCard from "@/components/ui/MobileServiceCard";
 
 export default function ProviderCategoryPage() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function ProviderCategoryPage() {
   const { data: servicesData, isLoading } = useServices();
   const [providerServices, setProviderServices] = useState([]);
   const [providerName, setProviderName] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     if (servicesData?.Specialties || servicesData?.specialties) {
@@ -36,15 +38,22 @@ export default function ProviderCategoryPage() {
         setProviderServices(providerServices);
       }
     }
+
+    // Check screen size
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+
+    // Initial check
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
   }, [servicesData, params.provider]);
 
   const handleServiceSelect = (service) => {
     const serviceSlug = service.name.toLowerCase().replace(/\s+/g, "-");
     router.push(`/p/${serviceSlug}`);
-  };
-
-  const handleBackToAllServices = () => {
-    router.push("/services");
   };
 
   if (isLoading) {
@@ -55,12 +64,9 @@ export default function ProviderCategoryPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <p className="text-gray-600 mb-4">Provider not found</p>
-        <button
-          onClick={handleBackToAllServices}
-          className="text-[#0096FF] hover:underline"
-        >
+        <Link href="/services" className="text-[#0096FF] hover:underline">
           ← Back to all services
-        </button>
+        </Link>
       </div>
     );
   }
@@ -70,10 +76,7 @@ export default function ProviderCategoryPage() {
   return (
     <div className="min-h-screen bg-white">
       <ProductHeader />
-      <CategoryBreadcrumbSection
-        provider={providerName}
-        onBack={handleBackToAllServices}
-      />
+      <CategoryBreadcrumbSection provider={providerName} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Provider Header */}
@@ -87,18 +90,33 @@ export default function ProviderCategoryPage() {
 
         {/* Services Grid */}
         {providerServices.length > 0 ? (
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-            {providerServices.map((service) => (
-              <div key={service.id} className="flex justify-center">
-                <div className="w-full max-w-xs">
-                  <MainServiceCard
+          <>
+            {/* Desktop: 5 columns */}
+            <div className="hidden md:grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+              {providerServices.map((service) => (
+                <div key={service.id} className="flex justify-center">
+                  <div className="w-full max-w-xs">
+                    <MainServiceCard
+                      service={service}
+                      onClick={() => handleServiceSelect(service)}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile: 3 columns with MobileServiceCard */}
+            <div className="md:hidden grid grid-cols-3 gap-4">
+              {providerServices.map((service) => (
+                <div key={service.id} className="w-full">
+                  <MobileServiceCard
                     service={service}
                     onClick={() => handleServiceSelect(service)}
                   />
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         ) : (
           <div className="text-center py-12">
             <p className="text-gray-500">No services found for this provider</p>
@@ -110,7 +128,7 @@ export default function ProviderCategoryPage() {
           <nav className="flex items-start justify-start text-xs text-black">
             <Link
               href="/services"
-              className=" hover:underline transition-colors font-medium"
+              className="hover:underline transition-colors font-medium"
             >
               Home
             </Link>
