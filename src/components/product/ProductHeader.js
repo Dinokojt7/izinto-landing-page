@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useCartStore } from "@/lib/stores/cart-store";
 import Sidebar from "@/components/layout/Sidebar";
 import LoginDialog from "@/app/auth/login/loginDialog";
+import Link from "next/link";
 
 export default function ProductHeader() {
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
@@ -84,26 +85,27 @@ export default function ProductHeader() {
               </motion.button>
 
               {/* Cart Button */}
-              <motion.button
-                onClick={() => setIsLoginDialogOpen(true)}
-                style={{
-                  color: headerTextColor,
-                  borderColor: headerTextColor,
-                }}
-                className="flex items-center space-x-1 sm:space-x-2 border-2 px-2 sm:px-4 py-1 rounded-4xl font-extrabold italic hover:bg-gray-100 transition-colors text-xs sm:text-base relative"
-              >
-                <img
-                  src="/images/bucket.png"
-                  alt="Cart"
-                  className="w-4 h-4 sm:w-5 sm:h-5"
-                />
-                <span>{totalItems}</span>
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </motion.button>
+              <Link href="/cart">
+                <motion.button
+                  style={{
+                    color: headerTextColor,
+                    borderColor: headerTextColor,
+                  }}
+                  className="flex items-center space-x-1 sm:space-x-2 border-2 px-2 sm:px-4 py-1 rounded-4xl font-extrabold italic hover:bg-gray-100 transition-colors text-xs sm:text-base relative"
+                >
+                  <img
+                    src="/images/bucket.png"
+                    alt="Cart"
+                    className="w-4 h-4 sm:w-5 sm:h-5"
+                  />
+                  <span className="hidden sm:inline">{totalItems}</span>
+                  {totalItems > 0 && (
+                    <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+                      {totalItems}
+                    </span>
+                  )}
+                </motion.button>
+              </Link>
             </div>
           </div>
         </div>
