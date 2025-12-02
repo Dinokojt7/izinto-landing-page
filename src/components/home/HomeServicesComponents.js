@@ -36,7 +36,7 @@ export default function HomeServicesComponent() {
   };
 
   const handleProviderSelect = (provider) => {
-    router.push(`/category/${provider.toLowerCase().replace(/\s+/g, "-")}`);
+    router.push(`/s/${provider.toLowerCase().replace(/\s+/g, "-")}`);
   };
 
   if (isLoading) {

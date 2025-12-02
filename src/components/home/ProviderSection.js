@@ -38,7 +38,10 @@ export default function ProviderSection({
           {provider}
         </h1>
 
-        <button className="flex items-center text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors">
+        <button
+          onClick={() => onProviderSelect(provider)}
+          className="flex items-center text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors"
+        >
           MORE ITEMS
           <svg
             width="20"
@@ -131,9 +134,24 @@ export default function ProviderSection({
       <div className="sm:hidden text-center pt-4">
         <button
           onClick={() => onProviderSelect(provider)}
-          className="text-sm text-[#0096FF] font-semibold hover:underline"
+          className="flex items-center text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors"
         >
-          View all {services.length} services →
+          MORE ITEMS
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9 18L15 12L9 6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
       </div>
     </section>
