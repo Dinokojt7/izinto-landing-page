@@ -11,6 +11,8 @@ import CartItem from "@/components/cart/CartItem";
 import { NewSpecialtyModel } from "@/lib/utils/serviceModels";
 import Link from "next/link";
 import Footer from "@/components/layout/Footer";
+import { useAuth } from "@/lib/context/AuthContext";
+import LoginDialog from "@/app/auth/login/loginDialog";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -21,8 +23,11 @@ const poppins = Poppins({
 export default function CartPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const { items, totalItems, clearCart } = useCartStore();
   const [cartTotal, setCartTotal] = useState(0);
+  const { user } = useAuth();
 
   // Calculate cart total whenever items change
   useEffect(() => {
@@ -41,24 +46,48 @@ export default function CartPage() {
     calculateTotal();
   }, [items]);
 
+  useEffect(() => {
+    if (showSnackbar) {
+      const timer = setTimeout(() => {
+        setShowSnackbar(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSnackbar]);
+
   const handleContinueShopping = () => {
     router.push("/services");
   };
 
   const handleCheckout = () => {
     setIsLoading(true);
-    // Simulate loading
     setTimeout(() => {
       setIsLoading(false);
-      // Navigate to checkout page
-      router.push("/checkout");
-    }, 1000);
+
+      if (!user) {
+        //  setIsLoginDialogOpen(true);
+
+        setShowSnackbar(true);
+      } else {
+        router.push("/checkout");
+      }
+    }, 500); // Shorter timeout for better UX
   };
 
   const handleClearCart = () => {
     if (confirm("Are you sure you want to clear your cart?")) {
       clearCart();
     }
+  };
+
+  const handleLoginSuccess = () => {
+    setIsLoginDialogOpen(false);
+    router.push("/checkout");
+  };
+
+  const handleSnackbarLogin = () => {
+    setShowSnackbar(false);
+    setIsLoginDialogOpen(true);
   };
 
   if (isLoading) {
@@ -114,7 +143,7 @@ export default function CartPage() {
 
             {/* Right Column - Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-6">
+              <div className="bg-white border text-center items-center border-gray-200 rounded-lg p-6 sticky top-6">
                 <h2 className="text-xl font-black italic text-black mb-6">
                   Order Summary
                 </h2>
@@ -216,7 +245,8 @@ export default function CartPage() {
           </div>
         )}
       </main>
-      <div className="flex items-center border-t border-gray-300 p-6 flex-wrap gap-1 xs:gap-2 text-xs xs:text-sm text-gray-600">
+
+      <div className="flex items-center border-t border-gray-100 p-6 flex-wrap gap-1 xs:gap-2 text-xs xs:text-sm text-gray-600">
         <Link
           href="/services"
           className="whitespace-nowrap hover:text-black transition-colors cursor-pointer"
@@ -228,7 +258,37 @@ export default function CartPage() {
           Basket
         </span>
       </div>
+
       <Footer />
+
+      {/* Login Dialog */}
+      <LoginDialog
+        isOpen={isLoginDialogOpen}
+        onClose={() => setIsLoginDialogOpen(false)}
+      />
+
+      {/* Snackbar Notification (Alternative to dialog) */}
+      {showSnackbar && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 animate-fade-in-up">
+          <div className="bg-black text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-4">
+            <span className="font-medium">
+              Please login to continue checkout
+            </span>
+            <button
+              onClick={handleSnackbarLogin}
+              className="bg-white text-black px-4 py-1 rounded-full font-bold text-sm hover:bg-gray-100 transition-colors"
+            >
+              LOGIN
+            </button>
+            <button
+              onClick={() => setShowSnackbar(false)}
+              className="text-gray-300 hover:text-white"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
