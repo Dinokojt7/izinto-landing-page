@@ -5,11 +5,13 @@ import { useCartStore } from "@/lib/stores/cart-store";
 import Sidebar from "@/components/layout/Sidebar";
 import LoginDialog from "@/app/auth/login/loginDialog";
 import Link from "next/link";
+import { useAuth } from "@/lib/context/AuthContext";
 
 export default function ProductHeader() {
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { totalItems } = useCartStore();
+  const { user, profileComplete } = useAuth();
   const { scrollY } = useScroll();
 
   const headerBackground = useTransform(
@@ -65,24 +67,50 @@ export default function ProductHeader() {
               </motion.div>
             </div>
 
-            {/* Right: Login & Cart */}
+            {/* Right: User Profile or Login & Cart */}
             <div className="flex items-center space-x-2 sm:space-x-3">
-              {/* Login Button */}
-              <motion.button
-                onClick={() => setIsLoginDialogOpen(true)}
-                style={{
-                  color: headerTextColor,
-                  borderColor: headerTextColor,
-                }}
-                className="flex items-center space-x-1 sm:space-x-2 border-2 px-2 sm:px-4 py-1 rounded-4xl font-extrabold italic hover:bg-gray-100 transition-colors text-xs sm:text-base"
-              >
-                <img
-                  src="/images/user-avatar.png"
-                  alt="User"
-                  className="w-4 h-4 sm:w-5 sm:h-5"
-                />
-                <span>SIGN IN</span>
-              </motion.button>
+              {/* User Profile Link or Login Button */}
+              {user ? (
+                // User is logged in - show name/surname link to profile
+                <Link href="/profile">
+                  <motion.div
+                    style={{
+                      color: headerTextColor,
+                      borderColor: headerTextColor,
+                    }}
+                    className="flex items-center space-x-1 sm:space-x-2 border-2 px-3 sm:px-4 py-1 rounded-4xl font-extrabold italic hover:bg-gray-100 transition-colors text-xs sm:text-base cursor-pointer"
+                  >
+                    <img
+                      src="/images/user-avatar.png"
+                      alt="User"
+                      className="w-4 h-4 sm:w-5 sm:h-5"
+                    />
+                    <span className="capitalize">
+                      {user.displayName ||
+                        (profileComplete && user.firstName && user.lastName
+                          ? `${user.firstName} ${user.lastName}`.toUpperCase()
+                          : "PROFILE")}
+                    </span>
+                  </motion.div>
+                </Link>
+              ) : (
+                // No user - show login button
+                <motion.button
+                  onClick={() => setIsLoginDialogOpen(true)}
+                  style={{
+                    color: headerTextColor,
+                    borderColor: headerTextColor,
+                  }}
+                  className="flex items-center space-x-1 sm:space-x-2 border-2 px-2 sm:px-4 py-1 rounded-4xl font-extrabold italic hover:bg-gray-100 transition-colors text-xs sm:text-base"
+                >
+                  <img
+                    src="/images/user-avatar.png"
+                    alt="User"
+                    className="w-4 h-4 sm:w-5 sm:h-5"
+                  />
+                  <span>SIGN IN</span>
+                </motion.button>
+              )}
 
               {/* Cart Button */}
               <Link href="/cart">

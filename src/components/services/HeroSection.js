@@ -5,13 +5,15 @@ import { useScroll, useTransform, motion } from "framer-motion";
 import Sidebar from "@/components/layout/Sidebar";
 import LoginDialog from "@/app/auth/login/loginDialog";
 import AddressSearchDialog from "../maps/AddressSearchDialog";
-import { COLORS } from "@/lib/utils/constants";
+import Link from "next/link";
+import { useAuth } from "@/lib/context/AuthContext";
 
 export default function HeroSection() {
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [savedAddress, setSavedAddress] = useState(null);
+  const { user, profileComplete } = useAuth();
 
   const { scrollY } = useScroll();
 
@@ -34,6 +36,16 @@ export default function HeroSection() {
   const addressButtonOpacity = useTransform(scrollY, [0, 50, 100], [0, 0.5, 1]);
   const addressButtonScale = useTransform(scrollY, [0, 100], [0.8, 1]);
 
+  // Avatar filter transformation
+  const avatarFilter = useTransform(
+    scrollY,
+    [0, 100],
+    [
+      "brightness(0) invert(1)", // White on transparent header
+      "brightness(0) invert(0)", // Black on white header
+    ],
+  );
+
   useEffect(() => {
     const saved = localStorage.getItem("userAddress");
     if (saved) {
@@ -44,6 +56,7 @@ export default function HeroSection() {
   const handleAddressSave = (addressData) => {
     setSavedAddress(addressData);
   };
+
   return (
     <>
       {/* Header - Fixed at top, transparent initially */}
@@ -97,7 +110,7 @@ export default function HeroSection() {
               </motion.div>
             </div>
 
-            {/* Right: Address Search & Login - Always visible */}
+            {/* Right: Address Search & User Profile or Login */}
             <div className="flex items-center space-x-3">
               {/* Address Search Button - Fades in on scroll with always white text */}
               <motion.button
@@ -106,37 +119,55 @@ export default function HeroSection() {
                   opacity: addressButtonOpacity,
                   scale: addressButtonScale,
                 }}
-                className="hidden md:flex bg-blue-700 text-white px-3 py-2 rounded-4xl text-sm font-extrabold italic hover:bg-blue-800  transform  transition-colors"
+                className="hidden md:flex bg-blue-700 text-white px-3 py-2 rounded-4xl text-sm font-extrabold italic hover:bg-blue-800 transform transition-colors"
               >
                 ENTER YOUR ADDRESS
               </motion.button>
 
-              {/* Login Button - Always visible */}
-              <motion.button
-                onClick={() => setIsLoginDialogOpen(true)}
-                style={{
-                  color: headerTextColor,
-                  borderColor: headerTextColor,
-                }}
-                className="flex items-center space-x-2 border-2 px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors"
-              >
-                <motion.img
-                  src="/images/user-avatar.png"
-                  alt="User"
+              {/* User Profile Link or Login Button */}
+              {user ? (
+                // User is logged in - show name/surname link to profile
+                <Link href="/profile">
+                  <motion.button
+                    style={{
+                      color: headerTextColor,
+                      borderColor: headerTextColor,
+                    }}
+                    className="flex items-center space-x-2 border-2 px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors cursor-pointer"
+                  >
+                    <motion.img
+                      src="/images/user-avatar.png"
+                      alt="User"
+                      style={{ filter: avatarFilter }}
+                      className="w-5 h-5"
+                    />
+                    <span className="capitalize">
+                      {user.displayName ||
+                        (profileComplete && user.firstName && user.lastName
+                          ? `${user.firstName} ${user.lastName}`.toUpperCase()
+                          : "PROFILE")}
+                    </span>
+                  </motion.button>
+                </Link>
+              ) : (
+                // No user - show login button
+                <motion.button
+                  onClick={() => setIsLoginDialogOpen(true)}
                   style={{
-                    filter: useTransform(
-                      scrollY,
-                      [0, 100],
-                      [
-                        "brightness(0) invert(1)", // White on transparent header
-                        "brightness(0) invert(0)", // Black on white header
-                      ],
-                    ),
+                    color: headerTextColor,
+                    borderColor: headerTextColor,
                   }}
-                  className="w-5 h-5"
-                />
-                <span>SIGN IN</span>
-              </motion.button>
+                  className="flex items-center space-x-2 border-2 px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors"
+                >
+                  <motion.img
+                    src="/images/user-avatar.png"
+                    alt="User"
+                    style={{ filter: avatarFilter }}
+                    className="w-5 h-5"
+                  />
+                  <span>SIGN IN</span>
+                </motion.button>
+              )}
             </div>
           </div>
         </div>

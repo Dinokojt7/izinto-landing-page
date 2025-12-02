@@ -1,10 +1,57 @@
-// src/components/auth/LoginDialog.js
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { useAuth } from "@/lib/context/AuthContext";
 
 export default function LoginDialog({ isOpen, onClose }) {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [isValid, setIsValid] = useState(false);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [isValidPhone, setIsValidPhone] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [canResend, setCanResend] = useState(true);
+
+  const {
+    phoneAuthState,
+    handlePhoneSubmit,
+    handleOTPVerify,
+    handleGoogleSignIn,
+    resetPhoneAuth,
+  } = useAuth();
+
+  useEffect(() => {
+    if (isOpen) {
+      document.documentElement.classList.add("dialog-open");
+    } else {
+      document.documentElement.classList.remove("dialog-open");
+    }
+
+    return () => {
+      document.documentElement.classList.remove("dialog-open");
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (phoneAuthState.step === "otp" && countdown === 0) {
+      startCountdown();
+    }
+  }, [phoneAuthState.step]);
+
+  useEffect(() => {
+    let timer;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    } else {
+      setCanResend(true);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
+  const startCountdown = () => {
+    setCountdown(30);
+    setCanResend(false);
+  };
 
   const validatePhoneNumber = (number) => {
     const cleaned = number.replace(/\D/g, "");
@@ -14,28 +61,109 @@ export default function LoginDialog({ isOpen, onClose }) {
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, "");
     setPhoneNumber(value);
-    setIsValid(validatePhoneNumber(value));
+    setIsValidPhone(validatePhoneNumber(value));
   };
 
-  const handleContinue = () => {
-    if (isValid) {
-      // Handle login logic here
-      console.log("Phone number:", phoneNumber);
+  const handleOtpChange = (index, value) => {
+    if (value.length > 1) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`otp-${index + 1}`);
+      if (nextInput) nextInput.focus();
+    }
+
+    // Auto submit when last digit entered
+    if (value && index === 5) {
+      const otpString = newOtp.join("");
+      if (otpString.length === 6) {
+        handleVerifyOTP(otpString);
+      }
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`);
+      if (prevInput) prevInput.focus();
+    }
+  };
+
+  const handleSendOTP = async () => {
+    if (!isValidPhone) return;
+
+    setIsLoading(true);
+    const result = await handlePhoneSubmit(phoneNumber);
+    setIsLoading(false);
+
+    if (result.success) {
+      startCountdown();
+    }
+  };
+
+  const handleVerifyOTP = async (otpString = otp.join("")) => {
+    if (otpString.length !== 6) return;
+
+    setIsLoading(true);
+    const result = await handleOTPVerify(otpString);
+    setIsLoading(false);
+
+    if (result.success) {
+      setTimeout(() => {
+        onClose();
+        resetPhoneAuth();
+      }, 1000);
+    }
+  };
+
+  const handleResendOTP = async () => {
+    if (!canResend) return;
+
+    setIsLoading(true);
+    await handlePhoneSubmit(phoneNumber);
+    setIsLoading(false);
+    startCountdown();
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    const result = await handleGoogleSignIn();
+    setIsLoading(false);
+
+    if (result.success) {
       onClose();
     }
   };
 
+  const handleClose = () => {
+    resetPhoneAuth();
+    onClose();
+  };
+
+  // Instead of early return, conditionally render nothing
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl w-11/12 max-w-md max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 overflow-y-auto">
+      {" "}
+      <div className="bg-white rounded-xl w-[calc(100vw-2rem)] sm:w-11/12 max-w-md max-h-[calc(100vh-4rem)] sm:max-h-[90vh] overflow-hidden flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] mx-4 sm:mx-0">
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-2xl font-bold italic text-primary">Login</h2>
+        <div className="flex justify-between items-center p-6 border-gray-200">
+          <img
+            src="/images/try-retro.png"
+            alt="Izinto"
+            width={24}
+            height={24}
+            className="h-8 w-auto"
+          />
+
           <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 p-2"
+            onClick={handleClose}
+            className="text-gray-800 hover:text-black p-2 transition-colors"
           >
             <svg
               className="w-6 h-6"
@@ -54,87 +182,240 @@ export default function LoginDialog({ isOpen, onClose }) {
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          {/* Logo */}
-          <div className="text-center mb-8">
-            <span className="text-3xl font-bold text-primary">Izinto</span>
-          </div>
+        <div className="flex-1 overflow-y-auto p-6">
+          <AnimatePresence mode="wait">
+            {/* Phone Input Step */}
+            {phoneAuthState.step === "input" && (
+              <motion.div
+                key="phone-input"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="space-y-6"
+              >
+                {/* Introduction */}
+                <div>
+                  <h2 className="text-3xl font-black italic text-black mb-4">
+                    Hi! Let's start with your phone number
+                  </h2>
+                </div>
 
-          <div className="space-y-6">
-            {/* Introduction */}
-            <div>
-              <h3 className="text-lg font-semibold text-primary mb-2">
-                Hi! Let's start with your phone number
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Enter your number to log in, or to sign up for an account if
-                you're new here.
-              </p>
-            </div>
+                {/* Error Message */}
+                {phoneAuthState.error && (
+                  <div className="px-4 py-2 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+                    {phoneAuthState.error}
+                  </div>
+                )}
 
-            {/* Phone Input */}
-            <div className="space-y-4">
-              <div className="flex space-x-3">
-                {/* Country Code */}
-                <select className="w-24 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cartBlue focus:border-transparent">
-                  <option value="+27">+27</option>
-                  <option value="+1">+1</option>
-                  <option value="+44">+44</option>
-                </select>
+                {/* Phone Input */}
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex gap-3 px-1">
+                      <div
+                        className="w-24 p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-black"
+                        defaultValue="+27"
+                      >
+                        +27
+                      </div>
+                      <input
+                        type="tel"
+                        value={phoneNumber}
+                        onChange={handlePhoneChange}
+                        placeholder="Phone number"
+                        maxLength={13}
+                        className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-black"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      We'll send a 6-digit verification code
+                    </p>
+                  </div>
+                </div>
 
-                {/* Phone Number */}
-                <input
-                  type="tel"
-                  value={phoneNumber}
-                  onChange={handlePhoneChange}
-                  placeholder="Phone number"
-                  maxLength={13}
-                  className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cartBlue focus:border-transparent"
-                />
-              </div>
-            </div>
+                {/* Send OTP Button */}
+                <button
+                  onClick={handleSendOTP}
+                  disabled={!isValidPhone || isLoading}
+                  className="w-full bg-[#0000ff] rounded-full italic text-sm text-white py-3 font-black cursor-pointer"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Sending...
+                    </div>
+                  ) : (
+                    "SIGN IN / SIGN UP"
+                  )}
+                </button>
 
-            {/* Continue Button */}
-            <button
-              onClick={handleContinue}
-              disabled={!isValid}
-              className="w-full bg-cartBlue text-white py-4 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Continue
-            </button>
+                {/* Divider */}
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white text-gray-500">
+                      or continue with
+                    </span>
+                  </div>
+                </div>
 
-            {/* Divider */}
-            <div className="relative flex items-center py-4">
-              <div className="grow border-t border-gray-300"></div>
-              <span className="shrink mx-4 text-gray-500 text-sm">or</span>
-              <div className="grow border-t border-gray-300"></div>
-            </div>
+                {/* Google Auth Button */}
+                <button
+                  onClick={handleGoogleLogin}
+                  disabled={isLoading}
+                  className="w-full flex items-center justify-center gap-3 p-3 border-2 border-gray-600 px-4 py-2 rounded-4xl font-extrabold italic hover:bg-white/20 disabled:opacity-50"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    />
+                  </svg>
+                  <span className="font-bold text-gray-700">Google</span>
+                </button>
 
-            {/* Google Auth Button */}
-            <button className="w-full flex items-center justify-center space-x-3 p-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                />
-              </svg>
-              <span className="font-semibold text-gray-700">
-                Continue with Google
-              </span>
-            </button>
-          </div>
+                {/* Terms */}
+                <div className="text-center">
+                  <p className="text-xs text-gray-500">
+                    By continuing, you agree to our{" "}
+                    <button className="text-gray-600 hover:text-black">
+                      Terms
+                    </button>{" "}
+                    and{" "}
+                    <button className="text-gray-600 hover:text-black">
+                      Privacy Policy
+                    </button>
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* OTP Verification Step */}
+            {phoneAuthState.step === "otp" && (
+              <motion.div
+                key="otp-verification"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="space-y-6"
+              >
+                {/* Header */}
+                <div>
+                  <h3 className="text-lg font-bold text-black mb-2">
+                    Enter Verification Code
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    We sent a 6-digit code to{" "}
+                    <span className="font-bold">{phoneNumber}</span>
+                  </p>
+                </div>
+
+                {/* Error Message */}
+                {phoneAuthState.error && (
+                  <div className="px-4 py-2 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+                    {phoneAuthState.error}
+                  </div>
+                )}
+
+                {/* OTP Inputs */}
+                <div className="space-y-4">
+                  <div className="flex justify-center gap-2">
+                    {[0, 1, 2, 3, 4, 5].map((index) => (
+                      <input
+                        key={index}
+                        id={`otp-${index}`}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={otp[index]}
+                        onChange={(e) => handleOtpChange(index, e.target.value)}
+                        onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                        className="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-black"
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Verify Button */}
+                <button
+                  onClick={() => handleVerifyOTP()}
+                  disabled={otp.join("").length !== 6 || isLoading}
+                  className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Verifying...
+                    </div>
+                  ) : (
+                    "VERIFY CODE"
+                  )}
+                </button>
+
+                {/* Resend OTP */}
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">
+                    Didn't receive the code?{" "}
+                    <button
+                      onClick={handleResendOTP}
+                      disabled={!canResend || isLoading}
+                      className="font-bold text-black hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {canResend ? "Resend Code" : `Resend in ${countdown}s`}
+                    </button>
+                  </p>
+                </div>
+
+                {/* Back to Phone Input */}
+                <button
+                  onClick={resetPhoneAuth}
+                  className="w-full text-center text-gray-600 hover:text-black transition-colors text-sm"
+                >
+                  ← Use a different phone number
+                </button>
+              </motion.div>
+            )}
+
+            {/* Success Step */}
+            {phoneAuthState.step === "success" && (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-8"
+              >
+                <div className="w-16 h-16 mx-auto mb-6 text-green-500">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-black mb-2">
+                  Verified Successfully!
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Redirecting you to your account...
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

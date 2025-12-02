@@ -3,9 +3,9 @@ import { Inter, Poppins, Roboto } from "next/font/google";
 import "./globals.css";
 import { ServicesProvider } from "@/providers/ServicesProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
-import { AuthProvider } from "@/context/authContext";
 import { GoogleMapsProvider } from "@/providers/GoogleMapsProvider";
 import ClientLayoutWrapper from "@/components/layout/ClientLayoutWrapper";
+import { AuthProvider } from "@/lib/context/AuthContext";
 
 const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
 
@@ -29,7 +29,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.className} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${poppins.className} [&.dialog-open]:overflow-hidden`}
+      suppressHydrationWarning
+    >
       <body suppressHydrationWarning>
         <ReactQueryProvider>
           <GoogleMapsProvider apiKey={GOOGLE_MAPS_API_KEY}>
