@@ -1,15 +1,18 @@
 "use client";
 import { useRef, useState } from "react";
-import ServiceCard from "@/components/services/ServiceCard";
+import { getProviderExplanation } from "@/lib/utils/providerExplanations";
 import MainServiceCard from "../ui/MainServiceCard";
 
-export default function SimilarServices({
-  services,
-  onServiceSelect,
+export default function ProviderSection({
   provider,
+  services,
+  index,
+  onServiceSelect,
+  onProviderSelect,
 }) {
   const scrollContainerRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const providerExplanation = getProviderExplanation(provider);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -25,15 +28,16 @@ export default function SimilarServices({
     }
   };
 
-  if (services.length === 0) return null;
+  if (!services || services.length === 0) return null;
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-lg font-black italic text-black">
-          SIMILAR SERVICES
-        </h2>
+    <section className="space-y-4">
+      {/* Provider Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <h1 className="text-3xl sm:text-4xl font-black italic text-black">
+          {provider}
+        </h1>
+
         <button className="flex items-center text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors">
           MORE ITEMS
           <svg
@@ -53,10 +57,11 @@ export default function SimilarServices({
           </svg>
         </button>
       </div>
-      {/* Carousel */}
+
+      {/* Services Carousel */}
       <div className="relative group">
         {/* Left Arrow */}
-        {services.length > 3 && (
+        {services.length > 4 && (
           <>
             <button
               onClick={scrollLeft}
@@ -111,12 +116,25 @@ export default function SimilarServices({
             scrollbarWidth: "none",
           }}
         >
-          {services.map((service, index) => (
+          {services.map((service) => (
             <div key={service.id} className="flex-none w-42 snap-start">
-              <MainServiceCard service={service} />
+              <MainServiceCard
+                service={service}
+                onClick={() => onServiceSelect(service)}
+              />
             </div>
           ))}
         </div>
+      </div>
+
+      {/* View All Button (Mobile) */}
+      <div className="sm:hidden text-center pt-4">
+        <button
+          onClick={() => onProviderSelect(provider)}
+          className="text-sm text-[#0096FF] font-semibold hover:underline"
+        >
+          View all {services.length} services →
+        </button>
       </div>
     </section>
   );

@@ -66,7 +66,7 @@ export default function ProductPage() {
   if (!currentService) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Service not found</p>
+        <CircularProgressIndicator isPageLoader={true} />;
       </div>
     );
   }

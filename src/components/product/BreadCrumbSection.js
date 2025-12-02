@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import AddressSearchDialog from "@/components/maps/AddressSearchDialog";
 import { COLORS } from "@/lib/utils/constants";
 import { useServices } from "@/lib/api/services";
+import Link from "next/link";
 
 export default function BreadcrumbSection({ service }) {
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
@@ -77,9 +78,13 @@ export default function BreadcrumbSection({ service }) {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-2">
             {/* Breadcrumbs - Left Side */}
             <div className="flex items-center flex-wrap gap-1 xs:gap-2 text-xs xs:text-sm text-gray-600">
-              <span className="whitespace-nowrap hover:text-[#0096FF] transition-colors cursor-pointer">
+              <Link
+                href="/services"
+                className="whitespace-nowrap hover:text-[#0096FF] transition-colors cursor-pointer"
+              >
                 Home
-              </span>
+              </Link>
+
               <span>•</span>
 
               {/* Provider with Dropdown */}
@@ -136,7 +141,7 @@ export default function BreadcrumbSection({ service }) {
                                   handleServiceSelect(providerService)
                                 }
                               >
-                                <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+                                <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 shrink-0">
                                   {providerService.img ? (
                                     <img
                                       src={
@@ -188,7 +193,7 @@ export default function BreadcrumbSection({ service }) {
               </div>
 
               <span>•</span>
-              <span className="font-semibold text-black whitespace-nowrap truncate max-w-[120px] xs:max-w-none">
+              <span className="font-semibold text-black whitespace-nowrap max-w-[120px] xs:max-w-none">
                 {service.name}
               </span>
             </div>
