@@ -6,10 +6,10 @@ import AddressSearchDialog from "@/components/maps/AddressSearchDialog";
 import { COLORS } from "@/lib/utils/constants";
 import { useServices } from "@/lib/api/services";
 import Link from "next/link";
+import { useAddress } from "@/providers/AddressProvider";
 
 export default function BreadcrumbSection({ service }) {
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
-  const [savedAddress, setSavedAddress] = useState(null);
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const dropdownRef = useRef(null);
@@ -17,13 +17,9 @@ export default function BreadcrumbSection({ service }) {
 
   const { data: servicesData } = useServices();
   const services = servicesData?.Specialties || servicesData?.specialties || [];
+  const { address: savedAddress, saveAddress } = useAddress();
 
   useEffect(() => {
-    const saved = localStorage.getItem("userAddress");
-    if (saved) {
-      setSavedAddress(JSON.parse(saved));
-    }
-
     // Check screen size
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768); // md breakpoint

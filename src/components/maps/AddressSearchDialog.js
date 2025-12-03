@@ -2,7 +2,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { COLORS } from "@/lib/utils/constants";
-import { useGoogleMaps } from "@/providers/GoogleMapsProvider"; // Import from provider
+import { useGoogleMaps } from "@/providers/GoogleMapsProvider";
+import { useAddress } from "@/providers/AddressProvider";
 
 export default function AddressSearchDialog({
   isOpen,
@@ -18,6 +19,7 @@ export default function AddressSearchDialog({
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
   const [showSearching, setShowSearching] = useState(false);
+  const { saveAddress } = useAddress();
 
   const mapRef = useRef(null);
   const autocompleteService = useRef(null);
@@ -234,6 +236,8 @@ export default function AddressSearchDialog({
         ...selectedAddress,
         isValid: isValidAddress,
       };
+
+      saveAddress(addressData);
 
       localStorage.setItem("userAddress", JSON.stringify(addressData));
 

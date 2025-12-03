@@ -7,72 +7,57 @@ import PromoSection from "@/components/PromoSection";
 import HeroSection from "@/components/services/HeroSection";
 import ServiceGrid from "@/components/services/ServiceGrid";
 import BigText from "@/components/ui/BigText";
-import VerticalCardStack from "@/components/VerticalCardStack";
 import AddressSearchDialog from "@/components/maps/AddressSearchDialog";
-import { Inter, Roboto } from "next/font/google";
+import { Inter } from "next/font/google";
 import VerticalCardParallax from "@/components/VerticalCardParallax";
-import { useAuth } from "@/lib/context/AuthContext";
-import { useRouter } from "next/navigation";
 import CircularProgressIndicator from "@/components/ui/CircularProgessIndicator";
+import { useAddress } from "@/providers/AddressProvider";
+import { useHomepageRedirect } from "@/hooks/useHomePageRedirect";
 
 const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
-
-const roboto = Roboto({
-  weight: ["400", "900"],
-  subsets: ["latin"],
-});
 
 export default function Home() {
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [showBottomButton, setShowBottomButton] = useState(false);
   const heroSectionRef = useRef(null);
-  const { user, loading } = useAuth();
-  const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.replace("/services");
-    }
-  }, [user, loading, router]);
+  const { isLoading } = useHomepageRedirect();
+  const { saveAddress } = useAddress();
+
+  // Show loading while checking redirect conditions
+  if (isLoading) {
+    return <CircularProgressIndicator isPageLoader={true} />;
+  }
 
   useEffect(() => {
     const handleScroll = () => {
       if (heroSectionRef.current) {
         const heroRect = heroSectionRef.current.getBoundingClientRect();
-        // Show bottom button when hero section is completely out of view (scrolled past)
         const isHeroOutOfView = heroRect.bottom <= 0;
         setShowBottomButton(isHeroOutOfView);
       }
     };
 
-    // Initial check
     handleScroll();
-
-    // Add scroll listener
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  const handleAddressSave = (address) => {
-    // Handle address save logic here
+  const handleAddressSave = (addressData) => {
+    saveAddress(addressData); // Use the context method
     setIsAddressDialogOpen(false);
+
+    // Optionally redirect after saving valid address
+    if (addressData.isValid) {
+      // You could add a small delay and redirect here
+      // setTimeout(() => router.push("/services"), 1000);
+    }
   };
 
-  if (loading) {
-    return <CircularProgressIndicator isPageLoader={true} />;
-  }
-
-  if (user) {
-    return <CircularProgressIndicator isPageLoader={true} />;
-  }
-
   return (
-    <div className={`pt-16 pb-20 sm:pb-0 bg-white ${inter.className} `}>
-      {" "}
-      {/* Added bottom padding for mobile nav */}
+    <div className={`pt-16 pb-20 sm:pb-0 bg-white ${inter.className}`}>
       <div ref={heroSectionRef}>
         <HeroSection />
       </div>
@@ -85,8 +70,7 @@ export default function Home() {
       <div className="my-20" />
       <StaggeredHorizontalScroll />
       <Footer />
-      {/* Mobile Bottom Nav Address Button - Fixed position */}
-      {/* Only show when user has scrolled past hero section */}
+
       {showBottomButton && (
         <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden p-4">
           <button
@@ -97,7 +81,7 @@ export default function Home() {
           </button>
         </div>
       )}
-      {/* Address Search Dialog */}
+
       <AddressSearchDialog
         isOpen={isAddressDialogOpen}
         onClose={() => setIsAddressDialogOpen(false)}

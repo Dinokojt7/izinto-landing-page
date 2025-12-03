@@ -6,6 +6,7 @@ import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { GoogleMapsProvider } from "@/providers/GoogleMapsProvider";
 import ClientLayoutWrapper from "@/components/layout/ClientLayoutWrapper";
 import { AuthProvider } from "@/lib/context/AuthContext";
+import { AddressProvider } from "@/providers/AddressProvider";
 
 const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
 
@@ -37,11 +38,13 @@ export default function RootLayout({ children }) {
       <body suppressHydrationWarning>
         <ReactQueryProvider>
           <GoogleMapsProvider apiKey={GOOGLE_MAPS_API_KEY}>
-            <AuthProvider>
-              <ServicesProvider>
-                <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
-              </ServicesProvider>
-            </AuthProvider>
+            <AddressProvider>
+              <AuthProvider>
+                <ServicesProvider>
+                  <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+                </ServicesProvider>
+              </AuthProvider>
+            </AddressProvider>
           </GoogleMapsProvider>
         </ReactQueryProvider>
       </body>

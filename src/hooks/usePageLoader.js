@@ -10,7 +10,7 @@ export function usePageLoader() {
 
   useEffect(() => {
     setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 500); // Simulate loading
+    const timer = setTimeout(() => setIsLoading(false), 500);
 
     return () => clearTimeout(timer);
   }, [pathname, searchParams]);
