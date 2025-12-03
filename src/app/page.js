@@ -11,6 +11,9 @@ import VerticalCardStack from "@/components/VerticalCardStack";
 import AddressSearchDialog from "@/components/maps/AddressSearchDialog";
 import { Inter, Roboto } from "next/font/google";
 import VerticalCardParallax from "@/components/VerticalCardParallax";
+import { useAuth } from "@/lib/context/AuthContext";
+import { useRouter } from "next/navigation";
+import CircularProgressIndicator from "@/components/ui/CircularProgessIndicator";
 
 const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
 
@@ -23,6 +26,14 @@ export default function Home() {
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [showBottomButton, setShowBottomButton] = useState(false);
   const heroSectionRef = useRef(null);
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace("/services");
+    }
+  }, [user, loading, router]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,9 +58,16 @@ export default function Home() {
 
   const handleAddressSave = (address) => {
     // Handle address save logic here
-    console.log("Address saved:", address);
     setIsAddressDialogOpen(false);
   };
+
+  if (loading) {
+    return <CircularProgressIndicator isPageLoader={true} />;
+  }
+
+  if (user) {
+    return <CircularProgressIndicator isPageLoader={true} />;
+  }
 
   return (
     <div className={`pt-16 pb-20 sm:pb-0 bg-white ${inter.className} `}>
