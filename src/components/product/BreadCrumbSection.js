@@ -7,8 +7,10 @@ import { COLORS } from "@/lib/utils/constants";
 import { useServices } from "@/lib/api/services";
 import Link from "next/link";
 import { useAddress } from "@/providers/AddressProvider";
+import AddressSelectionDialog from "../maps/AddressSelectionDialog";
 
 export default function BreadcrumbSection({ service }) {
+  const [isAddressSelectionOpen, setIsAddressSelectionOpen] = useState(false);
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -17,21 +19,23 @@ export default function BreadcrumbSection({ service }) {
 
   const { data: servicesData } = useServices();
   const services = servicesData?.Specialties || servicesData?.specialties || [];
-  const { address: savedAddress, saveAddress } = useAddress();
+
+  // Use location hook
+  const {
+    activeAddress: savedAddress,
+    hasAddresses,
+    isLoggedIn,
+    saveAddress,
+  } = useAddress();
 
   useEffect(() => {
-    // Check screen size
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768); // md breakpoint
+      setIsMobile(window.innerWidth < 768);
     };
 
-    // Initial check
     checkScreenSize();
-
-    // Add event listener
     window.addEventListener("resize", checkScreenSize);
 
-    // Close dropdown when clicking outside
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowProviderDropdown(false);
@@ -46,8 +50,18 @@ export default function BreadcrumbSection({ service }) {
   }, []);
 
   const handleAddressSave = (addressData) => {
-    setSavedAddress(addressData);
-    localStorage.setItem("userAddress", JSON.stringify(addressData));
+    saveAddress(addressData);
+    setIsAddressDialogOpen(false);
+  };
+
+  const handleAddressButtonClick = () => {
+    if (hasAddresses) {
+      // Show address selection dialog
+      setIsAddressSelectionOpen(true);
+    } else {
+      // Show address search dialog directly
+      setIsAddressDialogOpen(true);
+    }
   };
 
   // Get services by current provider
@@ -55,7 +69,6 @@ export default function BreadcrumbSection({ service }) {
     (s) => s.provider === service.provider && s.id !== service.id,
   );
 
-  // Handle service selection from dropdown
   const handleServiceSelect = (selectedService) => {
     const serviceSlug = selectedService.name.toLowerCase().replace(/\s+/g, "-");
     router.push(`/p/${serviceSlug}`);
@@ -214,7 +227,7 @@ export default function BreadcrumbSection({ service }) {
               {/* Address Button */}
               {savedAddress ? (
                 <button
-                  onClick={() => setIsAddressDialogOpen(true)}
+                  onClick={handleAddressButtonClick}
                   className="flex items-center gap-1 xs:gap-2 text-primary font-semibold hover:text-gray-700 transition-colors min-w-0"
                 >
                   <span className="text-sm xs:text-base text-black font-extrabold italic truncate max-w-[100px] xs:max-w-[150px] sm:max-w-[180px] lg:max-w-none">
@@ -236,7 +249,7 @@ export default function BreadcrumbSection({ service }) {
                 </button>
               ) : (
                 <button
-                  onClick={() => setIsAddressDialogOpen(true)}
+                  onClick={handleAddressButtonClick}
                   className="text-[#0000ff] px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 rounded-full text-xs xs:text-sm font-extrabold italic transition-all transform whitespace-nowrap hover:bg-blue-50 active:scale-95 shrink-0"
                 >
                   ADD ADDRESS
@@ -323,6 +336,14 @@ export default function BreadcrumbSection({ service }) {
         </div>
       </div>
 
+      {/* Address Selection Dialog */}
+      <AddressSelectionDialog
+        isOpen={isAddressSelectionOpen}
+        onClose={() => setIsAddressSelectionOpen(false)}
+        showAddressSearchDialog={() => setIsAddressDialogOpen(true)}
+      />
+
+      {/* Address Search Dialog (for adding new addresses) */}
       <AddressSearchDialog
         isOpen={isAddressDialogOpen}
         onClose={() => setIsAddressDialogOpen(false)}

@@ -233,18 +233,21 @@ export default function AddressSearchDialog({
   const handleSaveAddress = () => {
     if (selectedAddress) {
       const addressData = {
-        ...selectedAddress,
+        street: selectedAddress.street,
+        town: selectedAddress.town,
+        suburb: selectedAddress.suburb || selectedAddress.town,
+        lat: selectedAddress.lat,
+        lng: selectedAddress.lng,
         isValid: isValidAddress,
+        // Add other fields as needed
+        country: "South Africa",
+        zip: "", // You might want to extract from Google Places
+        additionalInfo: "",
+        label: "Home", // Or let user choose
+        selected: true,
       };
 
       saveAddress(addressData);
-
-      localStorage.setItem("userAddress", JSON.stringify(addressData));
-
-      if (onAddressSave) {
-        onAddressSave(addressData);
-      }
-
       onClose();
     }
   };

@@ -38,13 +38,13 @@ export default function RootLayout({ children }) {
       <body suppressHydrationWarning>
         <ReactQueryProvider>
           <GoogleMapsProvider apiKey={GOOGLE_MAPS_API_KEY}>
-            <AddressProvider>
-              <AuthProvider>
+            <AuthProvider>
+              <AddressProvider>
                 <ServicesProvider>
                   <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
                 </ServicesProvider>
-              </AuthProvider>
-            </AddressProvider>
+              </AddressProvider>
+            </AuthProvider>
           </GoogleMapsProvider>
         </ReactQueryProvider>
       </body>
