@@ -14,8 +14,7 @@ export default function CircularProgressIndicator({
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-100 border-t-[#0096ff] rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 font-semibold">Loading...</p>
+          <div className="w-8 h-8 border-4 border-blue-100 border-t-[#0096ff] rounded-full animate-spin mx-auto mb-4" />
         </div>
       </div>
     );

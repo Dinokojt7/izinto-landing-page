@@ -86,7 +86,7 @@ export default function BreadcrumbSection({ service }) {
           {/* Top Row - Breadcrumbs & Address */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-2">
             {/* Breadcrumbs - Left Side */}
-            <div className="flex items-center flex-wrap gap-1 xs:gap-2 text-xs xs:text-sm text-gray-600">
+            <div className="flex items-center flex-wrap gap-1 xs:gap-2 text-sm xs:text-sm text-gray-600">
               <Link
                 href="/services"
                 className="whitespace-nowrap hover:text-[#0096FF] transition-colors cursor-pointer"
@@ -102,11 +102,11 @@ export default function BreadcrumbSection({ service }) {
                   className="flex items-center gap-1 cursor-pointer group"
                   onClick={toggleProviderDropdown}
                 >
-                  <span className="capitalize whitespace-nowrap text-[#0096FF] font-semibold group-hover:underline">
+                  <span className="capitalize whitespace-nowrap  group-hover:underline">
                     {service.provider}
                   </span>
                   <motion.svg
-                    className="w-4 h-4 text-[#0096FF]"
+                    className="w-4 h-4 "
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

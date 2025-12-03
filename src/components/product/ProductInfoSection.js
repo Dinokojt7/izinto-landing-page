@@ -103,7 +103,7 @@ export default function ProductInfoSection({ service }) {
             <h3 className="text-sm font-semibold text-black w-full border-b border-gray-300 mb-2">
               Introduction
             </h3>
-            <p className="text-sm text-gray-700 line-clamp-3">
+            <p className="text-xs text-gray-700 line-clamp-6">
               {service.introduction}
             </p>
           </div>

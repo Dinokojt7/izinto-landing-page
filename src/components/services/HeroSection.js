@@ -200,7 +200,7 @@ export default function HeroSection() {
               opacity: useTransform(scrollY, [0, 100], [1, 0]),
               scale: useTransform(scrollY, [0, 100], [1, 0.8]),
             }}
-            className="bg-blue-700 text-white px-3 py-2 rounded-4xl text-sm font-extrabold italic hover:bg-blue-800 transition-colors transform"
+            className="bg-[#0000ff] text-white px-3 py-2 rounded-4xl text-sm font-extrabold italic hover:bg-blue-800 transition-colors transform"
           >
             ENTER YOUR ADDRESS
           </motion.button>

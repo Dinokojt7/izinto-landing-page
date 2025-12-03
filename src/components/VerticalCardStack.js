@@ -28,7 +28,7 @@ export default function VerticalCardStack({
         <h1 className="text-6xl sm:text-8xl lg:text-9xl font-black tracking-tight italic text-black mt-12 lg:mt-20">
           {header}
         </h1>
-        <h2 className="text-[#0096FF] mt-6 lg:mt-4 text-base font-bold">
+        <h2 className="text-[#0096FF] mt-6 lg:mt-4 text-base font-semibold">
           {punchline}
         </h2>
         <h2 className="text-gray-500 mt-4 text-sm font-semibold max-w-2xl">

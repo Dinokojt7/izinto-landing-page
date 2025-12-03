@@ -31,7 +31,7 @@ export default function SimilarServices({
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-lg font-black italic text-black">
+        <h2 className="text-3xl font-black italic text-black">
           YOU MIGHT ALSO LIKE
         </h2>
         <button className="flex items-center text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors">

@@ -12,6 +12,8 @@ import SimilarServices from "@/components/product/SimilarServices";
 import YouMightAlsoLike from "@/components/product/YouMightAlsoLike";
 import { Poppins } from "next/font/google";
 import Footer from "@/components/layout/Footer";
+import HowWeWork from "@/components/services/HowWeWork";
+import BottomBreadcrumbSection from "@/components/product/BottomBreadCrumbSection";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -41,7 +43,8 @@ export default function ProductPage() {
       );
 
       if (foundService) {
-        setCurrentService(new NewSpecialtyModel(foundService));
+        const serviceModel = new NewSpecialtyModel(foundService);
+        setCurrentService(serviceModel);
 
         // Find similar services by provider
         const similar = services.filter(
@@ -49,7 +52,7 @@ export default function ProductPage() {
             service.provider === foundService.provider &&
             service.id !== foundService.id,
         );
-        setSimilarServices(similar);
+        setSimilarServices(similar.map((s) => new NewSpecialtyModel(s)));
       }
     }
   }, [servicesData, params.name]);
@@ -66,7 +69,7 @@ export default function ProductPage() {
   if (!currentService) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <CircularProgressIndicator isPageLoader={true} />;
+        <CircularProgressIndicator isPageLoader={true} />
       </div>
     );
   }
@@ -77,16 +80,13 @@ export default function ProductPage() {
       <BreadcrumbSection service={currentService} />
       <CategoryBanner service={currentService} />
       <ProductInfoSection service={currentService} />
-      <SimilarServices
-        services={similarServices}
-        onServiceSelect={handleServiceSelect}
-        provider={currentService.provider}
-      />
       <YouMightAlsoLike
         services={allServices}
         currentService={currentService}
         onServiceSelect={handleServiceSelect}
-      />
+      />{" "}
+      <HowWeWork service={currentService} />
+      <BottomBreadcrumbSection service={currentService} />
       <Footer />
     </div>
   );
