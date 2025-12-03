@@ -6,6 +6,7 @@ import AddToCartControllers from "../cart/AddToCartController";
 
 export default function ProductInfoSection({ service }) {
   const [imageError, setImageError] = useState(false);
+  const [isIntroExpanded, setIsIntroExpanded] = useState(false);
   const details = getProviderDetails(service.provider, service.details);
 
   const getImageSrc = () => {
@@ -23,6 +24,15 @@ export default function ProductInfoSection({ service }) {
   };
 
   const imageSrc = getImageSrc();
+
+  // Check if introduction is long enough to need expansion
+  const introLines = service.introduction?.split(/\r\n|\r|\n/).length || 0;
+  const introWordCount = service.introduction?.split(/\s+/).length || 0;
+  const needsExpansion = introLines > 3 || introWordCount > 50;
+
+  const toggleIntroExpand = () => {
+    setIsIntroExpanded(!isIntroExpanded);
+  };
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -98,14 +108,29 @@ export default function ProductInfoSection({ service }) {
             </div>
           </div>
 
-          {/* Introduction */}
-          <div className="pt-6  border-gray-300">
-            <h3 className="text-sm font-semibold text-black w-full border-b border-gray-300 mb-2">
+          {/* Introduction with Expand/Collapse */}
+          <div className="pt-6 border-t border-gray-300">
+            <h3 className="text-sm font-semibold text-black w-full border-b border-gray-300 mb-3">
               Introduction
             </h3>
-            <p className="text-xs text-gray-700 line-clamp-6">
-              {service.introduction}
-            </p>
+
+            <div className="relative">
+              <p
+                className={`text-xs text-gray-700 ${isIntroExpanded ? "" : "line-clamp-3"}`}
+              >
+                {service.introduction}
+              </p>
+
+              {/* Show More/Less Button - Only show if introduction is long */}
+              {needsExpansion && (
+                <button
+                  onClick={toggleIntroExpand}
+                  className="mt-2 text-xs text-black underline cursor-pointer transition-all"
+                >
+                  {isIntroExpanded ? "Show less" : "Show more"}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

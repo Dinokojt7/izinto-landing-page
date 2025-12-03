@@ -127,8 +127,8 @@ export default function HowWeWork({ service }) {
   const contentSections = getContentSections();
 
   return (
-    <section className="w-full lg:px-8 py-6 ">
-      <div className="bg-blue-50 w-full sm:rounded-2xl px-6 sm:px-12 py-6">
+    <section className="w-full bg-blue-50 lg:px-8 py-6 ">
+      <div className="w-full  px-6 sm:px-12 py-6">
         {/* Header */}
         <div className="mb-6">
           <h2 className="text-3xl sm:text-4xl font-black italic text-black/70 mb-2">
