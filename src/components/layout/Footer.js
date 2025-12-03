@@ -1,17 +1,20 @@
-// src/components/Footer.js
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Poppins } from "next/font/google";
+import { useAuth } from "@/lib/context/AuthContext"; // Import auth hook
+
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
   display: "swap",
 });
+
 export default function Footer() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
+  const { user, loading } = useAuth(); // Get auth state
 
   const handleSubmit = () => {
     if (!phoneNumber.trim()) {
@@ -139,6 +142,11 @@ export default function Footer() {
     "Johannesburg South",
   ];
 
+  // Don't show anything while loading auth state
+  if (loading) {
+    return null;
+  }
+
   return (
     <footer className={`bg-gray-50 pt-16 pb-8 ${poppins.className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -158,50 +166,58 @@ export default function Footer() {
         {/* Divider */}
         <div className="w-full h-px bg-gray-200 my-8" />
 
-        {/* Call to Action */}
-        <h2 className="text-black mt-4 text-lg italic font-extrabold uppercase tracking-wide">
-          LET'S GET MOVING. DROP YOUR MOBILE NUMBER TO START YOUR BOOKING OR
-          PICK UP WHERE YOU LEFT OFF.
-        </h2>
+        {/* Call to Action - Only show if user is NOT logged in */}
+        {!user && (
+          <>
+            <h2 className="text-black mt-4 text-lg italic font-extrabold uppercase tracking-wide">
+              LET'S GET MOVING. DROP YOUR MOBILE NUMBER TO START YOUR BOOKING OR
+              PICK UP WHERE YOU LEFT OFF.
+            </h2>
 
-        <div className="flex flex-col sm:flex-row items-start space-x-0 sm:space-x-4 space-y-4 sm:space-y-0 mt-6">
-          {/* Phone Input Section */}
-          <div
-            className={`flex items-center bg-white rounded-lg border ${
-              error ? "border-red-500" : "border-gray-300"
-            } p-3 w-full sm:flex-1 sm:max-w-sm`}
-          >
-            {/* Country Code */}
-            <div className="flex items-center">
-              <span className="text-black text-base font-semibold">+27</span>
-              <span className="text-black mx-2">|</span>
+            <div className="flex flex-col sm:flex-row items-start space-x-0 sm:space-x-4 space-y-4 sm:space-y-0 mt-6">
+              {/* Phone Input Section */}
+              <div
+                className={`flex items-center bg-white rounded-lg border ${
+                  error ? "border-red-500" : "border-gray-300"
+                } p-3 w-full sm:flex-1 sm:max-w-sm`}
+              >
+                {/* Country Code */}
+                <div className="flex items-center">
+                  <span className="text-black text-base font-semibold">
+                    +27
+                  </span>
+                  <span className="text-black mx-2">|</span>
+                </div>
+
+                {/* Phone Input */}
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                    setError("");
+                  }}
+                  placeholder="Mobile number"
+                  className="flex-1 text-gray-500 text-base font-semibold outline-none px-2 min-w-0"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button
+                onClick={handleSubmit}
+                className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-900 transition-all transform whitespace-nowrap w-full sm:w-auto text-center"
+              >
+                SIGN IN / SIGN UP
+              </button>
             </div>
 
-            {/* Phone Input */}
-            <input
-              type="tel"
-              value={phoneNumber}
-              onChange={(e) => {
-                setPhoneNumber(e.target.value);
-                setError("");
-              }}
-              placeholder="Mobile number"
-              className="flex-1 text-gray-500 text-base font-semibold outline-none px-2 min-w-0"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <button
-            onClick={handleSubmit}
-            className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-900 transition-all transform whitespace-nowrap w-full sm:w-auto text-center"
-          >
-            SIGN IN / SIGN UP
-          </button>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <p className="text-red-500 text-xs mt-2">Enter your mobile number</p>
+            {/* Error Message */}
+            {error && (
+              <p className="text-red-500 text-xs mt-2">
+                Enter your mobile number
+              </p>
+            )}
+          </>
         )}
 
         {/* Four Column Section - FLEX LAYOUT */}

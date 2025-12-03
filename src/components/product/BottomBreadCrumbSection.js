@@ -52,7 +52,7 @@ export default function BottomBreadcrumbSection({ service }) {
 
   return (
     <>
-      <div className="w-full bg-white py-4 border-t border-gray-100">
+      <div className="w-full bg-white py-6 border-b mt-6 border-gray-100">
         <div className="max-w-7xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8">
           {/* Breadcrumbs - Clean Version */}
           <div className="flex items-center flex-wrap gap-2 xs:gap-3 text-sm">
