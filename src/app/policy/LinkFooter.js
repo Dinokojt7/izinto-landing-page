@@ -148,11 +148,13 @@ export default function LinkFooter() {
     <footer className={`bg-gray-100 pt-4 pb-8 ${poppins.className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <motion.img
-          src="/images/try-retro.png"
-          alt="Izinto"
-          className="h-8 w-auto"
-        />
+        <Link href={"/"}>
+          <motion.img
+            src="/images/try-retro.png"
+            alt="Izinto"
+            className="h-8 w-auto"
+          />
+        </Link>
 
         {/* Four Column Section - FLEX LAYOUT */}
         <div className="flex flex-col md:flex-row gap-8 mt-12">
@@ -228,9 +230,9 @@ export default function LinkFooter() {
                     <div className="absolute inset-0 bg-gray-100/30 rounded-lg" />
 
                     {/* Permanent Flag Badge - Top Right */}
-                    <div className="absolute -top-1 right-6.5 z-10">
+                    <div className="absolute -top-3.5 right-6.5 z-10">
                       <div
-                        className="bg-white border border-gray-100 text-black 
+                        className="bg-white/90 border border-gray-100 text-black 
                         px-1 py-0 rounded-md shadow-sm min-w-[50px]"
                       >
                         <span className="text-[8px] font-semibold uppercase tracking-wide">

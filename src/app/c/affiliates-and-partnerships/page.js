@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Inter } from "next/font/google";
+import LinkFooter from "@/app/policy/LinkFooter";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -121,7 +122,7 @@ export default function ApplyToWorkWithUs() {
         {/* Page Header - Responsive sizing */}
         <div className="text-left mb-8 sm:mb-12">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0096FF] leading-tight mb-3 sm:mb-4">
-            Apply to Work With Us
+            Partner & Affiliate Requests
           </h1>
           <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-3xl">
             Join the Izinto team! Fill out this form to apply for partnerships,
@@ -374,26 +375,10 @@ export default function ApplyToWorkWithUs() {
             >
               {isSubmitting ? "Submitting..." : "Submit Application"}
             </button>
-
-            <p className="mt-4 text-gray-600 text-sm">
-              By submitting, you agree to our{" "}
-              <Link
-                href="/policy/privacy-policy"
-                className="text-[#0096FF] hover:underline"
-              >
-                Privacy Policy
-              </Link>{" "}
-              and{" "}
-              <Link
-                href="/policy/terms-of-use"
-                className="text-[#0096FF] hover:underline"
-              >
-                Terms of Use
-              </Link>
-            </p>
           </div>
         </form>
       </div>
+      <LinkFooter />
     </div>
   );
 }

@@ -86,7 +86,7 @@ export default function Footer() {
 
   const footerLinks = {
     helpSupport: [
-      { name: "More for Less", href: "/policy/more-for-less" },
+      { name: "More for Less", href: "/" },
       { name: "Contact Us", href: "/help" },
     ],
     workWithUs: [
@@ -297,10 +297,10 @@ export default function Footer() {
                     <div className="absolute inset-0 bg-gray-100/30 rounded-lg" />
 
                     {/* Permanent Flag Badge - Top Right */}
-                    <div className="absolute -top-1.5 -right-1.5 z-10">
+                    <div className="absolute -top-3.5 -right-1.5 z-10">
                       <div
                         className="bg-white border border-gray-100 text-black 
-              px-1.5 py-0.1 rounded-md shadow-sm min-w-[60px]"
+              px-1.5 py-0.1 rounded-md  min-w-[60px]"
                       >
                         <span className="text-[9px] font-semibold uppercase tracking-wide">
                           Coming Soon

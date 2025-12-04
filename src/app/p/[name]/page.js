@@ -14,6 +14,7 @@ import { Poppins } from "next/font/google";
 import Footer from "@/components/layout/Footer";
 import HowWeWork from "@/components/services/HowWeWork";
 import BottomBreadcrumbSection from "@/components/product/BottomBreadCrumbSection";
+import ProfileDialog from "@/components/layout/ProfileDialog";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -28,6 +29,7 @@ export default function ProductPage() {
   const [currentService, setCurrentService] = useState(null);
   const [similarServices, setSimilarServices] = useState([]);
   const [allServices, setAllServices] = useState([]);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
 
   useEffect(() => {
     if (servicesData?.Specialties || servicesData?.specialties) {
@@ -76,7 +78,7 @@ export default function ProductPage() {
 
   return (
     <div className={`min-h-screen bg-white ${poppins.className}`}>
-      <ProductHeader />
+      <ProductHeader setIsProfileDialogOpen={setIsProfileDialogOpen} />
       <BreadcrumbSection service={currentService} />
       <CategoryBanner service={currentService} />
       <ProductInfoSection service={currentService} />
@@ -88,6 +90,12 @@ export default function ProductPage() {
       <HowWeWork service={currentService} />
       <BottomBreadcrumbSection service={currentService} />
       <Footer />
+      {isProfileDialogOpen && (
+        <ProfileDialog
+          isOpen={isProfileDialogOpen}
+          onClose={() => setIsProfileDialogOpen(false)}
+        />
+      )}
     </div>
   );
 }
