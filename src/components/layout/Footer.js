@@ -90,7 +90,10 @@ export default function Footer() {
       { name: "Contact Us", href: "/help" },
     ],
     workWithUs: [
-      { name: "Partner and Affiliate Requests", href: "/c/affiliates-and-partnerships" },
+      {
+        name: "Partner and Affiliate Requests",
+        href: "/c/affiliates-and-partnerships",
+      },
     ],
     company: [
       { name: "FAQs", href: "/faqs" },
@@ -277,41 +280,38 @@ export default function Footer() {
           </div>
 
           {/* Section 4: APP STORES - With Permanent Flags */}
-<div className="flex-1 md:flex-2">
-  <div className="flex space-x-2 w-full">
-    {footerLinks.appStores.map((store, index) => (
-      <div
-        key={index}
-        className="flex-1 relative"
-      >
-        {/* Image Container with Overlay */}
-        <div className="relative w-full h-14">
-          {/* Original Image */}
-          <img
-            src={store.image}
-            alt={store.name}
-            className="w-full h-14 object-contain rounded-lg"
-          />
-          
-          {/* Light Gray Overlay - Dims the image */}
-          <div className="absolute inset-0 bg-gray-100/30 rounded-lg" />
-          
-          {/* Permanent Flag Badge - Top Right */}
-          <div className="absolute -top-1.5 -right-1.5 z-10">
-            <div className="bg-white border border-gray-100 text-black 
-              px-1.5 py-0.1 rounded-md shadow-sm min-w-[60px]">
-              <span className="text-[9px] font-semibold uppercase tracking-wide">
-                Coming Soon
-              </span>
+          <div className="flex-1 md:flex-2">
+            <div className="flex space-x-2 w-full">
+              {footerLinks.appStores.map((store, index) => (
+                <div key={index} className="flex-1 relative">
+                  {/* Image Container with Overlay */}
+                  <div className="relative w-full h-14">
+                    {/* Original Image */}
+                    <img
+                      src={store.image}
+                      alt={store.name}
+                      className="w-full h-14 object-contain rounded-lg"
+                    />
+
+                    {/* Light Gray Overlay - Dims the image */}
+                    <div className="absolute inset-0 bg-gray-100/30 rounded-lg" />
+
+                    {/* Permanent Flag Badge - Top Right */}
+                    <div className="absolute -top-1.5 -right-1.5 z-10">
+                      <div
+                        className="bg-white border border-gray-100 text-black 
+              px-1.5 py-0.1 rounded-md shadow-sm min-w-[60px]"
+                      >
+                        <span className="text-[9px] font-semibold uppercase tracking-wide">
+                          Coming Soon
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-          
-          
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
         </div>
 
         {/* Service Areas Text */}

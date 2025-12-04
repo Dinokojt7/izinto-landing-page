@@ -89,7 +89,10 @@ export default function LinkFooter() {
       { name: "Contact Us", href: "/help" },
     ],
     workWithUs: [
-      { name: "Partner and Affiliate Requests", href: "/c/affiliates-and-partnerships" },
+      {
+        name: "Partner and Affiliate Requests",
+        href: "/c/affiliates-and-partnerships",
+      },
     ],
     company: [
       { name: "FAQs", href: "/faqs" },
@@ -211,10 +214,7 @@ export default function LinkFooter() {
           <div className="flex-1">
             <div className="flex flex-col gap-4 md:gap-3 w-full max-w-xs">
               {footerLinks.appStores.map((store, index) => (
-                <div
-                  key={index}
-                  className="relative"
-                >
+                <div key={index} className="relative">
                   {/* Image Container with Overlay */}
                   <div className="relative w-full h-10">
                     {/* Original Image */}
@@ -223,14 +223,16 @@ export default function LinkFooter() {
                       alt={store.name}
                       className="w-full h-10 object-contain rounded-lg"
                     />
-                    
+
                     {/* Light Gray Overlay - Dims the image */}
                     <div className="absolute inset-0 bg-gray-100/30 rounded-lg" />
-                    
+
                     {/* Permanent Flag Badge - Top Right */}
                     <div className="absolute -top-1 right-6.5 z-10">
-                      <div className="bg-white border border-gray-100 text-black 
-                        px-1 py-0 rounded-md shadow-sm min-w-[50px]">
+                      <div
+                        className="bg-white border border-gray-100 text-black 
+                        px-1 py-0 rounded-md shadow-sm min-w-[50px]"
+                      >
                         <span className="text-[8px] font-semibold uppercase tracking-wide">
                           Coming Soon
                         </span>
