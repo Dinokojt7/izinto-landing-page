@@ -2,6 +2,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
+import Image from "next/image";
 import Sidebar from "@/components/layout/Sidebar";
 import LoginDialog from "@/app/auth/login/loginDialog";
 import AddressSearchDialog from "../maps/AddressSearchDialog";
@@ -35,6 +36,10 @@ export default function HeroSection() {
   );
   const addressButtonOpacity = useTransform(scrollY, [0, 50, 100], [0, 0.5, 1]);
   const addressButtonScale = useTransform(scrollY, [0, 100], [0.8, 1]);
+
+  // Logo opacity transforms
+  const lightLogoOpacity = useTransform(scrollY, [0, 100], [1, 0]);
+  const darkLogoOpacity = useTransform(scrollY, [0, 100], [0, 1]);
 
   // Avatar filter transformation
   const avatarFilter = useTransform(
@@ -91,23 +96,38 @@ export default function HeroSection() {
                 </svg>
               </motion.button>
 
-              {/* Image Logo with light/dark variants */}
-              <motion.div className="flex items-center">
+              {/* Logo Container */}
+              <div className="flex items-center relative h-8 w-32">
                 {/* Light logo for transparent header */}
-                <motion.img
-                  src="/images/logo-light.png"
-                  alt="Izinto"
-                  style={{ opacity: useTransform(scrollY, [0, 100], [1, 0]) }}
-                  className="h-8 w-auto absolute"
-                />
+                <motion.div
+                  style={{ opacity: lightLogoOpacity }}
+                  className="absolute"
+                >
+                  <Image
+                    src="/images/logo-light.png"
+                    alt="Izinto"
+                    width={120}
+                    height={32}
+                    className="h-8 w-auto"
+                    priority
+                  />
+                </motion.div>
+
                 {/* Dark logo for white header */}
-                <motion.img
-                  src="/images/try-retro.png"
-                  alt="Izinto"
-                  style={{ opacity: useTransform(scrollY, [0, 100], [0, 1]) }}
-                  className="h-8 w-auto"
-                />
-              </motion.div>
+                <motion.div
+                  style={{ opacity: darkLogoOpacity }}
+                  className="absolute"
+                >
+                  <Image
+                    src="/images/try-retro.png"
+                    alt="Izinto"
+                    width={120}
+                    height={32}
+                    className="h-8 w-auto"
+                    priority
+                  />
+                </motion.div>
+              </div>
             </div>
 
             {/* Right: Address Search & User Profile or Login */}
@@ -135,12 +155,18 @@ export default function HeroSection() {
                     }}
                     className="flex items-center space-x-2 border-2 px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors cursor-pointer"
                   >
-                    <motion.img
-                      src="/images/user-avatar.png"
-                      alt="User"
+                    <motion.div
                       style={{ filter: avatarFilter }}
-                      className="w-5 h-5"
-                    />
+                      className="w-5 h-5 relative"
+                    >
+                      <Image
+                        src="/images/user-avatar.png"
+                        alt="User"
+                        fill
+                        className="object-contain"
+                        unoptimized // Since it's small icon
+                      />
+                    </motion.div>
                     <span className="capitalize">
                       {user.displayName ||
                         (profileComplete && user.firstName && user.lastName
@@ -159,12 +185,18 @@ export default function HeroSection() {
                   }}
                   className="flex items-center space-x-2 border-2 px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors"
                 >
-                  <motion.img
-                    src="/images/user-avatar.png"
-                    alt="User"
+                  <motion.div
                     style={{ filter: avatarFilter }}
-                    className="w-5 h-5"
-                  />
+                    className="w-5 h-5 relative"
+                  >
+                    <Image
+                      src="/images/user-avatar.png"
+                      alt="User"
+                      fill
+                      className="object-contain"
+                      unoptimized
+                    />
+                  </motion.div>
                   <span>SIGN IN</span>
                 </motion.button>
               )}
@@ -173,17 +205,22 @@ export default function HeroSection() {
         </div>
       </motion.header>
 
-      {/* Hero Content - Starts from top of viewport */}
+      {/* Rest of your component remains the same... */}
+      {/* Hero Content */}
       <section className="relative h-[80vh] bg-grey-400 overflow-hidden -mt-16 pt-16">
-        {/* Background Image - Covers entire section including behind header */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url(/images/hero.jpg)",
-          }}
-        />
+        {/* Background Image - Use next/image for hero background too */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero.jpg"
+            alt="Hero background"
+            fill
+            className="object-cover"
+            priority
+            quality={85}
+          />
+        </div>
 
-        {/* Overlay - Covers entire section including behind header */}
+        {/* Overlay */}
         <div className="absolute inset-0 bg-black/40" />
 
         {/* Content - Centered in the hero area (excluding header) */}

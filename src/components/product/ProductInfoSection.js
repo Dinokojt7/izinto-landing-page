@@ -3,6 +3,7 @@ import { useState } from "react";
 import { getProviderDetails } from "@/lib/utils/providerExplanations";
 import { getDetailIcon } from "@/lib/utils/svgIcons";
 import AddToCartControllers from "../cart/AddToCartController";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ProductInfoSection({ service }) {
   const [imageError, setImageError] = useState(false);
@@ -115,12 +116,17 @@ export default function ProductInfoSection({ service }) {
             </h3>
 
             <div className="relative">
-              <p
-                className={`text-xs text-gray-700 ${isIntroExpanded ? "" : "line-clamp-3"}`}
-              >
-                {service.introduction}
-              </p>
-
+              <AnimatePresence>
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`text-xs text-gray-700 ${isIntroExpanded ? "" : "line-clamp-3"}`}
+                >
+                  {service.introduction}
+                </motion.p>
+              </AnimatePresence>
               {/* Show More/Less Button - Only show if introduction is long */}
               {needsExpansion && (
                 <button

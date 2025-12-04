@@ -24,11 +24,7 @@ export default function Home() {
   const { isLoading } = useHomepageRedirect();
   const { saveAddress } = useAddress();
 
-  // Show loading while checking redirect conditions
-  if (isLoading) {
-    return <CircularProgressIndicator isPageLoader={true} />;
-  }
-
+  // ✅ Move useEffect BEFORE any conditional returns
   useEffect(() => {
     const handleScroll = () => {
       if (heroSectionRef.current) {
@@ -44,6 +40,11 @@ export default function Home() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // ✅ Now check for loading state AFTER all hooks
+  if (isLoading) {
+    return <CircularProgressIndicator isPageLoader={true} />;
+  }
 
   const handleAddressSave = (addressData) => {
     saveAddress(addressData); // Use the context method
