@@ -161,7 +161,7 @@ export default function LinkFooter() {
           {/* Section 1: HELP & SUPPORT */}
           <div className="flex-1">
             <h2 className="text-xl font-extrabold tracking-tight italic text-black mb-4">
-              HELP & SUPPORT
+              HELP & SUPPORT.
             </h2>
             <div className="space-y-2">
               {footerLinks.helpSupport.map((link, index) => (
@@ -179,7 +179,7 @@ export default function LinkFooter() {
           {/* Section 2: WORK WITH US */}
           <div className="flex-1">
             <h2 className="text-xl font-extrabold tracking-tight italic text-black mb-4">
-              WORK WITH US
+              WORK WITH US.
             </h2>
             <div className="space-y-2">
               {footerLinks.workWithUs.map((link, index) => (
@@ -197,7 +197,7 @@ export default function LinkFooter() {
           {/* Section 3: COMPANY */}
           <div className="flex-1">
             <h2 className="text-xl font-extrabold tracking-tight italic text-black mb-4">
-              COMPANY
+              COMPANY.
             </h2>
             <div className="space-y-2">
               {footerLinks.company.map((link, index) => (
