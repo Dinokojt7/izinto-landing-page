@@ -1,23 +1,33 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import AddressSearchDialog from "@/components/maps/AddressSearchDialog";
 import { COLORS } from "@/lib/utils/constants";
+import { useAddress } from "@/providers/AddressProvider";
+import AddressSearchDialog from "@/components/maps/AddressSearchDialog";
+import AddressSelectionDialog from "@/components/maps/AddressSelectionDialog";
 
 export default function CategoryBreadcrumbSection({ provider, onBack }) {
+  const [isAddressSelectionOpen, setIsAddressSelectionOpen] = useState(false);
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
-  const [savedAddress, setSavedAddress] = useState(null);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("userAddress");
-    if (saved) {
-      setSavedAddress(JSON.parse(saved));
-    }
-  }, []);
+  // Use AddressProvider hook
+  const {
+    activeAddress: savedAddress,
+    hasAddresses,
+    saveAddress,
+  } = useAddress();
 
   const handleAddressSave = (addressData) => {
-    setSavedAddress(addressData);
-    localStorage.setItem("userAddress", JSON.stringify(addressData));
+    saveAddress(addressData);
+    setIsAddressDialogOpen(false);
+  };
+
+  const handleAddressButtonClick = () => {
+    if (hasAddresses) {
+      setIsAddressSelectionOpen(true);
+    } else {
+      setIsAddressDialogOpen(true);
+    }
   };
 
   return (
@@ -59,7 +69,7 @@ export default function CategoryBreadcrumbSection({ provider, onBack }) {
               {/* Address Button */}
               {savedAddress ? (
                 <button
-                  onClick={() => setIsAddressDialogOpen(true)}
+                  onClick={handleAddressButtonClick}
                   className="flex items-center gap-1 xs:gap-2 text-primary font-semibold hover:text-gray-700 transition-colors min-w-0"
                 >
                   <span className="text-sm xs:text-base text-black font-extrabold italic truncate max-w-[100px] xs:max-w-[150px] sm:max-w-[180px] lg:max-w-none">
@@ -81,7 +91,7 @@ export default function CategoryBreadcrumbSection({ provider, onBack }) {
                 </button>
               ) : (
                 <button
-                  onClick={() => setIsAddressDialogOpen(true)}
+                  onClick={handleAddressButtonClick}
                   className="text-[#0000ff] px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 rounded-full text-xs xs:text-sm font-extrabold italic transition-all transform whitespace-nowrap hover:bg-blue-50 active:scale-95 shrink-0"
                 >
                   ADD ADDRESS
@@ -92,6 +102,14 @@ export default function CategoryBreadcrumbSection({ provider, onBack }) {
         </div>
       </div>
 
+      {/* Address Selection Dialog */}
+      <AddressSelectionDialog
+        isOpen={isAddressSelectionOpen}
+        onClose={() => setIsAddressSelectionOpen(false)}
+        showAddressSearchDialog={() => setIsAddressDialogOpen(true)}
+      />
+
+      {/* Address Search Dialog (for adding new addresses) */}
       <AddressSearchDialog
         isOpen={isAddressDialogOpen}
         onClose={() => setIsAddressDialogOpen(false)}

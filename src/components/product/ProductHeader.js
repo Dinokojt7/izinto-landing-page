@@ -38,7 +38,7 @@ export default function ProductHeader() {
           background: headerBackground,
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:pl-5 lg:pr-9 h-full">
           <div className="flex justify-between items-center h-full">
             {/* Left: Hamburger Menu & Logo */}
             <div className="flex items-center space-x-2">
