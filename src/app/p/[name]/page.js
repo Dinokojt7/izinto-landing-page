@@ -78,7 +78,7 @@ export default function ProductPage() {
 
   return (
     <div className={`min-h-screen bg-white ${poppins.className}`}>
-      <ProductHeader setIsProfileDialogOpen={setIsProfileDialogOpen} />
+      <ProductHeader />
       <BreadcrumbSection service={currentService} />
       <CategoryBanner service={currentService} />
       <ProductInfoSection service={currentService} />
@@ -90,12 +90,6 @@ export default function ProductPage() {
       <HowWeWork service={currentService} />
       <BottomBreadcrumbSection service={currentService} />
       <Footer />
-      {isProfileDialogOpen && (
-        <ProfileDialog
-          isOpen={isProfileDialogOpen}
-          onClose={() => setIsProfileDialogOpen(false)}
-        />
-      )}
     </div>
   );
 }

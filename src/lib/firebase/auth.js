@@ -83,17 +83,32 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
 
     if (!userSnap.exists()) {
       // Create new user profile
+      let name = "";
+      let surname = "";
+      let displayName = firebaseUser.displayName || "";
+
+      if (displayName) {
+        const nameParts = displayName.split(" ");
+        name = nameParts[0] || "";
+        surname = nameParts.slice(1).join(" ") || "";
+      }
+
       const userData = {
         uid: firebaseUser.uid,
         email: firebaseUser.email || "",
         phone: firebaseUser.phoneNumber || "",
+        name: name,
+        surname: surname,
         displayName: firebaseUser.displayName || "",
         photoURL: firebaseUser.photoURL || "",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         profileComplete: false,
         address: null,
-        preferences: {},
+        preferences: {
+          notifications: true,
+          marketing: false,
+        },
       };
 
       await setDoc(userRef, userData);

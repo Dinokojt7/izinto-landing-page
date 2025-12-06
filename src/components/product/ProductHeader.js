@@ -6,12 +6,15 @@ import Sidebar from "@/components/layout/Sidebar";
 import LoginDialog from "@/app/auth/login/loginDialog";
 import Link from "next/link";
 import { useAuth } from "@/lib/context/AuthContext";
+import ProfileDialog from "../layout/ProfileDialog";
 
-export default function ProductHeader({ setIsProfileDialogOpen }) {
+export default function ProductHeader() {
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { totalItems } = useCartStore();
-  const { user, profileComplete } = useAuth();
+  const { user, getUserDisplayName, getUserFirstName, getUserSurname } =
+    useAuth();
   const { scrollY } = useScroll();
 
   const headerBackground = useTransform(
@@ -24,6 +27,8 @@ export default function ProductHeader({ setIsProfileDialogOpen }) {
     [0, 100],
     ["rgb(18,18,18)", "rgb(18,18,18)"],
   );
+
+  const displayName = getUserDisplayName ? getUserDisplayName() : "PROFILE";
 
   return (
     <>
@@ -74,11 +79,11 @@ export default function ProductHeader({ setIsProfileDialogOpen }) {
                 // User is logged in - show name/surname link to profile
 
                 <motion.button
+                  onClick={() => setIsProfileDialogOpen(true)}
                   style={{
                     color: headerTextColor,
                     borderColor: headerTextColor,
                   }}
-                  onClick={() => setIsProfileDialogOpen(true)}
                   className="flex items-center space-x-1 sm:space-x-2 border-2 px-3 sm:px-4 py-1 rounded-4xl font-extrabold italic hover:bg-gray-100 transition-colors text-xs sm:text-base cursor-pointer"
                 >
                   <img
@@ -87,10 +92,7 @@ export default function ProductHeader({ setIsProfileDialogOpen }) {
                     className="w-4 h-4 sm:w-5 sm:h-5"
                   />
                   <span className="capitalize">
-                    {user.displayName ||
-                      (profileComplete && user.firstName && user.lastName
-                        ? `${user.firstName} ${user.lastName}`.toUpperCase()
-                        : "PROFILE")}
+                    {displayName.toUpperCase()}
                   </span>
                 </motion.button>
               ) : (
@@ -144,6 +146,12 @@ export default function ProductHeader({ setIsProfileDialogOpen }) {
         isOpen={isLoginDialogOpen}
         onClose={() => setIsLoginDialogOpen(false)}
       />
+      {isProfileDialogOpen && (
+        <ProfileDialog
+          isOpen={isProfileDialogOpen}
+          onClose={() => setIsProfileDialogOpen(false)}
+        />
+      )}
 
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
     </>
