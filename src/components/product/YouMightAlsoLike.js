@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
-import ServiceCard from "@/components/services/ServiceCard";
+import { useRouter } from "next/navigation";
 import MainServiceCard from "../ui/MainServiceCard";
 
 export default function SimilarServices({
@@ -10,6 +10,7 @@ export default function SimilarServices({
 }) {
   const scrollContainerRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const router = useRouter();
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -25,6 +26,11 @@ export default function SimilarServices({
     }
   };
 
+  const handleMoreItems = () => {
+    // Navigate to /services (all items from all categories)
+    router.push("/services");
+  };
+
   if (services.length === 0) return null;
 
   return (
@@ -34,7 +40,10 @@ export default function SimilarServices({
         <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-black italic text-black">
           YOU MIGHT ALSO LIKE
         </h2>
-        <button className="flex items-center text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors">
+        <button
+          onClick={handleMoreItems}
+          className="flex items-center text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors"
+        >
           MORE ITEMS
           <svg
             width="20"

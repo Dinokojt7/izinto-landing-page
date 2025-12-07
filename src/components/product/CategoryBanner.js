@@ -11,13 +11,11 @@ export default function CategoryBanner({ service }) {
 
   const handleViewMore = () => {
     setIsLoading(true);
-    // Navigate to category page with provider filter
+    // Navigate to provider-specific section
     setTimeout(() => {
-      router.push(
-        `/category/${service.provider.toLowerCase().replace(/\s+/g, "-")}`,
-      );
+      router.push(`/s/${service.provider.toLowerCase().replace(/\s+/g, "-")}`);
       setIsLoading(false);
-    }, 1000);
+    }, 300);
   };
 
   if (isLoading) {

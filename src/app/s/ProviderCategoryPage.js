@@ -1,3 +1,4 @@
+// app/s/[provider]/page.jsx
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -7,8 +8,10 @@ import CircularProgressIndicator from "@/components/ui/CircularProgessIndicator"
 import CategoryBreadcrumbSection from "./ProviderBreadcrumbSection";
 import MainServiceCard from "@/components/ui/MainServiceCard";
 import ProductHeader from "@/components/product/ProductHeader";
+import HowWeWork from "@/components/services/HowWeWork";
 import Link from "next/link";
 import MobileServiceCard from "@/components/ui/MobileServiceCard";
+import Footer from "@/components/layout/Footer";
 
 export default function ProviderCategoryPage() {
   const router = useRouter();
@@ -17,6 +20,7 @@ export default function ProviderCategoryPage() {
   const [providerServices, setProviderServices] = useState([]);
   const [providerName, setProviderName] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [currentService, setCurrentService] = useState(null);
 
   useEffect(() => {
     if (servicesData?.Specialties || servicesData?.specialties) {
@@ -36,15 +40,23 @@ export default function ProviderCategoryPage() {
           (s) => s.provider === foundProvider,
         );
         setProviderServices(providerServices);
+
+        // Create a mock service object for HowWeWork component
+        if (providerServices.length > 0) {
+          setCurrentService({
+            provider: foundProvider,
+            name: `${foundProvider} Services`,
+            // Add any other properties HowWeWork might need
+          });
+        }
       }
     }
 
     // Check screen size
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768); // md breakpoint
+      setIsMobile(window.innerWidth < 768);
     };
 
-    // Initial check
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
 
@@ -79,14 +91,19 @@ export default function ProviderCategoryPage() {
       <CategoryBreadcrumbSection provider={providerName} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Provider Header */}
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <h1 className="text-2xl sm:text-4xl font-black italic text-black">
-              {providerExplanation}
-            </h1>
+        {/* Reused CategoryBanner Design (Without Button) */}
+        <section className="w-full mb-8">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl sm:rounded-2xl px-4 sm:px-6 py-6 sm:py-4">
+            <div className="text-center lg:text-left">
+              <h1 className="text-2xl xs:text-3xl sm:text-4xl font-black italic text-black/70 mb-3 sm:mb-4 leading-tight">
+                {providerName}
+              </h1>
+              <p className="text-black/60 font-semibold text-sm xs:text-base leading-relaxed max-w-4xl mx-auto lg:mx-0">
+                {providerExplanation}
+              </p>
+            </div>
           </div>
-        </div>
+        </section>
 
         {/* Services Grid */}
         {providerServices.length > 0 ? (
@@ -123,12 +140,19 @@ export default function ProviderCategoryPage() {
           </div>
         )}
 
+        {/* How We Work Section */}
+        {currentService && (
+          <div className="mt-12 pt-2">
+            <HowWeWork service={currentService} />
+          </div>
+        )}
+
         {/* Footer Note */}
-        <div className="mt-12 pt-8 border-t border-gray-200 text-center">
+        <div className="mt-6 text-center">
           <nav className="flex items-start justify-start text-xs text-black">
             <Link
               href="/services"
-              className="hover:underline transition-colors font-medium"
+              className="hover:underline transition-colors underline font-medium"
             >
               Home
             </Link>
@@ -137,6 +161,7 @@ export default function ProviderCategoryPage() {
           </nav>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
