@@ -26,7 +26,7 @@ export default function CategoryBanner({ service }) {
 
   return (
     <section className="w-full px-3 xs:px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      <div className="bg-blue-50 border border-blue-200 rounded-xl sm:rounded-2xl px-3 xs:px-4 sm:px-6 py-4 sm:py-6">
+      <div className="bg-blue-50 border border-blue-200 rounded-xl sm:rounded-2xl px-3 xs:px-4 sm:px-6 py-4 sm:py-4">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
           {/* Left Content */}
           <div className="flex-1 text-center lg:text-left">
