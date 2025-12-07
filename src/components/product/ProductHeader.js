@@ -101,7 +101,6 @@ export default function ProductHeader() {
             <div className="flex items-center space-x-2 sm:space-x-3">
               {/* User Profile Link or Login Button */}
               {user ? (
-                // User is logged in - show name/surname link to profile
                 <motion.button
                   onClick={() => setIsProfileDialogOpen(true)}
                   style={{
@@ -120,7 +119,6 @@ export default function ProductHeader() {
                   </span>
                 </motion.button>
               ) : (
-                // No user - show login button
                 <motion.button
                   onClick={() => setIsLoginDialogOpen(true)}
                   style={{
