@@ -20,7 +20,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [profileComplete, setProfileComplete] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
   const [phoneAuthState, setPhoneAuthState] = useState({
     step: "input", // "input", "otp", "success"
     phoneNumber: "",
@@ -31,38 +30,18 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const recaptchaContainerRef = useRef(null);
 
-  const loadUserProfile = async (firebaseUser) => {
-    if (!firebaseUser) return null;
-
-    try {
-      const result = await getUserProfile(firebaseUser.uid);
-      if (result.success) {
-        const profileData = result.data;
-        setUserProfile(profileData);
-        setProfileComplete(profileData.profileComplete || false);
-        return profileData;
-      }
-      return null;
-    } catch (error) {
-      console.error("Error loading user profile:", error);
-      return null;
-    }
-  };
-
   useEffect(() => {
     const unsubscribe = setupAuthListener(async (authData) => {
       if (authData) {
         setUser(authData.user);
+        setProfileComplete(authData.profileComplete || false);
 
-        // Load user profile from Firestore
-        const profile = await loadUserProfile(authData.user);
-
+        // Redirect to profile if new user or profile incomplete
         if (!authData.profileComplete && router) {
           router.push("/profile");
         }
       } else {
         setUser(null);
-        setUserProfile(null);
         setProfileComplete(false);
       }
       setLoading(false);
@@ -222,86 +201,17 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  const getUserDisplayName = () => {
-    if (!user) return null;
-
-    // First priority: Name and surname from Firestore profile
-    if (userProfile?.name && userProfile?.surname) {
-      return `${userProfile.name} ${userProfile.surname}`;
-    }
-
-    // Second priority: Full name from Firestore
-    if (userProfile?.displayName) {
-      return userProfile.displayName;
-    }
-
-    // Third priority: Google/Firebase auth display name
-    if (user.displayName) {
-      return user.displayName;
-    }
-
-    // Fourth priority: Email username
-    if (user.email) {
-      return user.email.split("@")[0];
-    }
-
-    return "PROFILE";
-  };
-
-  const getUserFirstName = () => {
-    if (!user) return null;
-
-    // First priority: Name from Firestore
-    if (userProfile?.name) {
-      return userProfile.name;
-    }
-
-    // Second priority: First word from display name
-    if (user.displayName) {
-      return user.displayName.split(" ")[0];
-    }
-
-    // Third priority: Email username
-    if (user.email) {
-      return user.email.split("@")[0];
-    }
-
-    return null;
-  };
-
-  const getUserSurname = () => {
-    if (!user) return null;
-
-    // First priority: Surname from Firestore
-    if (userProfile?.surname) {
-      return userProfile.surname;
-    }
-
-    // Second priority: Last word from display name
-    if (user.displayName) {
-      const parts = user.displayName.split(" ");
-      return parts.length > 1 ? parts[parts.length - 1] : null;
-    }
-
-    return null;
-  };
-
   const value = {
     user,
-    userProfile,
     loading,
     profileComplete,
     phoneAuthState,
-    getUserDisplayName,
-    getUserFirstName,
-    getUserSurname,
     handlePhoneSubmit,
     handleOTPVerify,
     handleGoogleSignIn,
     handleLogout,
     resetPhoneAuth,
-    getUserProfile: () => userProfile,
-    loadUserProfile: (uid) => getUserProfile(uid),
+    getUserProfile,
   };
 
   return (

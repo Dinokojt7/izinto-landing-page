@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useCartStore } from "@/lib/stores/cart-store";
 import Sidebar from "@/components/layout/Sidebar";
@@ -12,10 +12,14 @@ export default function ProductHeader() {
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Added missing state
   const { totalItems } = useCartStore();
-  const { user, getUserDisplayName, getUserFirstName, getUserSurname } =
-    useAuth();
+  const { user, getUserProfile } = useAuth(); // Removed unused imports
   const { scrollY } = useScroll();
+  const [profile, setProfile] = useState({
+    name: "",
+    surname: "",
+  });
 
   const headerBackground = useTransform(
     scrollY,
@@ -28,7 +32,28 @@ export default function ProductHeader() {
     ["rgb(18,18,18)", "rgb(18,18,18)"],
   );
 
-  const displayName = getUserDisplayName ? getUserDisplayName() : "PROFILE";
+  useEffect(() => {
+    if (user) {
+      loadUserProfile();
+    }
+  }, [isLoading, user]);
+
+  const loadUserProfile = async () => {
+    setIsLoading(true);
+    try {
+      const result = await getUserProfile(user.uid);
+      if (result.success) {
+        setProfile({
+          name: result.data.name || "YOUR",
+          surname: result.data.surname || "PROFILE",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to load user profile:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -77,7 +102,6 @@ export default function ProductHeader() {
               {/* User Profile Link or Login Button */}
               {user ? (
                 // User is logged in - show name/surname link to profile
-
                 <motion.button
                   onClick={() => setIsProfileDialogOpen(true)}
                   style={{
@@ -91,8 +115,8 @@ export default function ProductHeader() {
                     alt="User"
                     className="w-4 h-4 sm:w-5 sm:h-5"
                   />
-                  <span className="capitalize">
-                    {displayName.toUpperCase()}
+                  <span>
+                    {`${profile.name.toUpperCase()}  ${profile.surname.toUpperCase()}`}
                   </span>
                 </motion.button>
               ) : (

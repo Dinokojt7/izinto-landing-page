@@ -53,13 +53,12 @@ export default function ProfileDialog({ isOpen, onClose }) {
     const result = await getUserProfile(user.uid);
 
     if (result.success) {
-      // Load from Firebase schema: name, surname, email, phone, address, preferences
       setProfile({
         name: result.data.name || "",
         surname: result.data.surname || "",
         email: result.data.email || user.email || "",
         phone: result.data.phone || user.phoneNumber || "",
-        address: result.data.address || "", // Will be overridden by activeAddress effect
+        address: result.data.address || "",
         preferences: result.data.preferences || {
           notifications: true,
           marketing: false,
@@ -96,7 +95,6 @@ export default function ProfileDialog({ isOpen, onClose }) {
     try {
       const userRef = doc(db, "users", user.uid);
 
-      // ✅ YES - This saves name, surname, email, phone to Firebase
       await updateDoc(userRef, {
         name: profile.name.trim(),
         surname: profile.surname.trim(),
