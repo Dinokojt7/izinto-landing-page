@@ -34,13 +34,13 @@ export default function ProviderSection({
     <section className="space-y-4">
       {/* Provider Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-3xl sm:text-4xl font-black italic text-black">
-          {provider}
+        <h1 className="text-2xl sm:text-3xl font-black italic text-black">
+          {provider}.
         </h1>
 
         <button
           onClick={() => onProviderSelect(provider)}
-          className="flex items-center text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors"
+          className="flex items-center text-black/60 italic text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors"
         >
           MORE ITEMS
           <svg

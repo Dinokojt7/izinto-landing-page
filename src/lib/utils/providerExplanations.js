@@ -16,6 +16,36 @@ export const getProviderExplanation = (provider) => {
   );
 };
 
+export const getProviderColor = (provider) => {
+  const colors = {
+    "Easy Laundry": "bg-[#28694B]",
+    Wegas: "bg-[#C35627]",
+    "Clean Paws": "bg-[#D8226C]",
+    Modern8: "bg-[#744B93]",
+  };
+  return colors[provider] || "bg-gray-600";
+};
+
+export const getProviderImage = (provider) => {
+  const images = {
+    "Easy Laundry": "/images/onboard_wash.jpg",
+    Wegas: "/images/onboard_wash2.jpg",
+    "Clean Paws": "/images/onboard_wash1.jpg",
+    Modern8: "/images/onboarding-wash2.png",
+  };
+  return images[provider] || "/images/default-service.jpg";
+};
+
+export const getProviderHeader = (provider) => {
+  const headers = {
+    "Easy Laundry": "Easy Laundry's dark-store laundry services.",
+    Wegas: "Wegas' LPG gas cylinder exchange service.",
+    Modern8: "Modern8's individual items and home deep.",
+    "Clean Paws": "Clean Paws' professional mobile pet grooming.",
+  };
+  return headers[provider] || `${provider}'s professional services.`;
+};
+
 export const getProviderDetails = (provider, details) => {
   // Convert details to consistent format with null safety
   const formattedDetails = (details || []).map((detail) => {

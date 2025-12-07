@@ -31,11 +31,11 @@ export default function HomeBreadcrumbSection() {
 
   return (
     <>
-      <div className="w-full bg-white border-y border-gray-200 py-3 mt-16">
+      <div className="w-full bg-white/60 border-y border-gray-200 py-5 mt-16">
         <div className="max-w-7xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             {/* Breadcrumbs - Left Side */}
-            <div className="flex items-center flex-wrap gap-1 xs:gap-2 text-xs xs:text-sm text-gray-600">
+            <div className="flex items-center flex-wrap gap-1 xs:gap-2 text-sm xs:text-sm text-gray-600">
               <span className="font-semibold text-black whitespace-nowrap">
                 All Services
               </span>
