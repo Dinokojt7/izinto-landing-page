@@ -204,7 +204,6 @@ export default function HeroSection() {
           </div>
         </div>
       </motion.header>
-
       {/* Rest of your component remains the same... */}
       {/* Hero Content */}
       <section className="relative h-[80vh] bg-grey-400 overflow-hidden -mt-16 pt-16">
@@ -262,20 +261,21 @@ export default function HeroSection() {
           </button>
         </div>
       </section>
-
       {/* Dialogs */}
       <AddressSearchDialog
         isOpen={isAddressDialogOpen}
         onClose={() => setIsAddressDialogOpen(false)}
         onAddressSave={handleAddressSave}
       />
-
       <LoginDialog
         isOpen={isLoginDialogOpen}
         onClose={() => setIsLoginDialogOpen(false)}
       />
-
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        showLoginDialog={() => setIsLoginDialogOpen(true)}
+      />{" "}
     </>
   );
 }

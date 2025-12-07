@@ -12,9 +12,9 @@ export default function ProductHeader() {
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // Added missing state
+  const [isLoading, setIsLoading] = useState(false);
   const { totalItems } = useCartStore();
-  const { user, getUserProfile } = useAuth(); // Removed unused imports
+  const { user, getUserProfile } = useAuth();
   const { scrollY } = useScroll();
   const [profile, setProfile] = useState({
     name: "",
@@ -164,7 +164,6 @@ export default function ProductHeader() {
           </div>
         </div>
       </motion.header>
-
       {/* Dialogs */}
       <LoginDialog
         isOpen={isLoginDialogOpen}
@@ -176,8 +175,11 @@ export default function ProductHeader() {
           onClose={() => setIsProfileDialogOpen(false)}
         />
       )}
-
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        showLoginDialog={() => setIsLoginDialogOpen(true)}
+      />{" "}
     </>
   );
 }

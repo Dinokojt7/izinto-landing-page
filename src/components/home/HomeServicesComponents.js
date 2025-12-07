@@ -16,13 +16,22 @@ export default function HomeServicesComponent() {
     if (servicesData?.Specialties || servicesData?.specialties) {
       const services = servicesData.Specialties || servicesData.specialties;
 
-      // Group services by provider
+      // Filter services to only include allowed providers
+      const allowedProviders = [
+        "Wegas",
+        "Easy Laundry",
+        "Modern8",
+        "Clean Paws",
+      ];
+
       const grouped = services.reduce((acc, service) => {
         const provider = service.provider || "Other";
-        if (!acc[provider]) {
-          acc[provider] = [];
+        if (allowedProviders.includes(provider)) {
+          if (!acc[provider]) {
+            acc[provider] = [];
+          }
+          acc[provider].push(service);
         }
-        acc[provider].push(service);
         return acc;
       }, {});
 
