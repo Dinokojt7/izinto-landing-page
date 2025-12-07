@@ -187,7 +187,7 @@ export default function Sidebar({ isOpen, onClose, showLoginDialog }) {
                   {/* Help & Support */}
                   <div
                     onClick={handleHelpClick}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group"
+                    className="flex items-center gap-3 p-3 rounded hover:bg-blue-50 cursor-pointer transition-colors group"
                     disabled={isNavigating}
                   >
                     <img
@@ -203,7 +203,7 @@ export default function Sidebar({ isOpen, onClose, showLoginDialog }) {
                   {/* FAQs */}
                   <div
                     onClick={handleFaqClick}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group"
+                    className="flex items-center gap-3 p-3 rounded hover:bg-blue-50 cursor-pointer transition-colors group"
                     disabled={isNavigating}
                   >
                     <img
