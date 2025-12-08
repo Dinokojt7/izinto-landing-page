@@ -73,7 +73,7 @@ export default function Home() {
       <Footer />
 
       {showBottomButton && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden p-4">
+        <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden p-4">
           <button
             onClick={() => setIsAddressDialogOpen(true)}
             className="bg-[#0000ff] text-white px-6 py-3 rounded-full text-sm font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full text-center"

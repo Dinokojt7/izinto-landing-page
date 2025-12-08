@@ -84,7 +84,7 @@ export default function HomeBreadcrumbSection() {
               ) : (
                 <button
                   onClick={handleAddressButtonClick}
-                  className="text-[#0000ff] px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 rounded-full text-xs xs:text-sm font-extrabold italic transition-all transform whitespace-nowrap hover:bg-blue-50 active:scale-95 shrink-0"
+                  className="text-[#0000ff] px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 rounded-full text-sm xs:text-sm font-extrabold italic transition-all transform whitespace-nowrap hover:bg-blue-100 bg-blue-50 active:scale-95 shrink-0"
                 >
                   ADD ADDRESS
                 </button>

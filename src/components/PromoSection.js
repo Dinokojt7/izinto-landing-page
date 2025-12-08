@@ -2,17 +2,32 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import { useServices } from "@/lib/api/services";
-import { COLORS } from "@/lib/utils/constants";
-import { Inter, Roboto } from "next/font/google";
+import { useAuth } from "@/lib/context/AuthContext";
 import MainServiceCard from "./ui/MainServiceCard";
 import CircularProgressIndicator from "./ui/CircularProgessIndicator";
+import PromoDialog from "./promo/PromoDialog";
+import LoginSnackbar from "./promo/LoginSnackbar";
+import LoginDialog from "@/app/auth/login/loginDialog";
 
-const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
+import { Inter, Poppins, Roboto } from "next/font/google";
+import { useRouter } from "next/navigation";
+
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export default function PromoSection() {
   const scrollContainerRef = useRef(null);
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showLoginSnackbar, setShowLoginSnackbar] = useState(false);
+  const [showPromoDialog, setShowPromoDialog] = useState(false);
   const { data: servicesData, isLoading, error } = useServices();
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+
+  const { user } = useAuth();
 
   const services = servicesData?.Specialties || servicesData?.specialties || [];
 
@@ -33,8 +48,8 @@ export default function PromoSection() {
   const scrollToIndex = (index) => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current;
-      const cardWidth = 256; // w-64 = 256px
-      const gap = 24; // space-x-6 = 24px
+      const cardWidth = 256;
+      const gap = 24;
       const scrollPosition = index * (cardWidth + gap);
 
       container.scrollTo({
@@ -44,45 +59,34 @@ export default function PromoSection() {
     }
   };
 
-  // Update scroll position when currentIndex changes
   useEffect(() => {
     scrollToIndex(currentIndex);
   }, [currentIndex]);
 
-  if (isLoading) {
-    return (
-      <section
-        className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center rounded-lg"
-        style={{ backgroundColor: COLORS.blue }}
-      >
-        <div className="flex justify-center items-center h-96">
-          <CircularProgressIndicator />
-        </div>
-      </section>
-    );
-  }
+  const handleLearnMoreClick = () => {
+    if (!user) {
+      setShowLoginSnackbar(true);
+    } else {
+      setShowPromoDialog(true);
+    }
+  };
 
-  if (error || !services.length) {
-    return (
-      <section
-        className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center rounded-lg"
-        style={{ backgroundColor: COLORS.blue }}
-      >
-        <div className="flex justify-center items-center h-96">
-          <div className="text-center">
-            <p className="text-white text-lg mb-4">No services available</p>
-            <CircularProgressIndicator />
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const handleSnackbarLogin = () => {
+    setShowLoginSnackbar(false);
+    setIsLoginDialogOpen(true);
+  };
+
+  const handleViewMore = () => {
+    router.push(`/services`);
+  };
 
   return (
-    <section className="max-w-7xl mx-auto py-12 mb-10 px-4 sm:px-6 lg:px-8 text-center bg-[#0096FF]">
-      {/* Main Grid Container - Text before image on mobile */}
+    <section
+      className={`max-w-7xl mx-auto py-12 mb-10 px-4 sm:px-6 lg:px-8 text-center bg-[#0096FF] ${poppins.className}`}
+    >
+      {/* Main Grid Container */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-96">
-        {/* Image Container - Comes after text on mobile */}
+        {/* Image Container */}
         <div className="w-full h-64 lg:h-96 bg-gray-300 rounded-2xl overflow-hidden order-2 lg:order-3">
           <img
             src="/images/onboard_wash.jpg"
@@ -90,18 +94,24 @@ export default function PromoSection() {
             className="w-full h-full object-cover"
           />
         </div>
-        {/* Text Content Container - Comes first on mobile */}
+
+        {/* Text Content Container */}
         <div className="w-full flex flex-col justify-center items-start text-left order-1">
           <h2 className="text-4xl lg:text-6xl font-black italic text-black mb-4 lg:mb-6 leading-tight">
             EARN WITH OUR
             <br />
             REFERRAL PROGRAM
           </h2>
-          <p className="text-base lg:text-lg text-gray-800 font-bold mb-6 max-w-lg">
+          <p className="text-base lg:text-base text-black mb-6 max-w-lg">
             Your friend gets R50 off their first service booking when they spend
             R500 or more.
           </p>
-          <button className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 lg:py-4 rounded-full text-sm lg:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full lg:w-auto text-center">
+
+          {/* Updated Button with Auth Check */}
+          <button
+            onClick={handleLearnMoreClick}
+            className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 lg:py-4 rounded-full text-sm lg:text-base font-extrabold italic hover:bg-blue-800 transition-all transform whitespace-nowrap w-full lg:w-auto text-center"
+          >
             LEARN MORE & EARN
           </button>
         </div>
@@ -114,7 +124,10 @@ export default function PromoSection() {
           <h3 className="text-xl lg:text-2xl font-black italic text-black leading-tight lg:leading-normal text-left">
             BROWSE AND BOOK YOUR FAVOURITE SERVICES.
           </h3>
-          <button className="flex text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors self-start lg:self-auto">
+          <button
+            onClick={() => handleViewMore()}
+            className="flex text-black text-sm font-black hover:underline cursor-pointer hover:text-gray-900 transition-colors self-start lg:self-auto"
+          >
             MORE ITEMS
             <svg
               width="20"
@@ -198,6 +211,22 @@ export default function PromoSection() {
           </div>
         </div>
       </div>
+      <LoginSnackbar
+        isOpen={showLoginSnackbar}
+        onClose={() => setShowLoginSnackbar(false)}
+        onLogin={handleSnackbarLogin}
+      />
+
+      <LoginDialog
+        isOpen={isLoginDialogOpen}
+        onClose={() => setIsLoginDialogOpen(false)}
+      />
+
+      {/* Promo Dialog for logged in users */}
+      <PromoDialog
+        isOpen={showPromoDialog}
+        onClose={() => setShowPromoDialog(false)}
+      />
     </section>
   );
 }

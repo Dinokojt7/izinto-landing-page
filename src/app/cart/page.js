@@ -59,19 +59,31 @@ export default function CartPage() {
     router.push("/services");
   };
 
+  // const handleCheckout = () => {
+  //   setIsLoading(true);
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+
+  //     if (!user) {
+  //       //  setIsLoginDialogOpen(true);
+
+  //       setShowSnackbar(true);
+  //     } else {
+  //       router.push("/checkout");
+  //     }
+  //   }, 500); // Shorter timeout for better UX
+  // };
+
   const handleCheckout = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-
-      if (!user) {
-        //  setIsLoginDialogOpen(true);
-
-        setShowSnackbar(true);
-      } else {
+    if (!user) {
+      setShowSnackbar(true);
+    } else {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(true);
         router.push("/checkout");
-      }
-    }, 500); // Shorter timeout for better UX
+      }, 500);
+    }
   };
 
   const handleClearCart = () => {
