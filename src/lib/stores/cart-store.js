@@ -8,11 +8,15 @@ export const useCartStore = create(
       totalItems: 0,
 
       addItem: (service, quantity = 1) => {
+        // Extract the raw ID - handle both NewSpecialtyModel and plain objects
+        const serviceId = service.originalId || service.id;
+        const selectedSize = service.selectedSize || "";
+
         const items = get().items;
         const existingItemIndex = items.findIndex(
           (item) =>
-            item.id === service.id &&
-            item.selectedSize === service.selectedSize,
+            (item.id === serviceId || item.originalId === serviceId) &&
+            item.selectedSize === selectedSize,
         );
 
         if (existingItemIndex > -1) {
@@ -24,11 +28,22 @@ export const useCartStore = create(
             totalItems: get().totalItems + quantity,
           });
         } else {
-          // Add new item
+          // Add new item - store raw data
           const newItem = {
-            ...service,
+            id: serviceId,
+            originalId: service.originalId,
+            name: service.name,
+            price: service.price,
+            size: service.size,
+            img: service.img,
+            details: service.details,
+            type: service.type,
+            material: service.material,
+            provider: service.provider,
+            time: service.time,
+            selectedSize: selectedSize,
             quantity,
-            cartId: `${service.id}-${service.selectedSize || "default"}-${Date.now()}`,
+            cartId: `${serviceId}-${selectedSize || "default"}-${Date.now()}`,
           };
           set({
             items: [...items, newItem],
@@ -68,6 +83,29 @@ export const useCartStore = create(
 
       clearCart: () => {
         set({ items: [], totalItems: 0 });
+      },
+
+      // Helper: Check if a service is in cart
+      isServiceInCart: (service) => {
+        const serviceId = service.originalId || service.id;
+        const selectedSize = service.selectedSize || "";
+        return get().items.some(
+          (item) =>
+            (item.id === serviceId || item.originalId === serviceId) &&
+            item.selectedSize === selectedSize,
+        );
+      },
+
+      // Helper: Get quantity for a service
+      getServiceQuantity: (service) => {
+        const serviceId = service.originalId || service.id;
+        const selectedSize = service.selectedSize || "";
+        const item = get().items.find(
+          (item) =>
+            (item.id === serviceId || item.originalId === serviceId) &&
+            item.selectedSize === selectedSize,
+        );
+        return item ? item.quantity : 0;
       },
     }),
     {

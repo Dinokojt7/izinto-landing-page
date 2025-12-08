@@ -80,3 +80,41 @@ body {
   font-weight: 700;
   color: #111827;
 }
+
+/* Smooth width transitions */
+.transition-width {
+  transition-property: width, transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Button hover effects */
+.cart-button-hover:hover {
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+}
+
+/* Smooth width transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Prevent text selection */
+.select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}

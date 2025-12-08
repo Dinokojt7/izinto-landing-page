@@ -56,7 +56,7 @@ export default function ServiceCard({ service }) {
             <img
               src={service.img}
               alt={service.name}
-              className="w-80% h-80% m-auto p-auto object-center"
+              className="w-60% h-60% m-auto p-x-6 object-center"
               onError={handleImageError}
               onLoad={handleImageLoad}
             />

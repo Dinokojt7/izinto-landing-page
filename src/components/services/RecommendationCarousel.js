@@ -92,7 +92,7 @@ export default function RecommendationCarousel({ isFirstCarousel = true }) {
           {services.map((service, index) => (
             <div
               key={`${service.id}-dup-${index}`}
-              className="flex-none w-50 cursor-pointer"
+              className="flex-none w-40 h-60 cursor-pointer"
             >
               <ServiceCard service={service} />
             </div>

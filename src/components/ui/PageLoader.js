@@ -15,10 +15,10 @@ export default function PageLoader() {
 
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 300); 
+    }, 300);
 
     return () => clearTimeout(timer);
-  }, [pathname, searchParams]); 
+  }, [pathname, searchParams]);
 
   return (
     <AnimatePresence>
