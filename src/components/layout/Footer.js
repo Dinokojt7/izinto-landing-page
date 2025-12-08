@@ -332,7 +332,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           {/* Copyright */}
           <div className="text-base italic font-extrabold text-black/30 mb-4 md:mb-0">
-            (c) 2025 IZINTO TECHNOLOGIES
+            U+1F16E 2025 IZINTO TECHNOLOGIES
           </div>
 
           {/* Legal Links */}

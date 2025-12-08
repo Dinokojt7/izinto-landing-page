@@ -19,10 +19,48 @@
   }
 }
 
+@supports (padding: max(0px)) {
+  body,
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  body,
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  body,
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  body,
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Ensure body takes full viewport */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  min-height: -webkit-fill-available; /* For Safari */
+  background-color: white;
+}
+
+/* Fix for mobile viewport */
+@supports (-webkit-touch-callout: none) {
+  body {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Status bar styling */
+.status-bar-area {
+  height: env(safe-area-inset-top);
+  background-color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
 }
 
 /* Hide scrollbar for horizontal section */
@@ -117,4 +155,37 @@ body {
   box-shadow:
     0 10px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* iOS-specific fixes */
+@supports (-webkit-overflow-scrolling: touch) {
+  /* iOS Safari */
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input,
+  textarea,
+  button,
+  select,
+  a {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+}
+
+/* Prevent zoom on input focus for iOS */
+@media screen and (max-width: 768px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevent iOS zoom */
+  }
+}
+
+/* Hide default iOS toolbar on input focus */
+@supports (-webkit-touch-callout: none) {
+  input,
+  textarea {
+    user-select: text; /* Allow text selection */
+  }
 }
