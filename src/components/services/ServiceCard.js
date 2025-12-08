@@ -46,40 +46,46 @@ export default function ServiceCard({ service }) {
 
   return (
     <div
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer flex flex-col h-56 w-40" // Reduced height and width: 256px/1.6 = 160px, rounded to w-40 (160px)
       onClick={handleCardClick}
     >
-      {/* Service Image */}
-      <div className="h-48 relative">
+      {/* Service Image Container - Fixed Size */}
+      <div className="h-44 w-full bg-gray-50 flex items-center justify-center p-2 relative">
         {imageSrc && !imageError ? (
           <>
             <img
-              src={service.img}
+              src={imageSrc}
               alt={service.name}
-              className="w-60% h-60% m-auto p-x-6 object-center"
+              className="h-36 w-auto max-w-full object-contain" // Adjusted image size for new card
               onError={handleImageError}
               onLoad={handleImageLoad}
+              style={{
+                maxHeight: "144px", // h-36 (36 * 4 = 144px)
+                maxWidth: "100%",
+              }}
             />
             {!imageLoaded && !imageError && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                <div className="animate-pulse text-gray-400">Loading...</div>
+                <div className="animate-pulse text-gray-400 text-xs">
+                  Loading...
+                </div>
               </div>
             )}
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-accent">
-            <span className="text-primary font-semibold text-center px-2">
+          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            <span className="text-gray-500 font-semibold text-center px-2 text-sm">
               {service.name}
             </span>
           </div>
         )}
       </div>
 
-      {/* Simplified Content */}
-      <div className="p-4">
-        <h3 className="text-xs text-gray-500 font-normal mb-3 line-clamp-2 leading-tight">
-          {service.name}
-        </h3>
+      {/* Light grey text at the very bottom */}
+      <div className="mt-auto p-2 pt-6 items-start text-start justify-start">
+        <p className="text-xs text-start text-gray-500 font-normal line-clamp-2 leading-tight min-h-10 flex items-start justify-start">
+          {service.type || service.category || "Service"}
+        </p>
       </div>
     </div>
   );

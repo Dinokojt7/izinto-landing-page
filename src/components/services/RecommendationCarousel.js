@@ -16,8 +16,8 @@ export default function RecommendationCarousel({ isFirstCarousel = true }) {
     if (!scrollContainer || services.length === 0) return;
 
     // Calculate total width needed for seamless loop
-    const itemWidth = 320; // w-50 = 320px
-    const gap = 24; // space-x-6 = 24px
+    const itemWidth = 160; // New card width: w-40 = 160px
+    const gap = 16; // gap-4 = 16px
     const totalItems = services.length * 2; // Original + duplicate
     const totalWidth = (itemWidth + gap) * totalItems;
 
@@ -27,29 +27,50 @@ export default function RecommendationCarousel({ isFirstCarousel = true }) {
     scrollContainer.style.setProperty("--total-width", `${totalWidth}px`);
   }, [services]);
 
+  // LOADING STATE - Matches carousel layout
   if (isLoading) {
     return (
       <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-primary mb-8">Our Services</h2>
-        <div className="flex space-x-6 overflow-x-auto scrollbar-hide">
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className="flex-none w-50 animate-pulse">
-              <div className="bg-gray-200 h-48 rounded-lg"></div>
-              <div className="mt-4">
-                <div className="bg-gray-200 h-4 rounded"></div>
+        <div className="relative overflow-hidden">
+          <div className="flex gap-4 pb-4">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="flex-none w-40 animate-pulse">
+                <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-56">
+                  <div className="h-44 w-full bg-gray-200"></div>
+                  <div className="mt-auto p-2 border-t border-gray-100">
+                    <div className="h-3 bg-gray-200 rounded w-3/4 mx-auto"></div>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
     );
   }
 
+  // ERROR STATE - Matches carousel layout
   if (error) {
     return (
       <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-primary mb-8">Our Services</h2>
-        <div className="text-center text-gray-500 py-8">{error.message}</div>
+        <div className="relative overflow-hidden">
+          <div className="flex gap-4 pb-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex-none w-40">
+                <div className="bg-gray-100 rounded-lg shadow-md overflow-hidden flex flex-col h-56 border border-gray-300">
+                  <div className="h-44 w-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-500 text-sm">Error</span>
+                  </div>
+                  <div className="mt-auto p-2 border-t border-gray-200">
+                    <p className="text-xs text-gray-500 text-center">
+                      Failed to load
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
     );
   }
@@ -57,21 +78,33 @@ export default function RecommendationCarousel({ isFirstCarousel = true }) {
   if (services.length === 0) {
     return (
       <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-primary mb-8">Our Services</h2>
-        <div className="text-center text-gray-500 py-8">
-          No services available at the moment.
+        <div className="relative overflow-hidden">
+          <div className="flex gap-4 pb-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex-none w-40">
+                <div className="bg-gray-50 rounded-lg shadow-sm overflow-hidden flex flex-col h-56 border border-gray-200">
+                  <div className="h-44 w-full bg-gray-100 flex items-center justify-center">
+                    <span className="text-gray-400 text-sm">No services</span>
+                  </div>
+                  <div className="mt-auto p-2 border-t border-gray-200">
+                    <p className="text-xs text-gray-400 text-center">Empty</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 ">
+    <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <div className="relative overflow-hidden">
         <div
           ref={scrollContainerRef}
           className={`
-            flex space-x-6 pb-4
+            flex gap-4 pb-4
             animate-infinite-scroll
           `}
           style={{
@@ -79,10 +112,11 @@ export default function RecommendationCarousel({ isFirstCarousel = true }) {
             msOverflowStyle: "none",
           }}
         >
+          {/* Original items */}
           {services.map((service, index) => (
             <div
               key={`${service.id}-${index}`}
-              className="flex-none w-50 cursor-pointer"
+              className="flex-none w-40" // New width: w-40 (160px)
             >
               <ServiceCard service={service} />
             </div>
@@ -92,7 +126,7 @@ export default function RecommendationCarousel({ isFirstCarousel = true }) {
           {services.map((service, index) => (
             <div
               key={`${service.id}-dup-${index}`}
-              className="flex-none w-40 h-60 cursor-pointer"
+              className="flex-none w-40" // Same new width
             >
               <ServiceCard service={service} />
             </div>
@@ -106,13 +140,15 @@ export default function RecommendationCarousel({ isFirstCarousel = true }) {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(calc(-344px * ${services.length}));
+            transform: translateX(
+              calc(-176px * ${services.length})
+            ); /* 160px + 16px gap */
           }
         }
 
         @keyframes infinite-scroll-right {
           0% {
-            transform: translateX(calc(-344px * ${services.length}));
+            transform: translateX(calc(-176px * ${services.length}));
           }
           100% {
             transform: translateX(0);
@@ -123,7 +159,7 @@ export default function RecommendationCarousel({ isFirstCarousel = true }) {
           animation: ${shouldFlowLeft
               ? "infinite-scroll-left"
               : "infinite-scroll-right"}
-            80s linear infinite;
+            40s linear infinite;
           width: max-content;
         }
       `}</style>

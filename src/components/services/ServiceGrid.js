@@ -8,30 +8,29 @@ export default function ServiceGrid({ shouldFlowLeft = true }) {
 
   const services = servicesData?.Specialties || [];
 
-  if (isLoading) {
+  if (isLoading || error) {
     return (
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className="animate-pulse">
-              <div className="bg-gray-200 h-48 rounded-lg"></div>
-              <div className="mt-4">
-                <div className="bg-gray-200 h-4 rounded"></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
+      <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden">
+          <div className="flex gap-4 pb-4">
+            {/* Create shimmer cards matching the carousel layout */}
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="flex-none w-40 animate-pulse">
+                {/* Card container */}
+                <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-56">
+                  {/* Image area shimmer */}
+                  <div className="h-44 w-full bg-gray-200"></div>
 
-  if (error) {
-    return (
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
-        <p className="text-red-600">
-          Failed to load services. Please try again later.
-        </p>
-      </div>
+                  {/* Text area shimmer */}
+                  <div className="mt-auto p-2 border-t border-gray-100">
+                    <div className="h-3 bg-gray-200 rounded w-3/4 mx-auto"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     );
   }
 
