@@ -172,7 +172,7 @@ export default function Footer() {
         {/* Call to Action - Only show if user is NOT logged in */}
         {!user && (
           <>
-            <h2 className="text-black mt-4 text-lg italic font-extrabold uppercase tracking-wide">
+            <h2 className="text-black mt-4 text-base italic font-black uppercase tracking-tight">
               LET'S GET MOVING. DROP YOUR MOBILE NUMBER TO START YOUR BOOKING OR
               PICK UP WHERE YOU LEFT OFF.
             </h2>

@@ -40,7 +40,7 @@ export const getProviderHeader = (provider) => {
   const headers = {
     "Easy Laundry": "Easy Laundry's dark-store laundry services.",
     Wegas: "Wegas' LPG gas cylinder exchange service.",
-    Modern8: "Modern8's individual items and home deep.",
+    Modern8: "Modern8's individual items and home clean.",
     "Clean Paws": "Clean Paws' professional mobile pet grooming.",
   };
   return headers[provider] || `${provider}'s professional services.`;

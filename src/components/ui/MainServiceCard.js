@@ -21,7 +21,7 @@ export default function MainServiceCard({ service }) {
     addToCart();
   };
 
-  // Helper functions to get service data (adjust based on your API response structure)
+  // Helper functions to get service data 
   const getPrice = (item) => {
     return item.price || item.Price || 0;
   };
