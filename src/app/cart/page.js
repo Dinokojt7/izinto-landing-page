@@ -157,8 +157,8 @@ export default function CartPage() {
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Delivery</span>
-                    <span className="font-bold px-3 py-1 rounded-full bg-[#4bb0f96b] text-[#0096FF]">
+                    <span className="text-gray-600">Delivery/Logistics</span>
+                    <span className="font-semibold px-3 py-1 text-xs  rounded-full bg-[#4bb0f935] text-[#0096FF]">
                       FREE
                     </span>
                   </div>
@@ -175,7 +175,7 @@ export default function CartPage() {
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   onClick={handleCheckout}
-                  className="bg-[#0000ff] text-white px-8 py-4 rounded-full text-base font-extrabold hover:bg-blue-800 transition-all transform whitespace-nowrap"
+                  className="bg-[#0000ff] text-white px-8 py-3 rounded-full text-base font-black italic hover:bg-blue-800 transition-all transform whitespace-nowrap"
                 >
                   PROCEED TO CHECKOUT
                 </motion.button>
@@ -209,7 +209,8 @@ export default function CartPage() {
                   </svg>
                   <div>
                     <p className="text-xs text-gray-700">
-                      Free delivery on all orders. No service fees or markups.
+                      Logistic fees covered for all orders. No service fees or
+                      markups.
                     </p>
                   </div>
                 </div>
@@ -267,25 +268,29 @@ export default function CartPage() {
         onClose={() => setIsLoginDialogOpen(false)}
       />
 
-      {/* Snackbar Notification (Alternative to dialog) */}
       {showSnackbar && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 animate-fade-in-up">
-          <div className="bg-black text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-4">
-            <span className="font-medium">
+        <div className="fixed bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:w-auto sm:transform sm:-translate-x-1/2 z-50 animate-fade-in-up">
+          <div className="bg-black text-white px-4 py-3 rounded-lg shadow-lg flex items-center justify-between gap-3 sm:px-6 sm:py-4">
+            {/* Message - single line on mobile */}
+            <span className="font-medium text-sm sm:text-base truncate flex-1">
               Please login to continue checkout
             </span>
-            <button
-              onClick={handleSnackbarLogin}
-              className="bg-white text-black px-4 py-1 rounded-full font-bold text-sm hover:bg-gray-100 transition-colors"
-            >
-              LOGIN
-            </button>
-            <button
-              onClick={() => setShowSnackbar(false)}
-              className="text-gray-300 hover:text-white"
-            >
-              ×
-            </button>
+
+            {/* Action buttons */}
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={handleSnackbarLogin}
+                className="bg-white text-black px-3 py-1 rounded-full font-bold text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap"
+              >
+                LOGIN
+              </button>
+              <button
+                onClick={() => setShowSnackbar(false)}
+                className="text-gray-300 hover:text-white text-lg sm:text-base"
+              >
+                ×
+              </button>
+            </div>
           </div>
         </div>
       )}
