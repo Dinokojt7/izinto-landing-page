@@ -46,7 +46,7 @@ export default function CartBreadcrumbSection({ itemCount }) {
               </Link>
               <span>•</span>
               <span className="font-semibold text-black whitespace-nowrap">
-                Basket 
+                Basket
               </span>
             </div>
 

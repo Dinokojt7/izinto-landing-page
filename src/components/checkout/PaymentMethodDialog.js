@@ -1,4 +1,5 @@
 "use client";
+import { motion } from "framer-motion";
 
 export default function PaymentMethodDialog({
   isOpen,
@@ -37,7 +38,12 @@ export default function PaymentMethodDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl w-11/12 max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-xl w-11/12 max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+      >
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-2xl font-black italic text-black">
@@ -65,25 +71,27 @@ export default function PaymentMethodDialog({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
-          <div className="space-y-4">
+          <div className="space-y-3">
             {paymentMethods.map((method) => (
-              <div
+              <motion.div
                 key={method.id}
+                whileHover={method.available ? { scale: 1.01 } : {}}
+                whileTap={method.available ? { scale: 0.99 } : {}}
                 className={`p-4 rounded-lg border cursor-pointer transition-all ${
                   selectedMethod === method.id
-                    ? "border-[#0096FF] bg-blue-50"
+                    ? "border-black bg-gray-50"
                     : method.available
                       ? "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                      : "border-gray-200 opacity-40 cursor-not-allowed"
+                      : "border-gray-200 opacity-60 cursor-not-allowed"
                 }`}
                 onClick={() => method.available && onSelect(method.id)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div
-                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                         selectedMethod === method.id
-                          ? "border-[#0096FF] bg-[#0096FF]"
+                          ? "border-black bg-black"
                           : "border-gray-300"
                       }`}
                     >
@@ -92,22 +100,26 @@ export default function PaymentMethodDialog({
                       )}
                     </div>
                     <div>
-                      <p className="font-bold text-black">{method.name}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="font-bold text-black text-sm">
+                        {method.name}
+                      </p>
+                      <p className="text-xs text-gray-600">
                         {method.description}
                       </p>
                     </div>
                   </div>
                   {!method.available && (
-                    <span className="text-sm text-gray-500">Coming Soon</span>
+                    <span className="text-xs font-medium text-orange-500">
+                      Temporarily unavailable
+                    </span>
                   )}
                   {method.available && selectedMethod === method.id && (
-                    <span className="text-sm font-bold text-[#0096FF]">
+                    <span className="text-xs font-bold text-black">
                       Selected
                     </span>
                   )}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -146,7 +158,7 @@ export default function PaymentMethodDialog({
             Confirm Selection
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

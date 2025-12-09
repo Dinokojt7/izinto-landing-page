@@ -59,21 +59,6 @@ export default function CartPage() {
     router.push("/services");
   };
 
-  // const handleCheckout = () => {
-  //   setIsLoading(true);
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-
-  //     if (!user) {
-  //       //  setIsLoginDialogOpen(true);
-
-  //       setShowSnackbar(true);
-  //     } else {
-  //       router.push("/checkout");
-  //     }
-  //   }, 500); // Shorter timeout for better UX
-  // };
-
   const handleCheckout = () => {
     if (!user) {
       setShowSnackbar(true);
