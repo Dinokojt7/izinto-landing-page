@@ -1,6 +1,6 @@
 // app/s/[provider]/page.jsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useServices } from "@/lib/api/services";
 import { getProviderExplanation } from "@/lib/utils/providerExplanations";
@@ -10,16 +10,15 @@ import MainServiceCard from "@/components/ui/MainServiceCard";
 import ProductHeader from "@/components/product/ProductHeader";
 import HowWeWork from "@/components/services/HowWeWork";
 import Link from "next/link";
-import MobileServiceCard from "@/components/ui/MobileServiceCard";
 import Footer from "@/components/layout/Footer";
 
 export default function ProviderCategoryPage() {
   const router = useRouter();
   const params = useParams();
   const { data: servicesData, isLoading } = useServices();
+  const scrollContainerRef = useRef(null);
   const [providerServices, setProviderServices] = useState([]);
   const [providerName, setProviderName] = useState("");
-  const [isMobile, setIsMobile] = useState(false);
   const [currentService, setCurrentService] = useState(null);
 
   useEffect(() => {
@@ -46,22 +45,34 @@ export default function ProviderCategoryPage() {
           setCurrentService({
             provider: foundProvider,
             name: `${foundProvider} Services`,
-            // Add any other properties HowWeWork might need
           });
         }
       }
     }
-
-    // Check screen size
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-
-    return () => window.removeEventListener("resize", checkScreenSize);
   }, [servicesData, params.provider]);
+
+  // Horizontal scroll functions for mobile
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const scrollAmount = 180;
+      container.scrollBy({
+        left: -scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const scrollAmount = 180;
+      container.scrollBy({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const handleServiceSelect = (service) => {
     const serviceSlug = service.name.toLowerCase().replace(/\s+/g, "-");
@@ -91,7 +102,7 @@ export default function ProviderCategoryPage() {
       <CategoryBreadcrumbSection provider={providerName} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Reused CategoryBanner Design (Without Button) */}
+        {/* Provider Banner */}
         <section className="w-full mb-8">
           <div className="bg-blue-50 border border-blue-200 rounded-xl sm:rounded-2xl px-4 sm:px-6 py-6 sm:py-4">
             <div className="text-center lg:text-left">
@@ -105,35 +116,96 @@ export default function ProviderCategoryPage() {
           </div>
         </section>
 
-        {/* Services Grid */}
+        {/* Services Section */}
         {providerServices.length > 0 ? (
-          <>
-            {/* Desktop: 5 columns */}
+          <div className="mt-8">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-bold text-black">
+                {providerServices.length} Services Available
+              </h2>
+            </div>
+
+            {/* Desktop: Grid Layout */}
             <div className="hidden md:grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
               {providerServices.map((service) => (
                 <div key={service.id} className="flex justify-center">
-                  <div className="w-full max-w-xs">
-                    <MainServiceCard
-                      service={service}
-                      onClick={() => handleServiceSelect(service)}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Mobile: 3 columns with MobileServiceCard */}
-            <div className="md:hidden grid grid-cols-3 gap-4">
-              {providerServices.map((service) => (
-                <div key={service.id} className="w-full">
-                  <MobileServiceCard
+                  <MainServiceCard
                     service={service}
                     onClick={() => handleServiceSelect(service)}
                   />
                 </div>
               ))}
             </div>
-          </>
+
+            {/* Mobile: Horizontal Scroll Layout - Using MainServiceCard */}
+            <div className="md:hidden relative">
+              {providerServices.length > 1 && (
+                <>
+                  <button
+                    onClick={scrollLeft}
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 w-8 h-8 bg-black/80 rounded-full flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity"
+                  >
+                    <svg
+                      className="w-4 h-4 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  <button
+                    onClick={scrollRight}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 w-8 h-8 bg-black/80 rounded-full flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity"
+                  >
+                    <svg
+                      className="w-4 h-4 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </>
+              )}
+
+              {/* Horizontal Scroll Container */}
+              <div
+                ref={scrollContainerRef}
+                className="flex space-x-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory"
+                style={{
+                  scrollBehavior: "smooth",
+                  msOverflowStyle: "none",
+                  scrollbarWidth: "none",
+                }}
+              >
+                {providerServices.map((service) => (
+                  <div
+                    key={service.id}
+                    className="flex-none w-42 snap-center" // Same width as MainServiceCard
+                  >
+                    <MainServiceCard
+                      service={service}
+                      onClick={() => handleServiceSelect(service)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="text-center py-12">
             <p className="text-gray-500">No services found for this provider</p>
@@ -162,6 +234,17 @@ export default function ProviderCategoryPage() {
         </div>
       </main>
       <Footer />
+
+      {/* Add CSS for scrollbar hiding */}
+      <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 }
