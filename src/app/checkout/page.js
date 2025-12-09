@@ -483,7 +483,7 @@ export default function CheckoutPage() {
                   </svg>
                   <div>
                     <p className="text-sm text-gray-700">
-                      Currently, only Cash bookins are available. Minimum
+                      Currently, only Cash bookings are available. Minimum
                       booking amount is R150.
                     </p>
                   </div>

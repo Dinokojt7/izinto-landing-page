@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAddress } from "@/providers/AddressProvider";
 import AddressSearchDialog from "./AddressSearchDialog";
@@ -15,6 +15,30 @@ export default function AddressSelectionDialog({ isOpen, onClose }) {
 
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
+
+  // Also handle Escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -60,7 +84,7 @@ export default function AddressSelectionDialog({ isOpen, onClose }) {
             >
               {/* Header */}
               <div className="flex justify-between items-center p-6 border-b border-gray-200">
-                <h2 className="text-2xl font-extrabold italic text-black">
+                <h2 className="text-3xl font-extrabold italic text-black">
                   Your Addresses
                 </h2>
                 <button
@@ -118,10 +142,8 @@ export default function AddressSelectionDialog({ isOpen, onClose }) {
                 ) : (
                   <div className="space-y-3">
                     {addresses.map((address) => (
-                      <motion.div
+                      <div
                         key={address.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
                         className={`relative p-4 rounded-lg border cursor-pointer transition-all hover:shadow-md ${
                           activeAddress?.id === address.id
                             ? "border-blue-500 bg-blue-50"
@@ -195,21 +217,14 @@ export default function AddressSelectionDialog({ isOpen, onClose }) {
                             )}
                           </button>
                         </div>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 )}
               </div>
 
               {/* Footer */}
-              <div className="p-6 border-t border-gray-200">
-                {addresses.length > 0 && isLoggedIn && (
-                  <div className="text-sm text-gray-600 mb-4 text-center">
-                    {addresses.length} address
-                    {addresses.length !== 1 ? "es" : ""} saved
-                  </div>
-                )}
-
+              <div className="p-6 border-t border-gray-100">
                 <button
                   onClick={handleAddNewAddress}
                   className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors"

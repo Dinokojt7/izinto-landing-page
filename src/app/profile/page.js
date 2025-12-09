@@ -200,7 +200,7 @@ export default function ProfilePage() {
             {/* Address */}
             <div className="bg-white border border-gray-200 rounded-lg p-6">
               <h2 className="text-xl font-black italic text-black mb-6">
-                Delivery Address
+                booking Address
               </h2>
 
               <div>
@@ -211,12 +211,12 @@ export default function ProfilePage() {
                   name="address"
                   value={profile.address}
                   onChange={handleInputChange}
-                  placeholder="Enter your full address for delivery"
+                  placeholder="Enter your full address for booking"
                   rows={3}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-black"
                 />
                 <p className="text-xs text-gray-500 mt-2">
-                  This will be used for service delivery
+                  This will be used for service booking
                 </p>
               </div>
             </div>

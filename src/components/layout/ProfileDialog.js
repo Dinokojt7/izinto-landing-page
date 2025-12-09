@@ -200,7 +200,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                       onChange={handleInputChange}
                       required
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                      placeholder="John"
+                      placeholder="name"
                     />
                   </div>
                   <div>
@@ -214,7 +214,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                       onChange={handleInputChange}
                       required
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                      placeholder="Doe"
+                      placeholder="surname"
                     />
                   </div>
                 </div>
@@ -253,7 +253,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
               {activeAddress && (
                 <div className="space-y-3 bg-gray-50 p-4 rounded-lg border border-gray-200">
                   <h3 className="text-lg font-bold text-black">
-                    Current Delivery Address
+                    Active Address
                   </h3>
                   <div className="text-sm text-gray-700 space-y-1">
                     <div className="flex items-start">
@@ -277,10 +277,6 @@ export default function ProfileDialog({ isOpen, onClose }) {
                       </div>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    To change address, go back to the main page and use the
-                    address search
-                  </p>
                 </div>
               )}
 

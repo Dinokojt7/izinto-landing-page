@@ -1,8 +1,31 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function OrderNotesDialog({ isOpen, onClose, notes, onSave }) {
   const [orderNotes, setOrderNotes] = useState(notes || "");
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
+
+  // Also handle Escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -15,7 +38,7 @@ export default function OrderNotesDialog({ isOpen, onClose, notes, onSave }) {
       <div className="bg-white rounded-xl w-11/12 max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-black italic text-black">
+          <h2 className="text-3xl font-black italic text-black">
             Add Order Notes
           </h2>
           <button
