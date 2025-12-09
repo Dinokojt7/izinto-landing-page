@@ -12,7 +12,7 @@ import SimilarServices from "@/components/product/SimilarServices";
 import YouMightAlsoLike from "@/components/product/YouMightAlsoLike";
 import { Poppins } from "next/font/google";
 import Footer from "@/components/layout/Footer";
-import HowWeWork from "@/components/services/HowWeWork";
+import HowWeWork from "@/components/homepage-sections/HowWeWork";
 import BottomBreadcrumbSection from "@/components/product/BottomBreadCrumbSection";
 import ProfileDialog from "@/components/layout/ProfileDialog";
 

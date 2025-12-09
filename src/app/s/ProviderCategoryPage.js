@@ -8,7 +8,7 @@ import CircularProgressIndicator from "@/components/ui/CircularProgessIndicator"
 import CategoryBreadcrumbSection from "./ProviderBreadcrumbSection";
 import MainServiceCard from "@/components/ui/MainServiceCard";
 import ProductHeader from "@/components/product/ProductHeader";
-import HowWeWork from "@/components/services/HowWeWork";
+import HowWeWork from "@/components/homepage-sections/HowWeWork";
 import Link from "next/link";
 import Footer from "@/components/layout/Footer";
 

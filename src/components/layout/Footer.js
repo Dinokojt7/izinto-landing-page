@@ -154,13 +154,11 @@ export default function Footer() {
     <footer className={`bg-gray-50 pt-16 pb-8 ${poppins.className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/">
-          <motion.img
-            src="/images/try-retro.png"
-            alt="Izinto"
-            className="h-8 w-auto"
-          />
-        </Link>
+        <motion.img
+          src="/images/try-retro.png"
+          alt="Izinto"
+          className="h-8 items-start"
+        />
         {/* Tagline */}
         <h2 className="text-gray-500 mt-4 text-sm">
           Everyday value in your pocket in as fast as 45 minutes.
@@ -332,7 +330,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           {/* Copyright */}
           <div className="text-base italic font-extrabold text-black/30 mb-4 md:mb-0">
-            U+1F16E 2025 IZINTO TECHNOLOGIES
+            © 2025 IZINTO TECHNOLOGIES
           </div>
 
           {/* Legal Links */}

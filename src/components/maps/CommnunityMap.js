@@ -13,8 +13,10 @@ export default function CommunityMap({ onAddressClick }) {
 
   const { isLoaded: mapsLoaded, loadError } =
     useGoogleMaps(GOOGLE_MAPS_API_KEY);
-  const center = { lat: -26.056, lng: 28.06 };
-
+  const center = {
+    lat: -26.0538, // Morningside, Sandton coordinates
+    lng: 28.0583, // Near Kelvin Dr & Rivonia Rd intersection
+  };
   useEffect(() => {
     if (!mapsLoaded || !mapRef.current) return;
 
@@ -28,6 +30,48 @@ export default function CommunityMap({ onAddressClick }) {
             elementType: "geometry",
             stylers: [{ color: "#f5f5f5" }],
           },
+          // Add these road styles:
+          {
+            featureType: "road",
+            elementType: "geometry",
+            stylers: [
+              { color: "#ffffff" }, // White roads
+              { visibility: "on" },
+            ],
+          },
+          {
+            featureType: "road",
+            elementType: "geometry.stroke",
+            stylers: [
+              { color: "#e0e0e0" }, // Light gray borders
+              { weight: 0.5 },
+            ],
+          },
+          {
+            featureType: "road.highway",
+            elementType: "geometry",
+            stylers: [
+              { color: "#ffffff" },
+              { weight: 1.5 }, // Slightly wider highways
+            ],
+          },
+          {
+            featureType: "road.arterial",
+            elementType: "geometry",
+            stylers: [
+              { color: "#ffffff" },
+              { weight: 1 }, // Standard width
+            ],
+          },
+          {
+            featureType: "road.local",
+            elementType: "geometry",
+            stylers: [
+              { color: "#ffffff" },
+              { weight: 0.7 }, // Thinner local roads
+            ],
+          },
+          // Keep existing rules:
           {
             featureType: "poi",
             elementType: "labels",
@@ -54,9 +98,9 @@ export default function CommunityMap({ onAddressClick }) {
         position: center,
         map: googleMap,
         icon: {
-          url: "/images/map-marker.png", // Your custom image
-          scaledSize: new window.google.maps.Size(40, 40),
-          anchor: new window.google.maps.Point(20, 40),
+          url: "/images/map-marker.png",
+          scaledSize: new window.google.maps.Size(72, 72), // Increased from 48 to 72
+          anchor: new window.google.maps.Point(36, 72), // Adjusted anchor
         },
       });
 
@@ -88,11 +132,11 @@ export default function CommunityMap({ onAddressClick }) {
   }
 
   return (
-    <section className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 my-8">
+    <section className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
       {/* Map Container - Responsive height */}
       <div
         ref={mapRef}
-        className="w-full h-[60vh] sm:h-[80vh] lg:h-[110vh] rounded-2xl shadow-lg overflow-hidden bg-gray-200"
+        className="w-full h-[70vh] sm:h-[80vh] lg:h-[118vh] rounded-2xl shadow-lg overflow-hidden bg-gray-200"
       />
 
       {/* Loading overlay */}
@@ -103,11 +147,12 @@ export default function CommunityMap({ onAddressClick }) {
       )}
 
       {/* Stacked Container - Longer and properly sized */}
-      <div className="absolute top-4 left-4 right-4 sm:top-6 sm:left-6 sm:right-auto sm:w-96 lg:w-full lg:max-w-lg">
-        <div className="bg-white/70 rounded-2xl shadow-xl p-5 sm:p-6 lg:p-8 h-64 sm:h-72 lg:h-80 flex flex-col justify-center items-center text-center">
+      <div className="absolute top-4 left-4 right-4 sm:top-6 sm:left-6 sm:right-auto pl-6 sm:w-96 lg:w-full lg:max-w-lg">
+        <div className="bg-white/70 rounded-2xl shadow-xl p-5 sm:p-6 lg:p-8 h-80 sm:h-72 lg:h-88 flex flex-col justify-start items-start text-start">
           {/* Main Blue Text - Properly truncated */}
+
           <h2
-            className="text-xl sm:text-2xl lg:text-4xl font-extrabold italic mb-4 sm:mb-6 leading-tight wrap-break-words overflow-hidden"
+            className="text-4xl lg:text-4xl font-black italic text-black mb-4 lg:mb-6 leading-tight"
             style={{ color: COLORS.blue }}
           >
             YOUR COMMUNITY COUNTS ON IZINTO - JOIN THEM.

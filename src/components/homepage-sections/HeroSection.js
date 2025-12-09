@@ -139,7 +139,7 @@ export default function HeroSection() {
                   opacity: addressButtonOpacity,
                   scale: addressButtonScale,
                 }}
-                className="hidden md:flex bg-blue-700 text-white px-3 py-2 rounded-4xl text-sm font-extrabold italic hover:bg-blue-800 transform transition-colors"
+                className="hidden md:flex bg-[#0000ff] text-white px-3 py-2 rounded-4xl tracking tighter text-sm font-black italic hover:bg-blue-800 transform transition-colors"
               >
                 ENTER YOUR ADDRESS
               </motion.button>

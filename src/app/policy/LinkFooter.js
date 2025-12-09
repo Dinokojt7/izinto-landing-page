@@ -148,13 +148,11 @@ export default function LinkFooter() {
     <footer className={`bg-gray-100 pt-4 pb-8 ${poppins.className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href={"/"}>
-          <motion.img
-            src="/images/try-retro.png"
-            alt="Izinto"
-            className="h-8 w-auto"
-          />
-        </Link>
+        <motion.img
+          src="/images/try-retro.png"
+          alt="Izinto"
+          className="h-8 w-auto"
+        />
 
         {/* Four Column Section - FLEX LAYOUT */}
         <div className="flex flex-col md:flex-row gap-8 mt-12">
@@ -230,12 +228,14 @@ export default function LinkFooter() {
                     <div className="absolute inset-0 bg-gray-100/30 rounded-lg" />
 
                     {/* Permanent Flag Badge - Top Right */}
-                    <div className="absolute -top-3.5 right-6.5 z-10">
+                    <div className="absolute -top-2 right-10 z-10">
+                      {" "}
+                      {/* Adjusted: -top-2 right-1 */}
                       <div
-                        className="bg-white/90 border border-gray-100 text-black 
-                        px-1 py-0 rounded-md shadow-sm min-w-[50px]"
+                        className="bg-white/70 border border-gray-100 text-black 
+              px-1.5  rounded-md min-w-[60px]"
                       >
-                        <span className="text-[8px] font-semibold uppercase tracking-wide">
+                        <span className="text-[9px] font-semibold uppercase tracking-wide">
                           Coming Soon
                         </span>
                       </div>
@@ -251,7 +251,7 @@ export default function LinkFooter() {
         <div className="flex flex-col md:flex-row mt-4 justify-between items-center">
           {/* Copyright */}
           <div className="text-sm text-black/80 font-semibold mb-4 md:mb-0">
-            (c) 2025 IZINTO TECHNOLOGIES
+            © 2025 IZINTO TECHNOLOGIES
           </div>
 
           {/* Legal Links */}

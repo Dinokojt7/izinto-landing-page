@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
-import ServiceCard from "@/components/services/ServiceCard";
+import ServiceCard from "@/components/homepage-sections/ServiceCard";
 import MainServiceCard from "../ui/MainServiceCard";
 
 export default function SimilarServices({
