@@ -18,6 +18,8 @@ import { submitOrder } from "@/lib/services/orderService";
 import AddressSnackbar from "@/components/checkout/AddressSnackbar";
 import AddressSearchDialog from "@/components/maps/AddressSearchDialog";
 import AddressSelectionDialog from "@/components/maps/AddressSelectionDialog";
+import Footer from "@/components/layout/Footer";
+import AmountSnackbar from "@/components/checkout/AmountSnackbar";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -36,6 +38,7 @@ export default function CheckoutPage() {
   const [showNotesDialog, setShowNotesDialog] = useState(false);
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [showAddressSnackbar, setShowAddressSnackbar] = useState(false);
+  const [showAmountSnackbar, setShowAmountSnackbar] = useState(false);
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [isAddressSelectionOpen, setIsAddressSelectionOpen] = useState(false);
   const [showPaymentDropdown, setShowPaymentDropdown] = useState(false);
@@ -49,6 +52,10 @@ export default function CheckoutPage() {
   } = useAddress();
 
   const MINIMUM_ORDER_AMOUNT = 150;
+
+  // Form validation state
+  const isFormValid =
+    savedAddress && cartTotal >= MINIMUM_ORDER_AMOUNT && items.length > 0;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -91,9 +98,7 @@ export default function CheckoutPage() {
 
     // Check minimum order amount
     if (cartTotal < MINIMUM_ORDER_AMOUNT) {
-      alert(
-        `Minimum order amount is R${MINIMUM_ORDER_AMOUNT}. Please add more items to your cart.`,
-      );
+      setShowAmountSnackbar(true);
       return;
     }
 
@@ -173,19 +178,27 @@ export default function CheckoutPage() {
 
   return (
     <AuthGuard requireAuth={true} redirectTo="/auth/login">
-      <div className={`min-h-screen bg-white ${poppins.className}`}>
+      <div className={`min-h-screen bg-white py-8 my-8 ${poppins.className}`}>
         <ProductHeader />
-        <CheckoutBreadcrumbSection />
+        {/* <CheckoutBreadcrumbSection /> */}
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           {/* Page Header */}
-          <div className="mb-10">
-            <h1 className="text-3xl sm:text-4xl font-black italic text-black mb-2">
-              Checkout
-            </h1>
-            <p className="text-gray-600 text-sm">
-              Review your order and complete your purchase
-            </p>
+          <div className="relative w-full h-18 sm:h-48 mb-10 overflow-hidden rounded-xl sm:rounded-2xl">
+            {/* Background Image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: 'url("/images/checkout.png")',
+              }}
+            ></div>
+
+            {/* Content */}
+            <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
+              <h1 className="text-3xl sm:text-5xl font-black italic text-white mb-2">
+                Checkout
+              </h1>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -195,7 +208,7 @@ export default function CheckoutPage() {
               <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h2 className="text-xl font-black italic text-black">
-                    Delivery Address
+                    Address
                   </h2>
                   <button
                     onClick={handleAddressButtonClick}
@@ -207,7 +220,7 @@ export default function CheckoutPage() {
 
                 {savedAddress ? (
                   <div className="space-y-2">
-                    <p className="text-lg font-bold text-black">
+                    <p className="text-base font-semibold text-black">
                       {savedAddress.street}
                     </p>
                     <p className="text-gray-600 text-sm">{savedAddress.town}</p>
@@ -235,10 +248,15 @@ export default function CheckoutPage() {
 
               {/* Order Items */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h2 className="text-xl font-black italic text-black mb-6">
-                  Order Items ({items.length})
-                </h2>
-
+                <div className="flex justify-between items-start mb-6">
+                  <h2 className="text-xl  font-black italic text-black">
+                    Booking Items
+                  </h2>
+                  <p className="text-gray-500 text-sm">
+                    {items.length}
+                    {items.length != 1 ? " Items" : " Item"}
+                  </p>
+                </div>
                 <div className="space-y-4">
                   {items.map((item) => (
                     <CheckoutItem key={item.cartId} item={item} />
@@ -250,7 +268,7 @@ export default function CheckoutPage() {
               <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h2 className="text-xl font-black italic text-black">
-                    Order Notes
+                    Booking Notes
                   </h2>
                   <button
                     onClick={() => setShowNotesDialog(true)}
@@ -272,10 +290,10 @@ export default function CheckoutPage() {
 
             {/* Right Column - Order Summary & Payment */}
             <div className="lg:col-span-1 space-y-6">
-              {/* Order Summary */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-6">
+              {/* Order Summary - FIXED: No sticky positioning */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h2 className="text-xl font-black italic text-black mb-6">
-                  Order Summary
+                  Booking Summary
                 </h2>
 
                 <div className="space-y-4 mb-6">
@@ -286,8 +304,10 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Delivery</span>
-                    <span className="font-bold text-[#0096FF] text-sm">
+                    <span className="text-gray-600 text-sm">
+                      Delivery/Logistics
+                    </span>
+                    <span className="font-semibold px-3 py-1 text-xs  rounded-full bg-[#4bb0f935] text-[#0096FF]">
                       FREE
                     </span>
                   </div>
@@ -301,7 +321,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Payment Method - Dropdown Style */}
+              {/* Payment Method */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <div className="relative">
                   <div className="flex justify-between items-center mb-4">
@@ -339,7 +359,7 @@ export default function CheckoutPage() {
                       </div>
                       <div>
                         <p className="font-bold text-black text-sm">
-                          Cash on Delivery
+                          Cash Booking
                         </p>
                       </div>
                     </div>
@@ -381,7 +401,7 @@ export default function CheckoutPage() {
                                   )}
                                 </div>
                                 <p className="font-bold text-black text-sm">
-                                  Cash on Delivery
+                                  Cash Payment
                                 </p>
                               </div>
                               {paymentMethod === "cash" && (
@@ -409,7 +429,7 @@ export default function CheckoutPage() {
                                     </div>
                                   </div>
                                   <span className="text-xs font-medium text-orange-500">
-                                    Temporarily unavailable
+                                    Unavailable
                                   </span>
                                 </div>
                               </div>
@@ -427,8 +447,12 @@ export default function CheckoutPage() {
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   onClick={handlePlaceOrder}
-                  disabled={isSubmitting || !savedAddress || items.length === 0}
-                  className="w-full bg-[#0000ff] text-white px-6 py-3 rounded-full text-base font-black italic hover:bg-blue-800 transition-all transform whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting || !isFormValid}
+                  className={`w-full px-6 py-3 rounded-full text-base font-black italic transition-all transform whitespace-nowrap ${
+                    isFormValid
+                      ? "bg-[#0000ff] text-white hover:bg-blue-800"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center gap-2">
@@ -436,7 +460,7 @@ export default function CheckoutPage() {
                       Processing...
                     </div>
                   ) : (
-                    `PROCEED WITH PAYMENT - R${cartTotal.toFixed(2)}`
+                    `PROCEED - R${cartTotal.toFixed(2)}`
                   )}
                 </motion.button>
               </div>
@@ -459,8 +483,8 @@ export default function CheckoutPage() {
                   </svg>
                   <div>
                     <p className="text-sm text-gray-700">
-                      Your order will be delivered to the address provided.
-                      Payment is cash on delivery only at this time.
+                      Currently, only Cash bookins are available. Minimum
+                      booking amount is R150.
                     </p>
                   </div>
                 </div>
@@ -512,6 +536,15 @@ export default function CheckoutPage() {
             handleAddressButtonClick();
           }}
         />
+
+        {/* Amount Snackbar */}
+        <AmountSnackbar
+          isOpen={showAmountSnackbar}
+          onClose={() => setShowAmountSnackbar(false)}
+          minimumAmount={MINIMUM_ORDER_AMOUNT}
+        />
+
+        <Footer />
       </div>
     </AuthGuard>
   );

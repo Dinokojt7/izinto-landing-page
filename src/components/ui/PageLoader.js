@@ -1,28 +1,57 @@
-// src/components/ui/PageLoader.js
 "use client";
-import { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CircularProgressIndicator from "./CircularProgessIndicator";
 
 export default function PageLoader() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [showLoader, setShowLoader] = useState(false);
+  const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
+  // Track if we're in a transition
   useEffect(() => {
-    setIsLoading(true);
+    if (isPending) {
+      // Show loader immediately when transition starts
+      setShowLoader(true);
+    } else {
+      // Hide loader with a slight delay to avoid flicker
+      const timer = setTimeout(() => {
+        setShowLoader(false);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isPending]);
 
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 300);
+  // Intercept all link clicks
+  useEffect(() => {
+    const handleClick = (event) => {
+      const link = event.target.closest("a");
+      if (
+        link &&
+        link.href &&
+        !link.href.startsWith("http") &&
+        !event.defaultPrevented
+      ) {
+        event.preventDefault();
+        const href = link.getAttribute("href");
+        if (href) {
+          startTransition(() => {
+            router.push(href);
+          });
+        }
+      }
+    };
 
-    return () => clearTimeout(timer);
-  }, [pathname, searchParams]);
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, [router, startTransition]);
 
   return (
     <AnimatePresence>
-      {isLoading && (
+      {showLoader && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
