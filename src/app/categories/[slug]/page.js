@@ -1,3 +1,4 @@
+//src/app/categories/[slug]/page.js
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import topics from "@/data/help-topics";

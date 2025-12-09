@@ -27,9 +27,11 @@ const staticRoutes = [
 
 // Dynamic route patterns - only include patterns that actually exist
 const dynamicRoutePatterns = [
-  "/p/[service]", // Service detail pages: /p/laundry-service
-  "/s/[provider]", // Provider pages: /s/carpet-care
-  "help/[categories]"
+  "/p/[service]",
+  "/s/[provider]",
+  "/help/[categories]",
+  "/categories/[slug]",
+  "/categories/[slug]/[section]",
 ];
 
 // API endpoints from your services-data.js - these should be in staticRoutes
