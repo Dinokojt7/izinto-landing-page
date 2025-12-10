@@ -139,7 +139,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
   };
 
   const handleLogoutClick = async () => {
-    await handleLogout(); // ✅ This does the real logout
+    await handleLogout();
     onClose();
   };
 

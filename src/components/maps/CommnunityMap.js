@@ -132,11 +132,11 @@ export default function CommunityMap({ onAddressClick }) {
   }
 
   return (
-    <section className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    <section className="relative w-full max-w-5xl lg:mx-auto sm:px-6 lg:px-8 mt-8">
       {/* Map Container - Responsive height */}
       <div
         ref={mapRef}
-        className="w-full h-[70vh] sm:h-[80vh] lg:h-[118vh] rounded-2xl shadow-lg overflow-hidden bg-gray-200"
+        className="w-full h-[110vh] sm:h-[118vh] lg:h-[118vh] rounded-2xl shadow-lg overflow-hidden bg-gray-200 "
       />
 
       {/* Loading overlay */}
@@ -147,26 +147,27 @@ export default function CommunityMap({ onAddressClick }) {
       )}
 
       {/* Stacked Container - Longer and properly sized */}
-      <div className="absolute top-4 left-4 right-4 sm:top-6 sm:left-6 sm:right-auto pl-6 sm:w-96 lg:w-full lg:max-w-lg">
-        <div className="bg-white/70 rounded-2xl shadow-xl p-5 sm:p-6 lg:p-8 h-80 sm:h-72 lg:h-88 flex flex-col justify-start items-start text-start">
+      <div className="absolute top-4 lg:left-4 lg:right-4 sm:top-6 sm:px-6 lg:pl-6 sm:w-88 lg:w-full lg:max-w-xl mx-4 sm:mx-6">
+        {" "}
+        <div className="bg-white/70 rounded-2xl shadow-xl p-2 sm:p-8 lg:p-4 h-80 sm:h-72 lg:h-88 flex flex-col justify-start items-start text-start">
           {/* Main Blue Text - Properly truncated */}
 
           <h2
-            className="text-4xl lg:text-4xl font-black italic text-black mb-4 lg:mb-6 leading-tight"
+            className="text-4xl lg:text-5xl font-black italic text-black mb-2 lg:mb-2 leading-tight"
             style={{ color: COLORS.blue }}
           >
             YOUR COMMUNITY COUNTS ON IZINTO - JOIN THEM.
           </h2>
 
           {/* Smaller Grey Text - Proper width */}
-          <p className="text-sm sm:text-base text-gray-800 font-bold mb-6 sm:mb-8 max-w-xs sm:max-w-sm lg:max-w-lg warap-break-words">
+          <p className="text-sm sm:text-base text-gray-800 font-bold mb-2 sm:mb-8 max-w-xs sm:max-w-sm lg:max-w-lg warap-break-words">
             From your trusted service providers. Serviced as fast as 45 minutes.
           </p>
 
           {/* Button - Full width within container */}
           <button
             onClick={onAddressClick}
-            className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 sm:py-4 w-full max-w-xs sm:max-w-sm rounded-full text-sm sm:text-base font-extrabold italic hover:bg-[#0000cc] transition-all transform whitespace-nowrap"
+            className="hidden sm:block bg-[#0000ff] text-white px-6 sm:px-8 py-3 sm:py-4 w-full max-w-xs sm:max-w-sm rounded-full text-sm sm:text-base font-extrabold italic hover:bg-[#0000cc] transition-all transform whitespace-nowrap"
           >
             ENTER YOUR ADDRESS
           </button>

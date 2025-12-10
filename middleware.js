@@ -33,7 +33,7 @@ const dynamicRoutePatterns = [
   "/help/[categories]",
   "/categories/[slug]",
   "/categories/[slug]/[section]",
-  "/blog/[slug]"
+  "/blog/[slug]",
 ];
 
 // API endpoints from your services-data.js - these should be in staticRoutes
@@ -122,7 +122,6 @@ export async function middleware(request) {
   }
 
   // Log the 404 for debugging
-  console.log(`404: ${pathname} - Redirecting to not-found page`);
 
   // IMPORTANT: Rewrite to '/not-found' (not '/404')
   // Next.js App Router uses '/not-found' as the special route
@@ -170,7 +169,6 @@ async function checkRouteExists(routeType, routeSlug) {
       });
     }
   } catch (error) {
-    console.log("Route check failed:", error.message);
     return false;
   }
 }

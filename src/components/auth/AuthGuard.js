@@ -1,16 +1,17 @@
 "use client";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import CircularProgressIndicator from "../ui/CircularProgessIndicator";
 import { useAuth } from "@/lib/context/AuthContext";
 
 export default function AuthGuard({
   children,
   requireAuth = false,
-  redirectTo = "/auth/login",
+  redirectTo = "/?auth=login", // Change default to home with query param
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!loading && requireAuth && !user) {

@@ -13,8 +13,6 @@ export async function getAllServices() {
   ];
 
   try {
-    console.log("🔄 Server: Fetching all services...");
-
     const results = await Promise.allSettled(
       endpoints.map(async (endpoint) => {
         try {
@@ -37,10 +35,6 @@ export async function getAllServices() {
           if (data.specialties) return data.specialties;
           return [];
         } catch (error) {
-          console.warn(
-            `❌ Server: Failed to fetch ${endpoint}:`,
-            error.message,
-          );
           return [];
         }
       }),
@@ -50,8 +44,6 @@ export async function getAllServices() {
     const allServices = results.flatMap((result) =>
       result.status === "fulfilled" ? result.value : [],
     );
-
-    console.log(`🎯 Server: Total services fetched: ${allServices.length}`);
 
     // Create sequential mix
     const sequentialServices = [];
