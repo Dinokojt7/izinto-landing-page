@@ -1,18 +1,24 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { motion, AnimatePresence } from "framer-motion";
 
 function AddToCartControllersContent({ service }) {
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { items, addItem, updateQuantity, removeItem, _hasHydrated } =
     useCartStore();
 
-  if (!_hasHydrated) {
+  // Fix for hydration issues
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Show loading state until component is mounted AND store is hydrated
+  if (typeof window === "undefined") {
+    // Server side - show loading
     return (
-      <div className="h-12 flex items-center">
-        <div className="w-32 h-12 bg-gray-200 rounded-full animate-pulse"></div>
-      </div>
+      <div className="w-32 h-12 bg-gray-200 rounded-full animate-pulse"></div>
     );
   }
 
