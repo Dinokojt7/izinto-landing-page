@@ -28,7 +28,7 @@ export default function AddressSelectionDialog({ isOpen, onClose }) {
     };
   }, [isOpen]);
 
-  // Also handle Escape key
+  // Handle Escape key
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape" && isOpen) {

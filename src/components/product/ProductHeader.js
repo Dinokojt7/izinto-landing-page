@@ -61,9 +61,11 @@ export default function ProductHeader() {
         className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-gray-100 bg-white"
         style={{
           background: headerBackground,
+          paddingRight: isSidebarOpen ? "var(--scrollbar-width, 0px)" : "0px",
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:pl-5 lg:pr-9 h-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:pl-5 lg:pr-9 h-full transition-all duration-200">
+          {" "}
           <div className="flex justify-between items-center h-full">
             {/* Left: Hamburger Menu & Logo */}
             <div className="flex items-center space-x-2">

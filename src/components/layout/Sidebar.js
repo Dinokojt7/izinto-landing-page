@@ -5,6 +5,7 @@ import { useServices } from "@/lib/api/services";
 import { useAuth } from "@/lib/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import CircularProgressIndicator from "../ui/CircularProgessIndicator";
 
 export default function Sidebar({ isOpen, onClose, showLoginDialog }) {
   const { data: servicesData } = useServices();
@@ -12,6 +13,54 @@ export default function Sidebar({ isOpen, onClose, showLoginDialog }) {
   const router = useRouter();
   const [filteredProviders, setFilteredProviders] = useState([]);
   const [isNavigating, setIsNavigating] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
+      const scrollY = window.scrollY;
+
+      // Lock body
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+
+      // Add padding to header to prevent shift
+      const header = document.querySelector("header");
+      if (header) {
+        header.style.paddingRight = `${scrollbarWidth}px`;
+      }
+
+      return () => {
+        // Restore body
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.paddingRight = "";
+
+        // Restore header
+        if (header) {
+          header.style.paddingRight = "";
+        }
+
+        // Restore scroll
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
+
+  // Handle Escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (servicesData?.Specialties || servicesData?.specialties) {
@@ -48,6 +97,8 @@ export default function Sidebar({ isOpen, onClose, showLoginDialog }) {
       setFilteredProviders(providersArray);
     }
   }, [servicesData]);
+
+  if (!isOpen) return null;
 
   const handleNavigation = (callback) => {
     setIsNavigating(true);
@@ -150,35 +201,46 @@ export default function Sidebar({ isOpen, onClose, showLoginDialog }) {
 
               {/* Filtered Providers List */}
               <div className="space-y-3 mb-10">
-                {filteredProviders.map(({ provider, serviceCount }) => (
-                  <div
-                    key={provider}
-                    onClick={() => handleProviderSelect(provider)}
-                    className="flex items-center justify-between p-2 rounded hover:bg-blue-50 cursor-pointer transition-colors group hover:border-blue-200"
-                  >
-                    <div className="flex-1">
-                      <div className=" text-black/70 font-semibold hover:text-black text-sm">
-                        {provider}
-                      </div>
-                      <div className="text-xs text-gray-600 mt-1">
-                        {serviceCount} service{serviceCount !== 1 ? "s" : ""}
-                      </div>
-                    </div>
-                    <svg
-                      className="w-5 h-5 text-gray-400 transition-colors"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                {!servicesData ? (
+                  // Loading state when services are not yet loaded
+                  <div className="flex justify-center items-center py-8">
+                    <CircularProgressIndicator />
                   </div>
-                ))}
+                ) : filteredProviders.length > 0 ? (
+                  filteredProviders.map(({ provider, serviceCount }) => (
+                    <div
+                      key={provider}
+                      onClick={() => handleProviderSelect(provider)}
+                      className="flex items-center justify-between p-2 rounded hover:bg-blue-50 cursor-pointer transition-colors group hover:border-blue-200"
+                    >
+                      <div className="flex-1">
+                        <div className="text-black/70 font-semibold hover:text-black text-sm">
+                          {provider}
+                        </div>
+                        <div className="text-xs text-gray-600 mt-1">
+                          {serviceCount} service{serviceCount !== 1 ? "s" : ""}
+                        </div>
+                      </div>
+                      <svg
+                        className="w-5 h-5 text-gray-400 transition-colors"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-4 text-gray-500 text-sm">
+                    No services available
+                  </div>
+                )}
               </div>
 
               {/* Help & Support Section */}
