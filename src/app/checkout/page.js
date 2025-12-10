@@ -291,7 +291,7 @@ export default function CheckoutPage() {
             {/* Right Column - Order Summary & Payment */}
             <div className="lg:col-span-1 space-y-6">
               {/* Order Summary - FIXED: No sticky positioning */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-4">
                 <h2 className="text-xl font-black italic text-black mb-6">
                   Booking Summary
                 </h2>
@@ -322,7 +322,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Payment Method */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-4">
                 <div className="relative">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-black italic text-black">
@@ -352,10 +352,15 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* Selected Method Display */}
-                  <div className="p-4 rounded-lg border border-gray-300 bg-gray-50 mb-3">
+                  <div className="p-4 rounded-lg border border-gray-300 mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-5 h-5 rounded-full border-2 border-black bg-black flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                      <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center p-2">
+                        {" "}
+                        <img
+                          src="/images/cash-payments.png"
+                          alt="Cash"
+                          className="w-full h-full object-contain"
+                        />
                       </div>
                       <div>
                         <p className="font-bold text-black text-sm">
@@ -382,23 +387,16 @@ export default function CheckoutPage() {
                                 ? "border-black bg-white"
                                 : "border-gray-200 hover:border-gray-300"
                             }`}
-                            onClick={() => {
-                              setPaymentMethod("cash");
-                              setShowPaymentDropdown(false);
-                            }}
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <div
-                                  className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                                    paymentMethod === "cash"
-                                      ? "border-black bg-black"
-                                      : "border-gray-300"
-                                  }`}
-                                >
-                                  {paymentMethod === "cash" && (
-                                    <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-                                  )}
+                                <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center p-2">
+                                  {" "}
+                                  <img
+                                    src="/images/cash-payments.png"
+                                    alt="Cash"
+                                    className="w-full h-full object-contain"
+                                  />
                                 </div>
                                 <p className="font-bold text-black text-sm">
                                   Cash Payment
@@ -413,28 +411,46 @@ export default function CheckoutPage() {
                           </div>
 
                           {/* Other Methods (Unavailable) */}
-                          {["Card Payment", "Yoco Payment", "EFT Payment"].map(
-                            (method) => (
-                              <div
-                                key={method}
-                                className="p-3 rounded border border-gray-200 opacity-60 cursor-not-allowed"
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center"></div>
-                                    <div>
-                                      <p className="font-bold text-black text-sm">
-                                        {method}
-                                      </p>
-                                    </div>
+                          {[
+                            {
+                              name: "Card Payment",
+                              image: "/images/card-payments.png",
+                            },
+                            {
+                              name: "Yoco Payment",
+                              image: "/images/yoco-payment-link.png",
+                            },
+                            {
+                              name: "EFT Payment",
+                              image: "/images/eft-payment.png",
+                            },
+                          ].map((method) => (
+                            <div
+                              key={method.name}
+                              className="p-3 rounded border border-gray-200 opacity-60 cursor-not-allowed"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center p-2">
+                                    {" "}
+                                    <img
+                                      src={method.image}
+                                      alt={method.name}
+                                      className="w-full h-full object-contain"
+                                    />
                                   </div>
-                                  <span className="text-xs font-medium text-orange-500">
-                                    Unavailable
-                                  </span>
+                                  <div>
+                                    <p className="font-bold text-black text-sm">
+                                      {method.name}
+                                    </p>
+                                  </div>
                                 </div>
+                                <span className="text-xs font-medium text-orange-500">
+                                  Unavailable
+                                </span>
                               </div>
-                            ),
-                          )}
+                            </div>
+                          ))}
                         </div>
                       </motion.div>
                     )}
@@ -482,7 +498,7 @@ export default function CheckoutPage() {
                     />
                   </svg>
                   <div>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-xs text-gray-700">
                       Currently, only Cash bookings are available. Minimum
                       booking amount is R150.
                     </p>

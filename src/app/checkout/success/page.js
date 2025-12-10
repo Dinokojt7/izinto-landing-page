@@ -66,28 +66,28 @@ export default function CheckoutSuccessPage() {
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-black italic text-black mb-4">
-            Order Confirmed!
+            Booking Confirmed!
           </h1>
 
           <p className="text-gray-600 mb-2">
-            Thank you for your order. We've received it and will process it
+            Thank you for your booking. We've received it and will process it
             shortly.
           </p>
 
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 max-w-md mx-auto my-6">
-            <p className="text-sm text-gray-600 mb-2">Order Reference</p>
+            <p className="text-sm text-gray-600 mb-2">Booking Reference</p>
             <p className="text-2xl font-black text-black tracking-wider">
               {orderId}
             </p>
             <p className="text-xs text-gray-500 mt-2">
-              Keep this reference for any inquiries about your order
+              Keep this reference for any inquiries about your booking
             </p>
           </div>
 
           <div className="space-y-4 mt-8">
             <p className="text-gray-600 text-sm">
               You will receive an email confirmation shortly. Our team will
-              contact you to confirm delivery details.
+              contact you to confirm your booking details.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
