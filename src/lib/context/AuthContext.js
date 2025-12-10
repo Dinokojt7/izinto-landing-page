@@ -1,6 +1,13 @@
 "use client";
-import { createContext, useContext, useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { RecaptchaVerifier } from "firebase/auth";
 import { auth } from "@/lib/firebase/config";
 import {
@@ -10,6 +17,10 @@ import {
   logoutUser,
   setupAuthListener,
   getUserProfile,
+  handleRedirectResult,
+  clearRedirectPath,
+  checkProfileCompletion,
+  updateUserProfile,
 } from "@/lib/firebase/auth";
 
 const AuthContext = createContext({});
@@ -19,68 +30,154 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isCheckingRedirect, setIsCheckingRedirect] = useState(true);
   const [profileComplete, setProfileComplete] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
   const [phoneAuthState, setPhoneAuthState] = useState({
-    step: "input", // "input", "otp", "success"
+    step: "input",
     phoneNumber: "",
     confirmationResult: null,
     recaptchaVerifier: null,
     error: "",
   });
   const router = useRouter();
+  const pathname = usePathname();
   const recaptchaContainerRef = useRef(null);
+  const hasCheckedRedirect = useRef(false);
 
+  // Handle redirect result from Google auth
+  const checkAndHandleRedirect = useCallback(async () => {
+    if (hasCheckedRedirect.current) return;
+    hasCheckedRedirect.current = true;
+
+    try {
+      const result = await handleRedirectResult();
+
+      if (result.success && result.user) {
+        setUser(result.user);
+        setIsNewUser(result.newUser || false);
+
+        // Get complete user profile
+        const profile = await getUserProfile(result.user.uid);
+        if (profile.success) {
+          setUserProfile(profile.data);
+          setProfileComplete(profile.profileComplete || false);
+        }
+
+        // Handle redirect based on user state
+        const shouldCompleteProfile =
+          result.newUser || !profile.profileComplete;
+
+        if (shouldCompleteProfile) {
+          // Redirect to profile completion if needed
+          if (pathname !== "/profile") {
+            router.push("/profile");
+          }
+        } else if (result.returnPath && result.returnPath !== pathname) {
+          // Return to original page if profile is complete
+          router.push(result.returnPath);
+        }
+      }
+    } catch (error) {
+      console.error("Error checking redirect result:", error);
+    } finally {
+      setIsCheckingRedirect(false);
+    }
+  }, [router, pathname]);
+
+  // Setup auth listener and handle redirect
   useEffect(() => {
+    // Check redirect result first
+    checkAndHandleRedirect();
+
+    // Setup auth state listener
     const unsubscribe = setupAuthListener(async (authData) => {
-      if (authData) {
+      if (authData?.user) {
         setUser(authData.user);
+        setIsNewUser(authData.newUser || false);
         setProfileComplete(authData.profileComplete || false);
 
-        // Redirect to profile if new user or profile incomplete
-        if (!authData.profileComplete && router) {
+        // Get user profile data
+        const profile = await getUserProfile(authData.user.uid);
+        if (profile.success) {
+          setUserProfile(profile.data);
+        }
+
+        // Handle profile completion redirect for non-redirect auth
+        // (e.g., phone auth or returning users)
+        if (
+          !authData.profileComplete &&
+          pathname !== "/profile" &&
+          !pathname.includes("/auth/")
+        ) {
           router.push("/profile");
         }
       } else {
         setUser(null);
+        setUserProfile(null);
         setProfileComplete(false);
+        setIsNewUser(false);
       }
-      setLoading(false);
+
+      // Only set loading false after initial auth check
+      if (hasCheckedRedirect.current) {
+        setLoading(false);
+      }
     });
 
-    return () => unsubscribe();
-  }, [router]);
+    // Cleanup
+    return () => {
+      unsubscribe();
+      hasCheckedRedirect.current = false;
+    };
+  }, [checkAndHandleRedirect, router, pathname]);
 
-  // Initialize reCAPTCHA
-  const initializeRecaptcha = () => {
-    if (!recaptchaContainerRef.current) return null;
+  // Initialize reCAPTCHA for phone auth
+  const initializeRecaptcha = useCallback(() => {
+    if (!recaptchaContainerRef.current || !auth) return null;
 
-    const recaptchaVerifier = new RecaptchaVerifier(
-      auth,
-      recaptchaContainerRef.current,
-      {
-        size: "invisible",
-        callback: () => {
-          console.log("reCAPTCHA solved");
+    try {
+      const recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        recaptchaContainerRef.current,
+        {
+          size: "invisible",
+          callback: () => {
+            console.log("reCAPTCHA solved");
+          },
         },
-      },
-    );
+      );
 
-    setPhoneAuthState((prev) => ({
-      ...prev,
-      recaptchaVerifier,
-    }));
+      setPhoneAuthState((prev) => ({
+        ...prev,
+        recaptchaVerifier,
+      }));
 
-    return recaptchaVerifier;
-  };
+      return recaptchaVerifier;
+    } catch (error) {
+      console.error("reCAPTCHA initialization error:", error);
+      return null;
+    }
+  }, []);
 
   // Handle phone number submission
   const handlePhoneSubmit = async (phoneNumber) => {
     try {
-      setPhoneAuthState((prev) => ({ ...prev, error: "", phoneNumber }));
+      setPhoneAuthState((prev) => ({
+        ...prev,
+        error: "",
+        phoneNumber,
+        step: "input", // Reset to input while processing
+      }));
 
       let recaptchaVerifier = phoneAuthState.recaptchaVerifier;
       if (!recaptchaVerifier) {
         recaptchaVerifier = initializeRecaptcha();
+      }
+
+      if (!recaptchaVerifier) {
+        throw new Error("reCAPTCHA failed to initialize");
       }
 
       const result = await sendPhoneOTP(phoneNumber, recaptchaVerifier);
@@ -122,19 +219,27 @@ export const AuthProvider = ({ children }) => {
       );
 
       if (result.success) {
+        setUser(result.user);
+        setIsNewUser(result.newUser || false);
+        setProfileComplete(result.profileComplete || false);
+
         setPhoneAuthState((prev) => ({
           ...prev,
           step: "success",
           error: "",
         }));
 
-        // Get user profile to check completeness
+        // Get complete user profile
         const profile = await getUserProfile(result.user.uid);
         if (profile.success) {
-          setProfileComplete(profile.data.profileComplete || false);
+          setUserProfile(profile.data);
         }
 
-        return { success: true };
+        return {
+          success: true,
+          newUser: result.newUser,
+          profileComplete: result.profileComplete,
+        };
       } else {
         setPhoneAuthState((prev) => ({
           ...prev,
@@ -153,13 +258,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Handle Google sign-in
+  // Handle Google sign-in with redirect
   const handleGoogleSignIn = async () => {
     try {
+      // Store current path to return after auth
+      const returnPath = ["/login", "/auth/callback"].includes(pathname)
+        ? "/"
+        : pathname;
+
       const result = await signInWithGoogle();
 
       if (result.success) {
-        return { success: true };
+        // The page will redirect, no need to do anything here
+        return { success: true, redirect: true };
       } else {
         return { success: false, error: result.error };
       }
@@ -174,7 +285,9 @@ export const AuthProvider = ({ children }) => {
       const result = await logoutUser();
       if (result.success) {
         setUser(null);
+        setUserProfile(null);
         setProfileComplete(false);
+        setIsNewUser(false);
         setPhoneAuthState({
           step: "input",
           phoneNumber: "",
@@ -182,6 +295,7 @@ export const AuthProvider = ({ children }) => {
           recaptchaVerifier: null,
           error: "",
         });
+        clearRedirectPath();
         router.push("/");
       }
       return result;
@@ -201,17 +315,88 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  // Update user profile
+  const updateProfile = async (updates) => {
+    if (!user) return { success: false, error: "No user logged in" };
+
+    try {
+      const result = await updateUserProfile(user.uid, updates);
+      if (result.success) {
+        // Refresh user profile data
+        const profile = await getUserProfile(user.uid);
+        if (profile.success) {
+          setUserProfile(profile.data);
+          setProfileComplete(profile.profileComplete || false);
+        }
+      }
+      return result;
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  };
+
+  // Check if profile needs completion
+  const checkProfileNeedsCompletion = async () => {
+    if (!user) return { success: false, error: "No user logged in" };
+
+    try {
+      const result = await checkProfileCompletion(user.uid);
+      if (result.success) {
+        return {
+          success: true,
+          needsCompletion: result.requiresCompletion,
+          missingFields: result.missingFields,
+        };
+      }
+      return result;
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  };
+
+  // Clear any stored redirect paths
+  const clearAuthState = () => {
+    clearRedirectPath();
+    resetPhoneAuth();
+  };
+
+  // In AuthContext.js
+  const setPhoneAuthError = (error) => {
+    setPhoneAuthState((prev) => ({
+      ...prev,
+      error,
+    }));
+  };
+
   const value = {
+    // User state
     user,
-    loading,
+    loading: loading || isCheckingRedirect,
     profileComplete,
+    isNewUser,
+    userProfile,
+
+    // Phone auth state
     phoneAuthState,
+    setPhoneAuthError,
+    // Auth methods
     handlePhoneSubmit,
     handleOTPVerify,
     handleGoogleSignIn,
     handleLogout,
     resetPhoneAuth,
-    getUserProfile,
+    clearAuthState,
+
+    // Profile methods
+    getUserProfile: () =>
+      userProfile ? { success: true, data: userProfile } : { success: false },
+    updateProfile,
+    checkProfileNeedsCompletion,
+
+    // Status
+    isCheckingRedirect,
+    isAuthenticated: !!user,
+    requiresProfileCompletion: !profileComplete && !!user,
   };
 
   return (
@@ -220,8 +405,19 @@ export const AuthProvider = ({ children }) => {
       <div
         ref={recaptchaContainerRef}
         className="fixed opacity-0 pointer-events-none"
+        id="recaptcha-container"
       />
-      {!loading && children}
+      {!loading && !isCheckingRedirect ? (
+        children
+      ) : (
+        // Show loading state while checking auth
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-12 h-12 mx-auto mb-4 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      )}
     </AuthContext.Provider>
   );
 };

@@ -13,6 +13,7 @@ export default function LoginDialog({ isOpen, onClose }) {
   const [canResend, setCanResend] = useState(true);
 
   const {
+    setPhoneAuthError,
     phoneAuthState,
     handlePhoneSubmit,
     handleOTPVerify,
@@ -132,10 +133,12 @@ export default function LoginDialog({ isOpen, onClose }) {
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     const result = await handleGoogleSignIn();
-    setIsLoading(false);
 
-    if (result.success) {
-      onClose();
+    if (result.success && result.redirect) {
+      setIsLoading(true);
+    } else if (!result.success) {
+      setIsLoading(false);
+      setPhoneAuthError(result.error || "Google sign-in failed");
     }
   };
 

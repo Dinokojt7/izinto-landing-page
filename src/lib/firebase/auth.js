@@ -1,6 +1,8 @@
+// lib/firebase/auth.js
 import {
-  signInWithPopup,
   GoogleAuthProvider,
+  signInWithRedirect,
+  getRedirectResult,
   signInWithPhoneNumber,
   RecaptchaVerifier,
   signOut,
@@ -19,7 +21,47 @@ import {
 } from "firebase/firestore";
 import { db } from "./config";
 
-// Google Auth
+// Session management for redirect flow
+const REDIRECT_SESSION_KEY = "auth_redirect_path";
+const AUTH_TYPE_KEY = "auth_type";
+
+export const setRedirectPath = (path) => {
+  if (typeof window !== "undefined") {
+    sessionStorage.setItem(
+      REDIRECT_SESSION_KEY,
+      path || window.location.pathname,
+    );
+  }
+};
+
+export const getRedirectPath = () => {
+  if (typeof window !== "undefined") {
+    return sessionStorage.getItem(REDIRECT_SESSION_KEY) || "/";
+  }
+  return "/";
+};
+
+export const clearRedirectPath = () => {
+  if (typeof window !== "undefined") {
+    sessionStorage.removeItem(REDIRECT_SESSION_KEY);
+    sessionStorage.removeItem(AUTH_TYPE_KEY);
+  }
+};
+
+export const setAuthType = (type) => {
+  if (typeof window !== "undefined") {
+    sessionStorage.setItem(AUTH_TYPE_KEY, type);
+  }
+};
+
+export const getAuthType = () => {
+  if (typeof window !== "undefined") {
+    return sessionStorage.getItem(AUTH_TYPE_KEY);
+  }
+  return null;
+};
+
+// Google Auth with redirect
 export const signInWithGoogle = async () => {
   try {
     const provider = new GoogleAuthProvider();
@@ -27,25 +69,73 @@ export const signInWithGoogle = async () => {
       prompt: "select_account",
     });
 
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
+    // Store where user came from
+    const currentPath = window.location.pathname;
+    setRedirectPath(currentPath);
+    setAuthType("google");
 
-    // Check if user profile exists in Firestore
-    await checkAndCreateUserProfile(user);
+    // Always use redirect - more reliable
+    await signInWithRedirect(auth, provider);
 
-    return { success: true, user };
+    // The page will redirect, no need to return user data here
+    return { success: true, redirect: true };
   } catch (error) {
     console.error("Google sign-in error:", error);
-    return { success: false, error: error.message };
+    clearRedirectPath();
+    return {
+      success: false,
+      error: error.message,
+      code: error.code,
+    };
   }
 };
 
-// Phone Auth - Send OTP
+// Handle the redirect result when user returns from Google auth
+export const handleRedirectResult = async () => {
+  try {
+    const result = await getRedirectResult(auth);
+
+    if (result?.user) {
+      const authType = getAuthType();
+      const user = result.user;
+
+      // Check/create user profile
+      const profileStatus = await checkAndCreateUserProfile(user);
+
+      // Get return path
+      const returnPath = getRedirectPath();
+      clearRedirectPath();
+
+      return {
+        success: true,
+        user,
+        authType,
+        returnPath,
+        ...profileStatus,
+      };
+    }
+
+    return { success: false, authType: getAuthType() };
+  } catch (error) {
+    console.error("Redirect result error:", error);
+    clearRedirectPath();
+    return {
+      success: false,
+      error: error.message,
+      code: error.code,
+    };
+  }
+};
+
+// Phone Auth - Send OTP (updated for redirect flow)
 export const sendPhoneOTP = async (phoneNumber, recaptchaVerifier) => {
   try {
     const formattedPhone = phoneNumber.startsWith("+")
       ? phoneNumber
       : `+${phoneNumber}`;
+
+    // Store auth type for phone
+    setAuthType("phone");
 
     const confirmationResult = await signInWithPhoneNumber(
       auth,
@@ -60,6 +150,7 @@ export const sendPhoneOTP = async (phoneNumber, recaptchaVerifier) => {
     };
   } catch (error) {
     console.error("Send OTP error:", error);
+    clearRedirectPath();
     return {
       success: false,
       error: error.message,
@@ -68,29 +159,40 @@ export const sendPhoneOTP = async (phoneNumber, recaptchaVerifier) => {
   }
 };
 
-// Phone Auth - Verify OTP
+// Phone Auth - Verify OTP (handles both new and returning users)
 export const verifyPhoneOTP = async (confirmationResult, otp) => {
   try {
     const result = await confirmationResult.confirm(otp);
     const user = result.user;
 
     // Check if user profile exists in Firestore
-    await checkAndCreateUserProfile(user);
+    const profileStatus = await checkAndCreateUserProfile(user);
 
-    return { success: true, user };
+    // Clear any stored redirect path for phone auth
+    clearRedirectPath();
+
+    return {
+      success: true,
+      user,
+      ...profileStatus,
+    };
   } catch (error) {
     console.error("Verify OTP error:", error);
     return { success: false, error: error.message };
   }
 };
 
-// Check and create user profile in Firestore
+// Check and create user profile in Firestore (enhanced for redirect flow)
 export const checkAndCreateUserProfile = async (firebaseUser) => {
   try {
     const userRef = doc(db, "users", firebaseUser.uid);
     const userSnap = await getDoc(userRef);
 
-    if (!userSnap.exists()) {
+    const isNewUser = !userSnap.exists();
+    let profileComplete = false;
+    let promoCode = null;
+
+    if (isNewUser) {
       // Create new user profile with promo code
       let name = "";
       let surname = "";
@@ -109,7 +211,7 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
         return `${namePart}${randomPart}`;
       };
 
-      const promoCode = generatePromoCode(displayName || name || "User");
+      promoCode = generatePromoCode(displayName || name || "User");
 
       const userData = {
         uid: firebaseUser.uid,
@@ -140,26 +242,34 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
         // Account status
         isActive: true,
         lastLogin: new Date().toISOString(),
+        // Track auth method
+        authMethods: ["phone"],
+        signupMethod: "phone",
       };
 
       await setDoc(userRef, userData);
-      return {
-        newUser: true,
-        profileComplete: false,
-        promoCode: promoCode,
-      };
+      profileComplete = false;
+    } else {
+      // Existing user - update last login and merge auth methods
+      const existingData = userSnap.data();
+      const authMethods = new Set(existingData.authMethods || []);
+      authMethods.add("phone");
+
+      await updateDoc(userRef, {
+        lastLogin: new Date().toISOString(),
+        authMethods: Array.from(authMethods),
+        updatedAt: new Date().toISOString(),
+      });
+
+      profileComplete = existingData.profileComplete || false;
+      promoCode = existingData.promoCode || null;
     }
 
-    // Update last login for existing users
-    await updateDoc(userRef, {
-      lastLogin: new Date().toISOString(),
-    });
-
-    const userData = userSnap.data();
     return {
-      newUser: false,
-      profileComplete: userData.profileComplete || false,
-      promoCode: userData.promoCode || null,
+      newUser: isNewUser,
+      profileComplete: profileComplete,
+      promoCode: promoCode,
+      requiresProfileCompletion: isNewUser || !profileComplete,
     };
   } catch (error) {
     console.error("Profile check error:", error);
@@ -175,15 +285,25 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
 export const updateUserProfile = async (userId, updates) => {
   try {
     const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
 
+    if (!userSnap.exists()) {
+      return { success: false, error: "User not found" };
+    }
+
+    const existingData = userSnap.data();
     const updateData = {
       ...updates,
       updatedAt: new Date().toISOString(),
+      profileComplete: true, // Mark as complete when updating profile
     };
 
     await updateDoc(userRef, updateData);
 
-    return { success: true };
+    return {
+      success: true,
+      profileComplete: true,
+    };
   } catch (error) {
     console.error("Update profile error:", error);
     return { success: false, error: error.message };
@@ -316,6 +436,7 @@ export const generateUniquePromoCode = async (baseName = "IZI") => {
 // Logout
 export const logoutUser = async () => {
   try {
+    clearRedirectPath();
     await signOut(auth);
     return { success: true };
   } catch (error) {
@@ -323,12 +444,16 @@ export const logoutUser = async () => {
   }
 };
 
-// Auth state listener
+// Enhanced auth state listener for redirect flow
 export const setupAuthListener = (callback) => {
   return onAuthStateChanged(auth, async (user) => {
     if (user) {
       const profileStatus = await checkAndCreateUserProfile(user);
-      callback({ user, ...profileStatus });
+      callback({
+        user,
+        ...profileStatus,
+        authType: getAuthType(),
+      });
     } else {
       callback(null);
     }
@@ -342,11 +467,111 @@ export const getUserProfile = async (userId) => {
     const userSnap = await getDoc(userRef);
 
     if (userSnap.exists()) {
-      return { success: true, data: userSnap.data() };
+      const data = userSnap.data();
+      return {
+        success: true,
+        data: data,
+        profileComplete: data.profileComplete || false,
+        requiresProfileCompletion: !data.profileComplete,
+      };
     } else {
       return { success: false, error: "User profile not found" };
     }
   } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// Check if user needs to complete profile
+export const checkProfileCompletion = async (userId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      const data = userSnap.data();
+      const isComplete = data.profileComplete || false;
+      const missingFields = [];
+
+      // Check required fields
+      if (!data.name || !data.name.trim()) missingFields.push("name");
+      if (!data.surname || !data.surname.trim()) missingFields.push("surname");
+      if (!data.phone) missingFields.push("phone");
+
+      return {
+        success: true,
+        profileComplete: isComplete,
+        requiresCompletion: !isComplete || missingFields.length > 0,
+        missingFields,
+        data,
+      };
+    }
+
+    return { success: false, error: "User not found" };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// Get user by email (for admin or linking accounts)
+export const getUserByEmail = async (email) => {
+  try {
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("email", "==", email.toLowerCase()));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+      return { success: true, user: { id: doc.id, ...doc.data() } };
+    }
+
+    return { success: false, error: "User not found" };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// Merge user data if user signs in with different method
+export const mergeUserAccounts = async (primaryUserId, secondaryUserId) => {
+  try {
+    const primaryRef = doc(db, "users", primaryUserId);
+    const secondaryRef = doc(db, "users", secondaryUserId);
+
+    const [primarySnap, secondarySnap] = await Promise.all([
+      getDoc(primaryRef),
+      getDoc(secondaryRef),
+    ]);
+
+    if (!primarySnap.exists() || !secondarySnap.exists()) {
+      return { success: false, error: "One or both users not found" };
+    }
+
+    const primaryData = primarySnap.data();
+    const secondaryData = secondarySnap.data();
+
+    // Merge data (primary takes precedence)
+    const mergedData = {
+      ...secondaryData,
+      ...primaryData,
+      authMethods: Array.from(
+        new Set([
+          ...(primaryData.authMethods || []),
+          ...(secondaryData.authMethods || []),
+        ]),
+      ),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Update primary user
+    await setDoc(primaryRef, mergedData);
+
+    // Delete secondary user
+    // Note: In production, you might want to archive instead of delete
+    // await deleteDoc(secondaryRef);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Merge accounts error:", error);
     return { success: false, error: error.message };
   }
 };
