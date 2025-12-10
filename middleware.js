@@ -176,6 +176,6 @@ async function checkRouteExists(routeType, routeSlug) {
 // Apply middleware to all routes except static assets
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|manifest.json).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|manifest.json|__/auth).*)",
   ],
 };

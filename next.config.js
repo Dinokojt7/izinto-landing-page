@@ -11,6 +11,21 @@ const nextConfig = {
       },
     ],
   },
+  // 🔧 CRITICAL: Add these rewrite rules for Firebase Auth
+  async rewrites() {
+    return [
+      {
+        source: "/__/auth/:path*",
+        destination:
+          "https://izinto-domestically.firebaseapp.com/__/auth/:path*",
+      },
+      {
+        source: "/__/firebase/init.json",
+        destination:
+          "https://izinto-domestically.firebaseapp.com/__/firebase/init.json",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

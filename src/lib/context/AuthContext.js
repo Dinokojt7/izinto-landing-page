@@ -22,6 +22,7 @@ import {
   checkProfileCompletion,
   updateUserProfile,
 } from "@/lib/firebase/auth";
+import CircularProgressIndicator from "@/components/ui/CircularProgessIndicator";
 
 const AuthContext = createContext({});
 
@@ -86,52 +87,73 @@ export const AuthProvider = ({ children }) => {
     }
   }, [router, pathname]);
 
-  // Setup auth listener and handle redirect
+  // Auth listener and handle redirect
   useEffect(() => {
-    // Check redirect result first
-    checkAndHandleRedirect();
+    let mounted = true;
 
-    // Setup auth state listener
+    // handle auth state
     const unsubscribe = setupAuthListener(async (authData) => {
+      if (!mounted) return;
+
       if (authData?.user) {
+        console.log("Auth state changed:", authData.user.uid);
         setUser(authData.user);
         setIsNewUser(authData.newUser || false);
         setProfileComplete(authData.profileComplete || false);
 
-        // Get user profile data
         const profile = await getUserProfile(authData.user.uid);
-        if (profile.success) {
+        if (profile.success && mounted) {
           setUserProfile(profile.data);
         }
 
-        // Handle profile completion redirect for non-redirect auth
-        // (e.g., phone auth or returning users)
-        if (
-          !authData.profileComplete &&
-          pathname !== "/profile" &&
-          !pathname.includes("/auth/")
-        ) {
+        const shouldCompleteProfile =
+          authData.newUser || !authData.profileComplete;
+        if (shouldCompleteProfile && pathname !== "/profile" && mounted) {
           router.push("/profile");
         }
       } else {
+        console.log("No user authenticated");
         setUser(null);
         setUserProfile(null);
         setProfileComplete(false);
         setIsNewUser(false);
       }
 
-      // Only set loading false after initial auth check
-      if (hasCheckedRedirect.current) {
+      if (mounted) {
         setLoading(false);
       }
     });
 
-    // Cleanup
-    return () => {
-      unsubscribe();
-      hasCheckedRedirect.current = false;
+    const handleInitialRedirect = async () => {
+      if (!mounted) return;
+
+      const result = await handleRedirectResult();
+
+      if (result.success && result.user && mounted) {
+        // Auth listener above will handle setting user state
+        const shouldCompleteProfile = result.newUser || !result.profileComplete;
+
+        if (shouldCompleteProfile && pathname !== "/profile") {
+          router.push("/profile");
+        } else if (result.returnPath && result.returnPath !== pathname) {
+          router.push(result.returnPath);
+        }
+      }
+
+      if (mounted) {
+        setIsCheckingRedirect(false);
+        hasCheckedRedirect.current = true;
+      }
     };
-  }, [checkAndHandleRedirect, router, pathname]);
+
+    // Run initial redirect check once
+    handleInitialRedirect();
+
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, [router]);
 
   // Initialize reCAPTCHA for phone auth
   const initializeRecaptcha = useCallback(() => {
@@ -413,8 +435,7 @@ export const AuthProvider = ({ children }) => {
         // Show loading state while checking auth
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <div className="w-12 h-12 mx-auto mb-4 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-600">Loading...</p>
+            <CircularProgressIndicator isPageLoader={true} />
           </div>
         </div>
       )}

@@ -97,8 +97,6 @@ export async function fetchServicesClient() {
   ];
 
   try {
-    console.log("🔄 Client: Fetching services...");
-
     const results = await Promise.allSettled(
       endpoints.map(async (endpoint) => {
         try {
@@ -132,7 +130,7 @@ export async function fetchServicesClient() {
             throw new Error("Invalid JSON");
           }
         } catch (error) {
-          console.warn(`❌ Client: ${endpoint} failed:`, error.message);
+          console.warn(`Client: ${endpoint} failed:`, error.message);
           return [];
         }
       }),
@@ -142,8 +140,6 @@ export async function fetchServicesClient() {
     const apiServices = results.flatMap((result) =>
       result.status === "fulfilled" ? result.value : [],
     );
-
-    console.log(`📊 Client: API returned ${apiServices.length} services`);
 
     // Use API services if we got any, otherwise use mock
     const finalServices = apiServices.length > 0 ? apiServices : mockServices;
@@ -164,10 +160,9 @@ export async function fetchServicesClient() {
     const displayServices =
       sequentialServices.length > 0 ? sequentialServices : finalServices;
 
-    console.log(`🎯 Client: Displaying ${displayServices.length} services`);
     return displayServices;
   } catch (error) {
-    console.error("💥 Client: Critical error, using mock data:", error);
+    console.error(`Client: ${error}`, error);
     return mockServices;
   }
 }

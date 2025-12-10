@@ -1,6 +1,10 @@
-// src/lib/firebase/config.js
+// lib/firebase/config.js
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import {
+  getAuth,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -13,14 +17,38 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase only if it hasn't been initialized
-const app =
-  getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+// Initialize Firebase only on client side
+let app;
+let auth;
+let db;
+let storage;
 
-// Initialize Firebase services
-export const auth = getAuth(app);
-auth.useDeviceLanguage();
-export const db = getFirestore(app);
-export const storage = getStorage(app);
+if (typeof window !== "undefined") {
+  // Client-side initialization
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  auth = getAuth(app);
+  auth.useDeviceLanguage();
 
+  // Set persistence
+  setPersistence(auth, browserLocalPersistence)
+    .then(() => {
+      console.log("Firebase auth persistence set");
+    })
+    .catch((error) => {
+      console.error("Error setting persistence:", error);
+    });
+
+  db = getFirestore(app);
+  storage = getStorage(app);
+
+  console.log("Firebase initialized on client");
+} else {
+  // Server-side - return null
+  app = null;
+  auth = null;
+  db = null;
+  storage = null;
+}
+
+export { app, auth, db, storage };
 export default app;

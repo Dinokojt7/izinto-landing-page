@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { Poppins } from "next/font/google";
 import CircularProgressIndicator from "@/components/ui/CircularProgessIndicator";
@@ -264,33 +264,39 @@ export default function CartPage() {
         isOpen={isLoginDialogOpen}
         onClose={() => setIsLoginDialogOpen(false)}
       />
+      <AnimatePresence>
+        {showSnackbar && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:w-auto sm:transform sm:-translate-x-1/2 z-60"
+          >
+            <div className="bg-black text-white px-4 py-3 rounded-lg shadow-lg flex items-center justify-between gap-3 sm:px-6 sm:py-4">
+              {/* Message - single line on mobile */}
+              <span className="font-medium text-sm sm:text-base truncate flex-1">
+                Please login to continue checkout
+              </span>
 
-      {showSnackbar && (
-        <div className="fixed bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:w-auto sm:transform sm:-translate-x-1/2 z-50 animate-fade-in-up">
-          <div className="bg-black text-white px-4 py-3 rounded-lg shadow-lg flex items-center justify-between gap-3 sm:px-6 sm:py-4">
-            {/* Message - single line on mobile */}
-            <span className="font-medium text-sm sm:text-base truncate flex-1">
-              Please login to continue checkout
-            </span>
-
-            {/* Action buttons */}
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={handleSnackbarLogin}
-                className="bg-white text-black px-3 py-1 rounded-full font-bold text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap"
-              >
-                LOGIN
-              </button>
-              <button
-                onClick={() => setShowSnackbar(false)}
-                className="text-gray-300 hover:text-white text-lg sm:text-base"
-              >
-                ×
-              </button>
+              {/* Action buttons */}
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={handleSnackbarLogin}
+                  className="bg-white text-black px-3 py-1 rounded-full font-bold text-xs sm:text-sm hover:bg-gray-100 transition-colors whitespace-nowrap"
+                >
+                  LOGIN
+                </button>
+                <button
+                  onClick={() => setShowSnackbar(false)}
+                  className="text-gray-300 hover:text-white text-lg sm:text-base"
+                >
+                  ×
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -25,9 +25,6 @@ export async function getAllServices() {
           }
 
           const data = await response.json();
-          console.log(
-            `✅ Server: ${endpoint} - ${data.Specialties?.length || data.specialties?.length || 0} items`,
-          );
 
           // Extract services from different response formats
           if (Array.isArray(data)) return data;
@@ -59,7 +56,7 @@ export async function getAllServices() {
 
     return sequentialServices;
   } catch (error) {
-    console.error("💥 Server: Error fetching services:", error);
+    console.error("Server: Error fetching services:", error);
     return [];
   }
 }

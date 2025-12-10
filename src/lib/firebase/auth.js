@@ -62,25 +62,23 @@ export const getAuthType = () => {
 };
 
 // Google Auth with redirect
-export const signInWithGoogle = async () => {
+export const signInWithGoogle = async (returnPath = null) => {
   try {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({
       prompt: "select_account",
     });
 
-    // Store where user came from
-    const currentPath = window.location.pathname;
-    setRedirectPath(currentPath);
-    setAuthType("google");
+    if (typeof window !== "undefined") {
+      const path = returnPath || window.location.pathname;
+      setRedirectPath(path);
+      setAuthType("google");
+    }
 
-    // Always use redirect - more reliable
     await signInWithRedirect(auth, provider);
 
-    // The page will redirect, no need to return user data here
     return { success: true, redirect: true };
   } catch (error) {
-    console.error("Google sign-in error:", error);
     clearRedirectPath();
     return {
       success: false,
@@ -90,7 +88,7 @@ export const signInWithGoogle = async () => {
   }
 };
 
-// Handle the redirect result when user returns from Google auth
+// Handle the redirect result
 export const handleRedirectResult = async () => {
   try {
     const result = await getRedirectResult(auth);
@@ -98,12 +96,9 @@ export const handleRedirectResult = async () => {
     if (result?.user) {
       const authType = getAuthType();
       const user = result.user;
-
-      // Check/create user profile
       const profileStatus = await checkAndCreateUserProfile(user);
-
-      // Get return path
       const returnPath = getRedirectPath();
+
       clearRedirectPath();
 
       return {
@@ -113,11 +108,32 @@ export const handleRedirectResult = async () => {
         returnPath,
         ...profileStatus,
       };
+    } else if (result?.error) {
+      clearRedirectPath();
+      return {
+        success: false,
+        error: result.error.message,
+        code: result.error.code,
+      };
+    }
+
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const profileStatus = await checkAndCreateUserProfile(currentUser);
+      const returnPath = getRedirectPath();
+      clearRedirectPath();
+
+      return {
+        success: true,
+        user: currentUser,
+        authType: getAuthType(),
+        returnPath,
+        ...profileStatus,
+      };
     }
 
     return { success: false, authType: getAuthType() };
   } catch (error) {
-    console.error("Redirect result error:", error);
     clearRedirectPath();
     return {
       success: false,
@@ -127,14 +143,13 @@ export const handleRedirectResult = async () => {
   }
 };
 
-// Phone Auth - Send OTP (updated for redirect flow)
+// Phone Auth - Send OTP
 export const sendPhoneOTP = async (phoneNumber, recaptchaVerifier) => {
   try {
     const formattedPhone = phoneNumber.startsWith("+")
       ? phoneNumber
       : `+${phoneNumber}`;
 
-    // Store auth type for phone
     setAuthType("phone");
 
     const confirmationResult = await signInWithPhoneNumber(
@@ -149,7 +164,6 @@ export const sendPhoneOTP = async (phoneNumber, recaptchaVerifier) => {
       message: "OTP sent successfully",
     };
   } catch (error) {
-    console.error("Send OTP error:", error);
     clearRedirectPath();
     return {
       success: false,
@@ -159,16 +173,12 @@ export const sendPhoneOTP = async (phoneNumber, recaptchaVerifier) => {
   }
 };
 
-// Phone Auth - Verify OTP (handles both new and returning users)
+// Phone Auth - Verify OTP
 export const verifyPhoneOTP = async (confirmationResult, otp) => {
   try {
     const result = await confirmationResult.confirm(otp);
     const user = result.user;
-
-    // Check if user profile exists in Firestore
     const profileStatus = await checkAndCreateUserProfile(user);
-
-    // Clear any stored redirect path for phone auth
     clearRedirectPath();
 
     return {
@@ -177,12 +187,11 @@ export const verifyPhoneOTP = async (confirmationResult, otp) => {
       ...profileStatus,
     };
   } catch (error) {
-    console.error("Verify OTP error:", error);
     return { success: false, error: error.message };
   }
 };
 
-// Check and create user profile in Firestore (enhanced for redirect flow)
+// Check and create user profile
 export const checkAndCreateUserProfile = async (firebaseUser) => {
   try {
     const userRef = doc(db, "users", firebaseUser.uid);
@@ -193,7 +202,6 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
     let promoCode = null;
 
     if (isNewUser) {
-      // Create new user profile with promo code
       let name = "";
       let surname = "";
       let displayName = firebaseUser.displayName || "";
@@ -204,7 +212,6 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
         surname = nameParts.slice(1).join(" ") || "";
       }
 
-      // Generate promo code
       const generatePromoCode = (name) => {
         const namePart = name ? name.substring(0, 3).toUpperCase() : "IZI";
         const randomPart = Math.floor(1000 + Math.random() * 9000);
@@ -221,13 +228,11 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
         surname: surname,
         displayName: displayName,
         photoURL: firebaseUser.photoURL || "",
-        // Add promo code fields
         promoCode: promoCode,
         promoCodeUsedBy: [],
         referralCredits: 0,
         referralEarnings: 0,
         totalReferrals: 0,
-        // Basic profile fields
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         profileComplete: false,
@@ -236,13 +241,10 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
           notifications: true,
           marketing: false,
         },
-        // Verification status
         emailVerified: firebaseUser.emailVerified || false,
         phoneVerified: !!firebaseUser.phoneNumber,
-        // Account status
         isActive: true,
         lastLogin: new Date().toISOString(),
-        // Track auth method
         authMethods: ["phone"],
         signupMethod: "phone",
       };
@@ -250,7 +252,6 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
       await setDoc(userRef, userData);
       profileComplete = false;
     } else {
-      // Existing user - update last login and merge auth methods
       const existingData = userSnap.data();
       const authMethods = new Set(existingData.authMethods || []);
       authMethods.add("phone");
@@ -272,7 +273,6 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
       requiresProfileCompletion: isNewUser || !profileComplete,
     };
   } catch (error) {
-    console.error("Profile check error:", error);
     return {
       newUser: false,
       profileComplete: false,
@@ -281,7 +281,7 @@ export const checkAndCreateUserProfile = async (firebaseUser) => {
   }
 };
 
-// Enhanced version for updating user profile with more fields
+// Rest of the functions remain the same but without console.logs
 export const updateUserProfile = async (userId, updates) => {
   try {
     const userRef = doc(db, "users", userId);
@@ -291,11 +291,10 @@ export const updateUserProfile = async (userId, updates) => {
       return { success: false, error: "User not found" };
     }
 
-    const existingData = userSnap.data();
     const updateData = {
       ...updates,
       updatedAt: new Date().toISOString(),
-      profileComplete: true, // Mark as complete when updating profile
+      profileComplete: true,
     };
 
     await updateDoc(userRef, updateData);
@@ -305,12 +304,10 @@ export const updateUserProfile = async (userId, updates) => {
       profileComplete: true,
     };
   } catch (error) {
-    console.error("Update profile error:", error);
     return { success: false, error: error.message };
   }
 };
 
-// Get user's promo code info
 export const getUserPromoInfo = async (userId) => {
   try {
     const userRef = doc(db, "users", userId);
@@ -333,10 +330,8 @@ export const getUserPromoInfo = async (userId) => {
   }
 };
 
-// Check if promo code is valid and apply it
 export const applyPromoCode = async (referrerCode, refereeUserId) => {
   try {
-    // Find user with this promo code
     const usersRef = collection(db, "users");
     const q = query(
       usersRef,
@@ -351,12 +346,10 @@ export const applyPromoCode = async (referrerCode, refereeUserId) => {
     const referrerDoc = querySnapshot.docs[0];
     const referrerData = referrerDoc.data();
 
-    // Check if user is trying to use their own code
     if (referrerDoc.id === refereeUserId) {
       return { success: false, error: "Cannot use your own promo code" };
     }
 
-    // Check if this user already used this code
     if (
       referrerData.promoCodeUsedBy &&
       referrerData.promoCodeUsedBy.includes(refereeUserId)
@@ -364,7 +357,6 @@ export const applyPromoCode = async (referrerCode, refereeUserId) => {
       return { success: false, error: "You've already used this code" };
     }
 
-    // Update referrer's stats
     await updateDoc(referrerDoc.ref, {
       referralCredits: (referrerData.referralCredits || 0) + 50,
       referralEarnings: (referrerData.referralEarnings || 0) + 50,
@@ -373,12 +365,10 @@ export const applyPromoCode = async (referrerCode, refereeUserId) => {
       updatedAt: new Date().toISOString(),
     });
 
-    // Update referee's record
     const refereeRef = doc(db, "users", refereeUserId);
     const refereeSnap = await getDoc(refereeRef);
 
     if (refereeSnap.exists()) {
-      const refereeData = refereeSnap.data();
       await updateDoc(refereeRef, {
         usedPromoCode: referrerCode,
         referralDiscountApplied: true,
@@ -392,21 +382,16 @@ export const applyPromoCode = async (referrerCode, refereeUserId) => {
       referrerName: referrerData.displayName || referrerData.name || "A friend",
     };
   } catch (error) {
-    console.error("Apply promo code error:", error);
     return { success: false, error: error.message };
   }
 };
 
-// Helper to validate promo code format
 export const validatePromoCodeFormat = (code) => {
   if (!code || typeof code !== "string") return false;
-
-  // Format: 3 letters + 4 digits (e.g., IZI1234)
   const promoCodeRegex = /^[A-Z]{3}\d{4}$/;
   return promoCodeRegex.test(code.toUpperCase());
 };
 
-// Generate a unique promo code (for admin use or regeneration)
 export const generateUniquePromoCode = async (baseName = "IZI") => {
   let attempts = 0;
   const maxAttempts = 10;
@@ -416,7 +401,6 @@ export const generateUniquePromoCode = async (baseName = "IZI") => {
     const randomPart = Math.floor(1000 + Math.random() * 9000);
     const promoCode = `${namePart}${randomPart}`;
 
-    // Check if code already exists
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("promoCode", "==", promoCode));
     const querySnapshot = await getDocs(q);
@@ -428,12 +412,10 @@ export const generateUniquePromoCode = async (baseName = "IZI") => {
     attempts++;
   }
 
-  // Fallback: add timestamp
   const timestamp = Date.now().toString().slice(-4);
   return `${baseName.substring(0, 3).toUpperCase()}${timestamp}`;
 };
 
-// Logout
 export const logoutUser = async () => {
   try {
     clearRedirectPath();
@@ -444,7 +426,6 @@ export const logoutUser = async () => {
   }
 };
 
-// Enhanced auth state listener for redirect flow
 export const setupAuthListener = (callback) => {
   return onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -460,7 +441,6 @@ export const setupAuthListener = (callback) => {
   });
 };
 
-// Get current user profile
 export const getUserProfile = async (userId) => {
   try {
     const userRef = doc(db, "users", userId);
@@ -482,7 +462,6 @@ export const getUserProfile = async (userId) => {
   }
 };
 
-// Check if user needs to complete profile
 export const checkProfileCompletion = async (userId) => {
   try {
     const userRef = doc(db, "users", userId);
@@ -493,7 +472,6 @@ export const checkProfileCompletion = async (userId) => {
       const isComplete = data.profileComplete || false;
       const missingFields = [];
 
-      // Check required fields
       if (!data.name || !data.name.trim()) missingFields.push("name");
       if (!data.surname || !data.surname.trim()) missingFields.push("surname");
       if (!data.phone) missingFields.push("phone");
@@ -513,7 +491,6 @@ export const checkProfileCompletion = async (userId) => {
   }
 };
 
-// Get user by email (for admin or linking accounts)
 export const getUserByEmail = async (email) => {
   try {
     const usersRef = collection(db, "users");
@@ -531,7 +508,6 @@ export const getUserByEmail = async (email) => {
   }
 };
 
-// Merge user data if user signs in with different method
 export const mergeUserAccounts = async (primaryUserId, secondaryUserId) => {
   try {
     const primaryRef = doc(db, "users", primaryUserId);
@@ -549,7 +525,6 @@ export const mergeUserAccounts = async (primaryUserId, secondaryUserId) => {
     const primaryData = primarySnap.data();
     const secondaryData = secondarySnap.data();
 
-    // Merge data (primary takes precedence)
     const mergedData = {
       ...secondaryData,
       ...primaryData,
@@ -562,16 +537,9 @@ export const mergeUserAccounts = async (primaryUserId, secondaryUserId) => {
       updatedAt: new Date().toISOString(),
     };
 
-    // Update primary user
     await setDoc(primaryRef, mergedData);
-
-    // Delete secondary user
-    // Note: In production, you might want to archive instead of delete
-    // await deleteDoc(secondaryRef);
-
     return { success: true };
   } catch (error) {
-    console.error("Merge accounts error:", error);
     return { success: false, error: error.message };
   }
 };
