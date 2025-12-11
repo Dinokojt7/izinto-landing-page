@@ -189,37 +189,12 @@ export default function ProfileDialog({ isOpen, onClose }) {
       {isOpen && (
         <>
           {/* Animated Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.7 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-black"
-            onClick={onClose}
-          />
+          <div className="fixed inset-0 z-50 bg-black/70" onClick={onClose} />
 
           {/* Bottom Sheet Container */}
           <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center overflow-y-auto pointer-events-none">
             {/* Animated Bottom Sheet Content */}
-            <motion.div
-              initial={{
-                y: "100%",
-                opacity: 0,
-              }}
-              animate={{
-                y: 0,
-                opacity: 1,
-              }}
-              exit={{
-                y: "100%",
-                opacity: 0,
-              }}
-              transition={{
-                type: "spring",
-                damping: 25,
-                stiffness: 300,
-                duration: 0.3,
-              }}
+            <div
               className="pointer-events-auto bg-white w-full max-w-lg overflow-hidden flex flex-col 
                 /* Mobile Styles - Bottom Sheet */
                 h-[85vh] max-h-[85vh] mt-4 rounded-t-2xl
@@ -480,23 +455,19 @@ export default function ProfileDialog({ isOpen, onClose }) {
                         <div className="relative h-20 pt-6 pb-4">
                           <AnimatePresence mode="wait">
                             {showLogoutConfirm ? (
-                              // Logout Confirmation Buttons
+                              // Logout Confirmation Buttons - Clean fade only
                               <motion.div
                                 key="logout-confirm"
-                                initial={{ x: 300, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: -300, opacity: 0 }}
-                                transition={{
-                                  type: "spring",
-                                  damping: 20,
-                                  stiffness: 300,
-                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.15 }}
                                 className="flex flex-col sm:flex-row gap-3 absolute inset-0 pt-6 pb-4 px-6"
                               >
                                 <button
                                   type="button"
                                   onClick={handleCancelLogout}
-                                  className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-colors"
+                                  className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-colors text-center h-[50px] flex items-center justify-center" // Fixed height and centering
                                 >
                                   Cancel
                                 </button>
@@ -504,29 +475,25 @@ export default function ProfileDialog({ isOpen, onClose }) {
                                 <button
                                   type="button"
                                   onClick={handleConfirmLogout}
-                                  className="flex-1 bg-red-600 text-white py-3 rounded-lg font-bold hover:bg-red-700 transition-colors"
+                                  className="flex-1 border border-red-300 text-red-500 py-3 px-4 rounded-lg font-bold hover:bg-red-50 transition-colors text-center h-[50px] flex items-center justify-center" // Fixed height and centering
                                 >
                                   Confirm Logout
                                 </button>
                               </motion.div>
                             ) : (
-                              // Normal Action Buttons
+                              // Normal Action Buttons - Clean fade only
                               <motion.div
                                 key="normal-actions"
-                                initial={{ x: -300, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: 300, opacity: 0 }}
-                                transition={{
-                                  type: "spring",
-                                  damping: 20,
-                                  stiffness: 300,
-                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.15 }}
                                 className="flex flex-col sm:flex-row gap-3 absolute inset-0 pt-6 pb-4 px-6"
                               >
                                 <button
                                   type="button"
                                   onClick={handleLogoutClick}
-                                  className="flex-1 py-3 border border-red-300 text-red-500 rounded-lg font-bold hover:bg-red-50 transition-colors"
+                                  className="flex-1 py-3 px-4 border border-red-300 text-red-500 rounded-lg font-bold hover:bg-red-50 transition-colors text-center h-[50px] flex items-center justify-center" // Fixed height and centering
                                 >
                                   Log out
                                 </button>
@@ -534,7 +501,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                                 <button
                                   type="submit"
                                   disabled={isSaving}
-                                  className="flex-1 bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50"
+                                  className="flex-1 bg-black text-white py-3 px-4 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 text-center h-[50px] flex items-center justify-center" // Fixed height and centering
                                 >
                                   {isSaving ? (
                                     <div className="flex items-center justify-center gap-2">
@@ -554,7 +521,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                   )}
                 </AnimatePresence>
               </div>
-            </motion.div>
+            </div>
           </div>
         </>
       )}

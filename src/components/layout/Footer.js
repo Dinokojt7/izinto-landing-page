@@ -196,7 +196,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className={`bg-gray-50 pt-16 pb-8 ${poppins.className}`}>
+    <footer className={`bg-gray-50 pt-16 pb-1 ${poppins.className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <motion.img
@@ -221,9 +221,9 @@ export default function Footer() {
             </h2>
 
             <div className="flex flex-col sm:flex-row items-start space-x-0 sm:space-x-4 space-y-4 sm:space-y-0 mt-6">
-              {/* Phone Input Section - YOUR BEAUTIFUL UI KEPT INTACT */}
+              {/* Phone Input Section */}
               <div className="flex flex-col sm:flex-row gap-3 px-1 w-full sm:flex-1 sm:max-w-sm">
-                {/* Country Code with Flag - YOUR EXACT UI */}
+                {/* Country Code */}
                 <div className="w-full sm:w-24 p-3 border border-gray-300 text-black rounded-lg bg-gray-50 text-center sm:text-left flex items-center justify-center sm:justify-start gap-2">
                   <img
                     src="/flags/za-flag.png"
@@ -233,20 +233,22 @@ export default function Footer() {
                   <span>+27</span>
                 </div>
 
-                {/* Phone Input - YOUR EXACT UI WITH ERROR BORDERS */}
+                {/* Phone Input */}
                 <input
                   type="tel"
                   value={phoneNumber}
                   onChange={handlePhoneChange}
                   placeholder="Mobile number"
                   maxLength={10}
-                  className={`flex-1 p-3 rounded-lg focus:outline-none sm:text-center sm:justify-center focus:ring-2 focus:ring-[#0096FF] focus:border-transparent transition-all text-base border ${
+                  autoComplete="tel"
+                  autoCorrect="off"
+                  className={`flex-1 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0096FF] focus:border-transparent transition-all text-base border text-center lg:text-left ${
                     localError ? "border-red-500" : "border-gray-300"
                   }`}
                 />
               </div>
 
-              {/* Submit Button - YOUR EXACT UI */}
+              {/* Submit Button */}
               <button
                 onClick={handleSubmit}
                 disabled={!isValidPhone || isLoading}
@@ -388,7 +390,6 @@ export default function Footer() {
               <Link
                 key={index}
                 href={link.href}
-                target="_blank"
                 className="text-gray-500 text-xs font-normal underline cursor-pointer transition-colors"
               >
                 {link.name}
@@ -411,6 +412,30 @@ export default function Footer() {
               </a>
             ))}
           </div>
+        </div>
+        {/* Recaptcha */}
+        <div className="mt-2 pt-4 w-full ">
+          <p className="text-xs text-gray-500 text-end">
+            This site is protected by reCAPTCHA and the Google{" "}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gray-700"
+            >
+              Privacy Policy
+            </a>{" "}
+            and{" "}
+            <a
+              href="https://policies.google.com/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gray-700"
+            >
+              Terms of Service
+            </a>{" "}
+            apply.
+          </p>
         </div>
       </div>
     </footer>
