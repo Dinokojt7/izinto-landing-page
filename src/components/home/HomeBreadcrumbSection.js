@@ -63,9 +63,12 @@ export default function HomeBreadcrumbSection() {
               {savedAddress ? (
                 <button
                   onClick={handleAddressButtonClick}
-                  className="flex items-start justify-center gap-2 text-primary font-semibold hover:text-gray-700 transition-colors min-w-0 w-full sm:w-auto"
+                  className="flex items-start justify-between gap-2 text-primary font-semibold hover:text-gray-700 transition-colors min-w-0 w-full sm:w-auto"
                 >
-                  <span className="text-base sm:text-base text-black font-extrabold italic truncate max-w-[180px] sm:max-w-[200px] lg:max-w-none">
+                  <span
+                    className="address-truncate text-base sm:text-base text-black font-extrabold italic text-left"
+                    title={savedAddress.street}
+                  >
                     {savedAddress.street}
                   </span>
                   <svg
