@@ -147,10 +147,10 @@ export default function LoginDialog({ isOpen, onClose }) {
     setIsLoading(false);
 
     if (result.success) {
-      setTimeout(() => {
-        onClose();
-        resetPhoneAuth();
-      }, 1000);
+      setOtp(["", "", "", "", "", ""]);
+      setPhoneNumber("");
+      setIsValidPhone(false);
+      resetPhoneAuth();
     }
   };
 

@@ -241,9 +241,13 @@ export const AuthProvider = ({ children }) => {
       );
 
       if (result.success) {
+        // 🔧 CRITICAL: Update the main auth state, just like Google redirect does
         setUser(result.user);
         setIsNewUser(result.newUser || false);
         setProfileComplete(result.profileComplete || false);
+
+        // 🔧 Let the existing auth listener (in useEffect) handle the redirect/profile logic
+        // It will check isNewUser/profileComplete and take appropriate action
 
         setPhoneAuthState((prev) => ({
           ...prev,

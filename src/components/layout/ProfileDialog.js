@@ -32,6 +32,30 @@ export default function ProfileDialog({ isOpen, onClose }) {
   });
 
   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
+
+  // Also handle Escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
     if (isOpen && user) {
       loadUserProfile();
     }
@@ -317,7 +341,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                 <button
                   type="button"
                   onClick={handleLogoutClick}
-                  className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-colors"
+                  className="flex-1 py-3 border border-red-300 text-red-500 rounded-lg font-bold hover:bg-red-50 transition-colors"
                 >
                   Log out
                 </button>

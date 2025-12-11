@@ -408,7 +408,7 @@ export default function AddressSearchDialog({
             <button
               onClick={handleSaveAddress}
               disabled={!isValidAddress}
-              className="w-full bg-[#0000ff] text-white py-4 rounded-full text-sm font-extrabold italic hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors transform "
+              className="w-full bg-[#0000ff] text-white py-3 rounded-full text-sm font-extrabold italic hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors transform "
             >
               SAVE AND FINISH
             </button>
