@@ -1,25 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import { useAuth } from "@/lib/context/AuthContext";
+import { useOtp } from "@/lib/context/OtpContext";
 
 export default function LoginDialog({ isOpen, onClose }) {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isValidPhone, setIsValidPhone] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [countdown, setCountdown] = useState(0);
-  const [canResend, setCanResend] = useState(true);
 
   const {
     setPhoneAuthError,
     phoneAuthState,
-    handlePhoneSubmit,
-    handleOTPVerify,
     handleGoogleSignIn,
     resetPhoneAuth,
   } = useAuth();
+
+  const { triggerOtpFromAnywhere, isLoading: otpLoading } = useOtp();
 
   useEffect(() => {
     if (isOpen) {
@@ -33,48 +30,22 @@ export default function LoginDialog({ isOpen, onClose }) {
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    if (phoneAuthState.step === "otp" && countdown === 0) {
-      startCountdown();
-    }
-  }, [phoneAuthState.step]);
-
-  useEffect(() => {
-    let timer;
-    if (countdown > 0) {
-      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-    } else {
-      setCanResend(true);
-    }
-    return () => clearTimeout(timer);
-  }, [countdown]);
-
-  const startCountdown = () => {
-    setCountdown(30);
-    setCanResend(false);
-  };
-
   const validateAndFormatPhoneNumber = (number) => {
-    // Remove all non-digits
     const cleaned = number.replace(/\D/g, "");
-
-    // South African numbers: 10 digits (e.g., 0821234567)
     const isSouthAfrican = cleaned.startsWith("0") && cleaned.length === 10;
 
-    // If it's a South African number without country code, add +27
     if (isSouthAfrican) {
-      const subscriberNumber = cleaned.substring(1); // Remove leading 0
-      return `+27${subscriberNumber}`; // Returns "+27821234567"
+      const subscriberNumber = cleaned.substring(1);
+      return `+27${subscriberNumber}`;
     }
 
-    // Already has country code (e.g., +27821234567)
     const hasCountryCode =
       cleaned.startsWith("27") || cleaned.startsWith("+27");
     if (hasCountryCode && cleaned.length >= 11) {
       return `+${cleaned.replace("+", "")}`;
     }
 
-    return null; // Invalid format
+    return null;
   };
 
   const handlePhoneChange = (e) => {
@@ -90,77 +61,23 @@ export default function LoginDialog({ isOpen, onClose }) {
     if (!isValidPhone) return;
 
     setIsLoading(true);
+    setPhoneAuthError("");
 
-    // Format the number properly before sending
     const formattedNumber = validateAndFormatPhoneNumber(phoneNumber);
 
     if (!formattedNumber) {
-      setPhoneAuthError(
-        "Please enter a valid South African phone number (e.g., 0821234567)",
-      );
+      setPhoneAuthError("Please enter a valid SA number (e.g., 0821234567)");
       setIsLoading(false);
       return;
     }
 
-    const result = await handlePhoneSubmit(formattedNumber);
+    const result = await triggerOtpFromAnywhere(formattedNumber);
     setIsLoading(false);
 
     if (result.success) {
-      startCountdown();
+      // Global OTP dialog will open automatically
+      onClose();
     }
-  };
-
-  const handleOtpChange = (index, value) => {
-    if (value.length > 1) return;
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    // Auto-focus next input
-    if (value && index < 5) {
-      const nextInput = document.getElementById(`otp-${index + 1}`);
-      if (nextInput) nextInput.focus();
-    }
-
-    // Auto submit when last digit entered
-    if (value && index === 5) {
-      const otpString = newOtp.join("");
-      if (otpString.length === 6) {
-        handleVerifyOTP(otpString);
-      }
-    }
-  };
-
-  const handleOtpKeyDown = (index, e) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      const prevInput = document.getElementById(`otp-${index - 1}`);
-      if (prevInput) prevInput.focus();
-    }
-  };
-
-  const handleVerifyOTP = async (otpString = otp.join("")) => {
-    if (otpString.length !== 6) return;
-
-    setIsLoading(true);
-    const result = await handleOTPVerify(otpString);
-    setIsLoading(false);
-
-    if (result.success) {
-      setOtp(["", "", "", "", "", ""]);
-      setPhoneNumber("");
-      setIsValidPhone(false);
-      resetPhoneAuth();
-    }
-  };
-
-  const handleResendOTP = async () => {
-    if (!canResend) return;
-
-    setIsLoading(true);
-    await handlePhoneSubmit(phoneNumber);
-    setIsLoading(false);
-    startCountdown();
   };
 
   const handleGoogleLogin = async () => {
@@ -169,6 +86,7 @@ export default function LoginDialog({ isOpen, onClose }) {
 
     if (result.success && result.redirect) {
       setIsLoading(true);
+      // Google redirect will happen automatically
     } else if (!result.success) {
       setIsLoading(false);
       setPhoneAuthError(result.error || "Google sign-in failed");
@@ -185,7 +103,6 @@ export default function LoginDialog({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 overflow-y-auto">
-      {" "}
       <div className="bg-white rounded-xl w-[calc(100vw-2rem)] sm:w-11/12 max-w-md max-h-[calc(100vh-4rem)] sm:max-h-[90vh] overflow-hidden flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] mx-4 sm:mx-0">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-gray-200">
@@ -220,7 +137,6 @@ export default function LoginDialog({ isOpen, onClose }) {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           <AnimatePresence mode="wait">
-            {/* Phone Input Step */}
             {phoneAuthState.step === "input" && (
               <motion.div
                 key="phone-input"
@@ -247,7 +163,7 @@ export default function LoginDialog({ isOpen, onClose }) {
                 <div className="space-y-4">
                   <div>
                     <div className="flex flex-col sm:flex-row gap-3 px-1">
-                      {/* Country Code - Fixed width on mobile */}
+                      {/* Country Code with Flag */}
                       <div className="w-full sm:w-24 p-3 border border-gray-300 text-black rounded-lg bg-gray-50 text-center sm:text-left flex items-center justify-center sm:justify-start gap-2">
                         <img
                           src="/flags/za-flag.png"
@@ -255,13 +171,13 @@ export default function LoginDialog({ isOpen, onClose }) {
                           className="w-5 h-4 rounded-sm"
                         />
                         <span>+27</span>
-                      </div>{" "}
-                      {/* Phone Input - Better mobile sizing */}
+                      </div>
+                      {/* Phone Input */}
                       <input
                         type="tel"
                         value={phoneNumber}
                         onChange={handlePhoneChange}
-                        placeholder="e.g., 0821234567"
+                        placeholder="Mobile number"
                         maxLength={10}
                         className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0096FF] focus:border-transparent transition-all text-base"
                       />
@@ -275,10 +191,10 @@ export default function LoginDialog({ isOpen, onClose }) {
                 {/* Send OTP Button */}
                 <button
                   onClick={handleSendOTP}
-                  disabled={!isValidPhone || isLoading}
+                  disabled={!isValidPhone || isLoading || otpLoading}
                   className="w-full bg-[#0000ff] rounded-full italic text-sm text-white py-3 font-black cursor-pointer"
                 >
-                  {isLoading ? (
+                  {isLoading || otpLoading ? (
                     <div className="flex items-center justify-center gap-2">
                       <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
                       Processing...
@@ -340,90 +256,6 @@ export default function LoginDialog({ isOpen, onClose }) {
                     </button>
                   </p>
                 </div>
-              </motion.div>
-            )}
-
-            {/* OTP Verification Step */}
-            {phoneAuthState.step === "otp" && (
-              <motion.div
-                key="otp-verification"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="space-y-6"
-              >
-                {/* Header */}
-                <div>
-                  <h3 className="text-lg font-bold text-black mb-2">
-                    Enter Verification Code
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    We sent a 6-digit code to{" "}
-                    <span className="font-bold">{phoneNumber}</span>
-                  </p>
-                </div>
-
-                {/* Error Message */}
-                {phoneAuthState.error && (
-                  <div className="px-4 py-2 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-                    {phoneAuthState.error}
-                  </div>
-                )}
-
-                {/* OTP Inputs */}
-                <div className="flex justify-center gap-2 px-2">
-                  {[0, 1, 2, 3, 4, 5].map((index) => (
-                    <input
-                      key={index}
-                      id={`otp-${index}`}
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={otp[index]}
-                      onChange={(e) => handleOtpChange(index, e.target.value)}
-                      onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                      className="w-12 h-12 sm:w-14 sm:h-14 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0096FF] focus:border-transparent transition-all"
-                    />
-                  ))}
-                </div>
-
-                {/* Verify Button */}
-                <button
-                  onClick={() => handleVerifyOTP()}
-                  disabled={otp.join("").length !== 6 || isLoading}
-                  className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Verifying...
-                    </div>
-                  ) : (
-                    "VERIFY CODE"
-                  )}
-                </button>
-
-                {/* Resend OTP */}
-                <div className="text-center">
-                  <p className="text-sm text-gray-600">
-                    Didn't receive the code?{" "}
-                    <button
-                      onClick={handleResendOTP}
-                      disabled={!canResend || isLoading}
-                      className="font-bold text-black hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {canResend ? "Resend Code" : `Resend in ${countdown}s`}
-                    </button>
-                  </p>
-                </div>
-
-                {/* Back to Phone Input */}
-                <button
-                  onClick={resetPhoneAuth}
-                  className="w-full text-center text-gray-600 hover:text-black transition-colors text-sm"
-                >
-                  ← Use a different phone number
-                </button>
               </motion.div>
             )}
 

@@ -3,7 +3,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Poppins } from "next/font/google";
-import { useAuth } from "@/lib/context/AuthContext"; // Import auth hook
+import { useAuth } from "@/lib/context/AuthContext";
+import { useOtp } from "@/lib/context/OtpContext"; // Import the new OTP context
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -13,16 +14,61 @@ const poppins = Poppins({
 
 export default function Footer() {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [error, setError] = useState("");
-  const { user, loading } = useAuth(); // Get auth state
+  const [isValidPhone, setIsValidPhone] = useState(false);
+  const [localError, setLocalError] = useState(""); // Local UI errors only
 
-  const handleSubmit = () => {
+  const { user, loading } = useAuth();
+  const { triggerOtpFromAnywhere, isLoading } = useOtp(); // Get from global OTP context
+
+  const validateAndFormatPhoneNumber = (number) => {
+    const cleaned = number.replace(/\D/g, "");
+
+    // South African numbers: 10 digits (e.g., 0821234567)
+    const isSouthAfrican = cleaned.startsWith("0") && cleaned.length === 10;
+
+    if (isSouthAfrican) {
+      const subscriberNumber = cleaned.substring(1);
+      return `+27${subscriberNumber}`;
+    }
+
+    const hasCountryCode =
+      cleaned.startsWith("27") || cleaned.startsWith("+27");
+    if (hasCountryCode && cleaned.length >= 11) {
+      return `+${cleaned.replace("+", "")}`;
+    }
+
+    return null;
+  };
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    setPhoneNumber(value);
+    setLocalError(""); // Clear error when user types
+
+    // Check if valid South African format (10 digits starting with 0)
+    const isValid = value.startsWith("0") && value.length === 10;
+    setIsValidPhone(isValid);
+  };
+
+  const handleSubmit = async () => {
     if (!phoneNumber.trim()) {
-      setError("Enter your mobile number");
+      setLocalError("Enter your mobile number");
       return;
     }
-    setError("");
-    // Handle sign in/sign up logic here
+
+    if (!isValidPhone) {
+      setLocalError("Enter a valid SA number (e.g., 0821234567)");
+      return;
+    }
+
+    setLocalError(""); // Clear any previous errors
+
+    // 🔧 Use the global OTP trigger instead of local logic
+    const result = await triggerOtpFromAnywhere(phoneNumber);
+
+    if (!result.success) {
+      setLocalError(result.error || "Failed to send OTP");
+    }
   };
 
   const socialIcons = [
@@ -145,7 +191,6 @@ export default function Footer() {
     "Johannesburg South",
   ];
 
-  // Don't show anything while loading auth state
   if (loading) {
     return null;
   }
@@ -176,47 +221,51 @@ export default function Footer() {
             </h2>
 
             <div className="flex flex-col sm:flex-row items-start space-x-0 sm:space-x-4 space-y-4 sm:space-y-0 mt-6">
-              {/* Phone Input Section */}
-              <div
-                className={`flex items-center bg-white rounded-lg border ${
-                  error ? "border-red-500" : "border-gray-300"
-                } p-3 w-full sm:flex-1 sm:max-w-sm`}
-              >
-                {/* Country Code */}
-                <div className="flex items-center">
-                  <span className="text-black text-base font-semibold">
-                    +27
-                  </span>
-                  <span className="text-black mx-2">|</span>
+              {/* Phone Input Section - YOUR BEAUTIFUL UI KEPT INTACT */}
+              <div className="flex flex-col sm:flex-row gap-3 px-1 w-full sm:flex-1 sm:max-w-sm">
+                {/* Country Code with Flag - YOUR EXACT UI */}
+                <div className="w-full sm:w-24 p-3 border border-gray-300 text-black rounded-lg bg-gray-50 text-center sm:text-left flex items-center justify-center sm:justify-start gap-2">
+                  <img
+                    src="/flags/za-flag.png"
+                    alt="ZA"
+                    className="w-5 h-4 rounded-sm"
+                  />
+                  <span>+27</span>
                 </div>
 
-                {/* Phone Input */}
+                {/* Phone Input - YOUR EXACT UI WITH ERROR BORDERS */}
                 <input
                   type="tel"
                   value={phoneNumber}
-                  onChange={(e) => {
-                    setPhoneNumber(e.target.value);
-                    setError("");
-                  }}
+                  onChange={handlePhoneChange}
                   placeholder="Mobile number"
-                  className="flex-1 text-gray-500 text-base font-semibold outline-none px-2 min-w-0"
+                  maxLength={10}
+                  className={`flex-1 p-3 rounded-lg focus:outline-none sm:text-center sm:justify-center focus:ring-2 focus:ring-[#0096FF] focus:border-transparent transition-all text-base border ${
+                    localError ? "border-red-500" : "border-gray-300"
+                  }`}
                 />
               </div>
 
-              {/* Submit Button */}
+              {/* Submit Button - YOUR EXACT UI */}
               <button
                 onClick={handleSubmit}
+                disabled={!isValidPhone || isLoading}
                 className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-900 transition-all transform whitespace-nowrap w-full sm:w-auto text-center"
               >
-                SIGN IN / SIGN UP
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Processing...
+                  </div>
+                ) : (
+                  "SIGN IN / SIGN UP"
+                )}
               </button>
             </div>
 
-            {/* Error Message */}
-            {error && (
-              <p className="text-red-500 text-xs mt-2">
-                Enter your mobile number
-              </p>
+            {/* Error Message - YOUR EXACT UI */}
+            {localError && (
+              <p className="text-red-500 text-xs mt-2">{localError}</p>
             )}
           </>
         )}

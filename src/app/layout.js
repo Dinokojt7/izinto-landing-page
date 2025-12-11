@@ -7,6 +7,8 @@ import { GoogleMapsProvider } from "@/providers/GoogleMapsProvider";
 import ClientLayoutWrapper from "@/components/layout/ClientLayoutWrapper";
 import { AuthProvider } from "@/lib/context/AuthContext";
 import { AddressProvider } from "@/providers/AddressProvider";
+import { OtpProvider } from "@/lib/context/OtpContext";
+import GlobalOtpDialog from "@/components/auth/GlobalOtpDialog";
 
 const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
 
@@ -83,7 +85,12 @@ export default function RootLayout({ children }) {
             <AuthProvider>
               <AddressProvider>
                 <ServicesProvider>
-                  <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+                  <ClientLayoutWrapper>
+                    <OtpProvider>
+                      {children}
+                      <GlobalOtpDialog />
+                    </OtpProvider>
+                  </ClientLayoutWrapper>
                 </ServicesProvider>
               </AddressProvider>
             </AuthProvider>
