@@ -54,15 +54,60 @@ export default function LoginDialog({ isOpen, onClose }) {
     setCanResend(false);
   };
 
-  const validatePhoneNumber = (number) => {
+  const validateAndFormatPhoneNumber = (number) => {
+    // Remove all non-digits
     const cleaned = number.replace(/\D/g, "");
-    return cleaned.length >= 10 && cleaned.length <= 13;
+
+    // South African numbers: 10 digits (e.g., 0821234567)
+    const isSouthAfrican = cleaned.startsWith("0") && cleaned.length === 10;
+
+    // If it's a South African number without country code, add +27
+    if (isSouthAfrican) {
+      const subscriberNumber = cleaned.substring(1); // Remove leading 0
+      return `+27${subscriberNumber}`; // Returns "+27821234567"
+    }
+
+    // Already has country code (e.g., +27821234567)
+    const hasCountryCode =
+      cleaned.startsWith("27") || cleaned.startsWith("+27");
+    if (hasCountryCode && cleaned.length >= 11) {
+      return `+${cleaned.replace("+", "")}`;
+    }
+
+    return null; // Invalid format
   };
 
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, "");
     setPhoneNumber(value);
-    setIsValidPhone(validatePhoneNumber(value));
+
+    // Check if valid South African format (10 digits starting with 0)
+    const isValid = value.startsWith("0") && value.length === 10;
+    setIsValidPhone(isValid);
+  };
+
+  const handleSendOTP = async () => {
+    if (!isValidPhone) return;
+
+    setIsLoading(true);
+
+    // Format the number properly before sending
+    const formattedNumber = validateAndFormatPhoneNumber(phoneNumber);
+
+    if (!formattedNumber) {
+      setPhoneAuthError(
+        "Please enter a valid South African phone number (e.g., 0821234567)",
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    const result = await handlePhoneSubmit(formattedNumber);
+    setIsLoading(false);
+
+    if (result.success) {
+      startCountdown();
+    }
   };
 
   const handleOtpChange = (index, value) => {
@@ -91,18 +136,6 @@ export default function LoginDialog({ isOpen, onClose }) {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       const prevInput = document.getElementById(`otp-${index - 1}`);
       if (prevInput) prevInput.focus();
-    }
-  };
-
-  const handleSendOTP = async () => {
-    if (!isValidPhone) return;
-
-    setIsLoading(true);
-    const result = await handlePhoneSubmit(phoneNumber);
-    setIsLoading(false);
-
-    if (result.success) {
-      startCountdown();
     }
   };
 
@@ -213,23 +246,27 @@ export default function LoginDialog({ isOpen, onClose }) {
                 {/* Phone Input */}
                 <div className="space-y-4">
                   <div>
-                    <div className="flex gap-3 px-1">
-                      <div
-                        className="w-24 p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-black"
-                        defaultValue="+27"
-                      >
-                        +27
-                      </div>
+                    <div className="flex flex-col sm:flex-row gap-3 px-1">
+                      {/* Country Code - Fixed width on mobile */}
+                      <div className="w-full sm:w-24 p-3 border border-gray-300 text-black rounded-lg bg-gray-50 text-center sm:text-left flex items-center justify-center sm:justify-start gap-2">
+                        <img
+                          src="/flags/za-flag.png"
+                          alt="ZA"
+                          className="w-5 h-4 rounded-sm"
+                        />
+                        <span>+27</span>
+                      </div>{" "}
+                      {/* Phone Input - Better mobile sizing */}
                       <input
                         type="tel"
                         value={phoneNumber}
                         onChange={handlePhoneChange}
-                        placeholder="Phone number"
-                        maxLength={13}
-                        className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-black"
+                        placeholder="e.g., 0821234567"
+                        maxLength={10}
+                        className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0096FF] focus:border-transparent transition-all text-base"
                       />
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-xs text-gray-500 mx-2 mt-2">
                       We'll send a 6-digit verification code
                     </p>
                   </div>
@@ -287,7 +324,7 @@ export default function LoginDialog({ isOpen, onClose }) {
                       d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                     />
                   </svg>
-                  <span className="font-bold text-gray-700">Google</span>
+                  <span className="font-black text-black/80">Google</span>
                 </button>
 
                 {/* Terms */}
@@ -334,22 +371,20 @@ export default function LoginDialog({ isOpen, onClose }) {
                 )}
 
                 {/* OTP Inputs */}
-                <div className="space-y-4">
-                  <div className="flex justify-center gap-2">
-                    {[0, 1, 2, 3, 4, 5].map((index) => (
-                      <input
-                        key={index}
-                        id={`otp-${index}`}
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={1}
-                        value={otp[index]}
-                        onChange={(e) => handleOtpChange(index, e.target.value)}
-                        onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                        className="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-black"
-                      />
-                    ))}
-                  </div>
+                <div className="flex justify-center gap-2 px-2">
+                  {[0, 1, 2, 3, 4, 5].map((index) => (
+                    <input
+                      key={index}
+                      id={`otp-${index}`}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={otp[index]}
+                      onChange={(e) => handleOtpChange(index, e.target.value)}
+                      onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                      className="w-12 h-12 sm:w-14 sm:h-14 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0096FF] focus:border-transparent transition-all"
+                    />
+                  ))}
                 </div>
 
                 {/* Verify Button */}

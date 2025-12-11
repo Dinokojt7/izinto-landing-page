@@ -194,3 +194,23 @@ body {
 .dialog-open {
   overflow: hidden;
 }
+
+/* Better input focus styles */
+input:focus {
+  outline: none;
+  border-color: transparent !important;
+  box-shadow: 0 0 0 2px rgba(0, 150, 255, 0.2) !important;
+}
+
+/* Improve mobile tap targets */
+@media (max-width: 640px) {
+  .otp-input {
+    width: 3rem !important;
+    height: 3.5rem !important;
+    font-size: 1.25rem !important;
+  }
+
+  .phone-input {
+    font-size: 16px !important; /* Prevents iOS zoom */
+  }
+}
