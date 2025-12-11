@@ -17,9 +17,10 @@ const poppins = Poppins({
 export default function ProfileDialog({ isOpen, onClose }) {
   const { user, getUserProfile, handleLogout } = useAuth();
   const { activeAddress } = useAddress();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [profile, setProfile] = useState({
     name: "",
     surname: "",
@@ -48,13 +49,17 @@ export default function ProfileDialog({ isOpen, onClose }) {
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape" && isOpen) {
-        onClose();
+        if (showLogoutConfirm) {
+          setShowLogoutConfirm(false);
+        } else {
+          onClose();
+        }
       }
     };
 
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, showLogoutConfirm]);
 
   useEffect(() => {
     if (isOpen && user) {
@@ -140,6 +145,25 @@ export default function ProfileDialog({ isOpen, onClose }) {
     }
   };
 
+  const handleLogoutClick = async () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutConfirm(false);
+  };
+
+  const handleConfirmLogout = async () => {
+    setIsLoggingOut(true);
+
+    // Show loading for 2 seconds before actual logout
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    await handleLogout();
+    setIsLoggingOut(false);
+    onClose();
+  };
+
   const handleDeleteAccount = async () => {
     if (
       !confirm(
@@ -149,23 +173,13 @@ export default function ProfileDialog({ isOpen, onClose }) {
       return;
     }
 
-    setIsDeletingAccount(true);
     try {
-      // Note: You'll need to implement Firebase auth account deletion
-      // and Firestore document deletion here
       console.log("Account deletion would happen here");
       alert("Account deletion feature needs to be implemented.");
     } catch (error) {
       console.error("Error deleting account:", error);
       alert("Failed to delete account.");
-    } finally {
-      setIsDeletingAccount(false);
     }
-  };
-
-  const handleLogoutClick = async () => {
-    await handleLogout();
-    onClose();
   };
 
   if (!isOpen) return null;
@@ -230,6 +244,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                 <button
                   onClick={onClose}
                   className="text-gray-800 hover:text-black p-2 transition-colors"
+                  disabled={isLoggingOut}
                 >
                   <svg
                     className="w-6 h-6"
@@ -247,207 +262,298 @@ export default function ProfileDialog({ isOpen, onClose }) {
                 </button>
               </div>
 
-              {isLoading ? (
-                <div className="flex justify-center py-10">
-                  <CircularProgressIndicator size={40} strokeWidth={4} />
-                </div>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                  className="flex-1 overflow-y-auto p-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-                >
-                  <form onSubmit={handleSaveProfile} className="space-y-6">
-                    {/* Personal Information */}
+              {/* Content Area with Loading */}
+              <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <AnimatePresence mode="wait">
+                  {isLoggingOut ? (
+                    // Logout Loading State
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.15 }}
-                      className="space-y-4"
+                      key="logout-loading"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="flex flex-col items-center justify-center h-full min-h-[400px] p-6"
                     >
-                      <h3 className="text-lg font-bold text-black">
-                        Personal Information
-                      </h3>
-
-                      {/* Name & Surname - Separate Fields */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Name *
-                          </label>
-                          <input
-                            type="text"
-                            name="name"
-                            value={profile.name}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                            placeholder="name"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Surname *
-                          </label>
-                          <input
-                            type="text"
-                            name="surname"
-                            value={profile.surname}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                            placeholder="surname"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Email Address *
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={profile.email}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                          placeholder="you@example.com"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Phone Number
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={profile.phone}
-                          onChange={handleInputChange}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                          placeholder="+27 123 456 7890"
-                        />
-                      </div>
-                    </motion.div>
-
-                    {/* Current Address Display (Read Only) */}
-                    {activeAddress && (
-                      <motion.div
+                      <CircularProgressIndicator size={60} strokeWidth={4} />
+                      <motion.p
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="space-y-3 bg-gray-50 p-4 rounded-lg border border-gray-200"
+                        transition={{ delay: 0.3 }}
+                        className="mt-6 text-lg font-medium text-gray-700"
                       >
-                        <h3 className="text-lg font-bold text-black">
-                          Active Address
-                        </h3>
-                        <div className="text-sm text-gray-700 space-y-1">
-                          <div className="flex items-start">
-                            <span className="font-medium w-20">Street:</span>
-                            <span className="flex-1">
-                              {activeAddress.street}
-                            </span>
-                          </div>
-                          {activeAddress.suburb && (
-                            <div className="flex items-start">
-                              <span className="font-medium w-20">Suburb:</span>
-                              <span className="flex-1">
-                                {activeAddress.suburb}
-                              </span>
-                            </div>
-                          )}
-                          <div className="flex items-start">
-                            <span className="font-medium w-20">Town:</span>
-                            <span className="flex-1">{activeAddress.town}</span>
-                          </div>
-                          {activeAddress.zip && (
-                            <div className="flex items-start">
-                              <span className="font-medium w-20">
-                                ZIP Code:
-                              </span>
-                              <span className="flex-1">
-                                {activeAddress.zip}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Preferences */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.25 }}
-                      className="space-y-4"
-                    >
-                      <h3 className="text-lg font-bold text-black">
-                        Preferences
-                      </h3>
-                      <div className="space-y-3">
-                        <label className="flex items-center gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            name="notifications"
-                            checked={profile.preferences.notifications}
-                            onChange={handleCheckboxChange}
-                            className="w-5 h-5 accent-black border-gray-300 rounded focus:ring-2 focus:ring-black"
-                          />
-                          <span className="text-gray-700">
-                            Service notifications and updates
-                          </span>
-                        </label>
-
-                        <label className="flex items-center gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            name="marketing"
-                            checked={profile.preferences.marketing}
-                            onChange={handleCheckboxChange}
-                            className="w-5 h-5 accent-black border-gray-300 rounded focus:ring-2 focus:ring-black"
-                          />
-                          <span className="text-gray-700">
-                            Promotional offers and news
-                          </span>
-                        </label>
-                      </div>
+                        Logging you out...
+                      </motion.p>
                     </motion.div>
-
-                    {/* Action Buttons */}
+                  ) : isLoading ? (
+                    // Initial Loading State
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="flex flex-col sm:flex-row gap-3 pt-6 pb-4"
+                      key="initial-loading"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="flex flex-col items-center justify-center h-full min-h-[400px] p-6"
                     >
-                      <button
-                        type="button"
-                        onClick={handleLogoutClick}
-                        className="flex-1 py-3 border border-red-300 text-red-500 rounded-lg font-bold hover:bg-red-50 transition-colors"
+                      <CircularProgressIndicator size={60} strokeWidth={4} />
+                      <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="mt-6 text-lg font-medium text-gray-700"
                       >
-                        Log out
-                      </button>
+                        Loading your profile...
+                      </motion.p>
+                    </motion.div>
+                  ) : (
+                    // Main Content
+                    <motion.div
+                      key="profile-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="p-6"
+                    >
+                      <form onSubmit={handleSaveProfile} className="space-y-6">
+                        {/* Personal Information */}
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.15 }}
+                          className="space-y-4"
+                        >
+                          <h3 className="text-lg font-bold text-black">
+                            Personal Information
+                          </h3>
 
-                      <button
-                        type="submit"
-                        disabled={isSaving}
-                        className="flex-1 bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50"
-                      >
-                        {isSaving ? (
-                          <div className="flex items-center justify-center gap-2">
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            Saving...
+                          {/* Name & Surname - Separate Fields */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Name *
+                              </label>
+                              <input
+                                type="text"
+                                name="name"
+                                value={profile.name}
+                                onChange={handleInputChange}
+                                required
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                                placeholder="name"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Surname *
+                              </label>
+                              <input
+                                type="text"
+                                name="surname"
+                                value={profile.surname}
+                                onChange={handleInputChange}
+                                required
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                                placeholder="surname"
+                              />
+                            </div>
                           </div>
-                        ) : (
-                          "Save Changes"
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Email Address *
+                            </label>
+                            <input
+                              type="email"
+                              name="email"
+                              value={profile.email}
+                              onChange={handleInputChange}
+                              required
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                              placeholder="you@example.com"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Phone Number
+                            </label>
+                            <input
+                              type="tel"
+                              name="phone"
+                              value={profile.phone}
+                              onChange={handleInputChange}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                              placeholder="+27 123 456 7890"
+                            />
+                          </div>
+                        </motion.div>
+
+                        {/* Current Address Display (Read Only) */}
+                        {activeAddress && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="space-y-3 bg-gray-50 p-4 rounded-lg border border-gray-200"
+                          >
+                            <h3 className="text-lg font-bold text-black">
+                              Active Address
+                            </h3>
+                            <div className="text-sm text-gray-700 space-y-1">
+                              <div className="flex items-start">
+                                <span className="font-medium w-20">
+                                  Street:
+                                </span>
+                                <span className="flex-1">
+                                  {activeAddress.street}
+                                </span>
+                              </div>
+                              {activeAddress.suburb && (
+                                <div className="flex items-start">
+                                  <span className="font-medium w-20">
+                                    Suburb:
+                                  </span>
+                                  <span className="flex-1">
+                                    {activeAddress.suburb}
+                                  </span>
+                                </div>
+                              )}
+                              <div className="flex items-start">
+                                <span className="font-medium w-20">Town:</span>
+                                <span className="flex-1">
+                                  {activeAddress.town}
+                                </span>
+                              </div>
+                              {activeAddress.zip && (
+                                <div className="flex items-start">
+                                  <span className="font-medium w-20">
+                                    ZIP Code:
+                                  </span>
+                                  <span className="flex-1">
+                                    {activeAddress.zip}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
                         )}
-                      </button>
+
+                        {/* Preferences */}
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.25 }}
+                          className="space-y-4"
+                        >
+                          <h3 className="text-lg font-bold text-black">
+                            Preferences
+                          </h3>
+                          <div className="space-y-3">
+                            <label className="flex items-center gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                name="notifications"
+                                checked={profile.preferences.notifications}
+                                onChange={handleCheckboxChange}
+                                className="w-5 h-5 accent-black border-gray-300 rounded focus:ring-2 focus:ring-black"
+                              />
+                              <span className="text-gray-700">
+                                Service notifications and updates
+                              </span>
+                            </label>
+
+                            <label className="flex items-center gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                name="marketing"
+                                checked={profile.preferences.marketing}
+                                onChange={handleCheckboxChange}
+                                className="w-5 h-5 accent-black border-gray-300 rounded focus:ring-2 focus:ring-black"
+                              />
+                              <span className="text-gray-700">
+                                Promotional offers and news
+                              </span>
+                            </label>
+                          </div>
+                        </motion.div>
+
+                        {/* Action Buttons Area */}
+                        <div className="relative h-20 pt-6 pb-4">
+                          <AnimatePresence mode="wait">
+                            {showLogoutConfirm ? (
+                              // Logout Confirmation Buttons
+                              <motion.div
+                                key="logout-confirm"
+                                initial={{ x: 300, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: -300, opacity: 0 }}
+                                transition={{
+                                  type: "spring",
+                                  damping: 20,
+                                  stiffness: 300,
+                                }}
+                                className="flex flex-col sm:flex-row gap-3 absolute inset-0 pt-6 pb-4 px-6"
+                              >
+                                <button
+                                  type="button"
+                                  onClick={handleCancelLogout}
+                                  className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-colors"
+                                >
+                                  Cancel
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={handleConfirmLogout}
+                                  className="flex-1 bg-red-600 text-white py-3 rounded-lg font-bold hover:bg-red-700 transition-colors"
+                                >
+                                  Confirm Logout
+                                </button>
+                              </motion.div>
+                            ) : (
+                              // Normal Action Buttons
+                              <motion.div
+                                key="normal-actions"
+                                initial={{ x: -300, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: 300, opacity: 0 }}
+                                transition={{
+                                  type: "spring",
+                                  damping: 20,
+                                  stiffness: 300,
+                                }}
+                                className="flex flex-col sm:flex-row gap-3 absolute inset-0 pt-6 pb-4 px-6"
+                              >
+                                <button
+                                  type="button"
+                                  onClick={handleLogoutClick}
+                                  className="flex-1 py-3 border border-red-300 text-red-500 rounded-lg font-bold hover:bg-red-50 transition-colors"
+                                >
+                                  Log out
+                                </button>
+
+                                <button
+                                  type="submit"
+                                  disabled={isSaving}
+                                  className="flex-1 bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50"
+                                >
+                                  {isSaving ? (
+                                    <div className="flex items-center justify-center gap-2">
+                                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                      Saving...
+                                    </div>
+                                  ) : (
+                                    "Save Changes"
+                                  )}
+                                </button>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </form>
                     </motion.div>
-                  </form>
-                </motion.div>
-              )}
+                  )}
+                </AnimatePresence>
+              </div>
             </motion.div>
           </div>
         </>
