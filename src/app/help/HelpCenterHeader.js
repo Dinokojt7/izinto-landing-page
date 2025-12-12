@@ -1,6 +1,16 @@
-import Link from "next/link";
+"use client";
+import { useRouter } from "next/navigation";
 
 export default function HelpCenterHeader() {
+  const router = useRouter();
+
+  const handleBackClick = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
+  };
   return (
     <header className="bg-white border-b border-blue-100">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -15,8 +25,8 @@ export default function HelpCenterHeader() {
           </div>
 
           {/* Back to Main Site Button */}
-          <Link
-            href="/"
+          <button
+            onClick={handleBackClick}
             className="flex items-center space-x-2 text-[#0096FF] font-bold text-xs sm:text-sm uppercase transition-colors hover:opacity-80"
           >
             <span className="hidden sm:inline">BACK TO MAIN SITE</span>
@@ -34,7 +44,7 @@ export default function HelpCenterHeader() {
                 d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"
               />
             </svg>
-          </Link>
+          </button>
         </div>
       </div>
     </header>
