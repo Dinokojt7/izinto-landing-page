@@ -1,89 +1,129 @@
-# Izinto - Web Client
+![Izinto Platform Screenshot](./public/images/project-screenshot.png)
 
-A responsive Next.js web application for on-demand home services, built with modern React patterns and Firebase integration.
+# Izinto - Everything On-demand
 
-## 🏗️ Architecture Overview
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDinokojt7%2Fizinto-landing-page.git)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/blog/next-16)
+[![Next.js](https://img.shields.io/badge/Next.js-16.0.10-black?logo=next.js)](https://github.com/vercel/next.js/releases/tag/v16.0.10)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES2023-F7DF1E?logo=javascript&logoColor=black)](https://262.ecma-international.org/14.0/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![npm](https://img.shields.io/badge/npm-10+-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://reactjs.org/)
+[![Firebase](https://img.shields.io/badge/Firebase-Cloud-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com/)
+[![Zustand](https://img.shields.io/badge/Zustand-5-614A44?logo=zustand&logoColor=white)](https://zustand-demo.pmnd.rs/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-11-F24B1B?logo=framer&logoColor=white)](https://www.framer.com/motion/)
 
-### Tech Stack
+A modern service booking and e-commerce platform that connects users with local home service professionals. Features a streamlined booking flow and an integrated payment system.
 
-Frontend: Next.js 14+ with React 18, JavaScript
-State Management: Zustand + React Query
-Backend: Node.js/Express API hosted on Netlify (same as mobile)
-Database: Firebase (Firestore, Auth, Storage)
-Authentication: Firebase Auth with session persistence
-UI Framework: Tailwind CSS + Headless UI
+## :fire: Core Features <a id="core-features"></a>
 
-### Enhanced Web-Specific Features
+### Service Categories
 
-Advanced Cart Management with local storage persistence
+- 🧺 Laundry & Dry Cleaning
+- ⛽ Gas Refill & Exchange
+- 🐾 Pet Care & Grooming
+- 🧹 Home Cleaning
+- 👟 Sneaker & Blanket Cleaning
 
-Address Search & Geolocation with Google Maps integration
+### Functional Capabilities
 
-Responsive Design optimized for desktop, tablet, and mobile
+- Real-time service booking
+- Live order tracking(to-be-implemented)
+- Secure in-app payments(to-be-implemented)
+- Multi-service cart management
 
-SEO Optimization with Next.js SSR/SSG capabilities
+## 🛠️ Tech Stack
 
-Progressive Web App (PWA) support
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Language**: JavaScript (ES2023+)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Backend & Auth**: [Firebase](https://firebase.google.com/) (Auth, Firestore)
+- **Package Manager**: [npm](https://www.npmjs.com/)
+- **Deployment**: [Vercel](https://vercel.com/)
+- **Maps**: [Google Maps API](https://developers.google.com/maps)
+- **HTTP Client**: [Axios](https://axios-http.com/)
 
-Real-time Updates with Firebase listeners
+## 🚀 Getting Started
 
-## 📦 Packages
+### Prerequisites
 
-### Core Dependencies
+- **Node.js 18+** (LTS version recommended)
+- **npm 10+** (comes with Node.js)
+- **A Firebase project** (for authentication and database)
+- **A Google Cloud project** (for Google Maps API)
 
-{
-"dependencies": {
-"next": "14.x",
-"react": "18.x",
-"react-dom": "18.x",
-"firebase": "^10.x",
-"tailwindcss": "^3.4.x",
-"zustand": "^4.4.x",
-"@tanstack/react-query": "^5.x",
-"react-hook-form": "^7.47.x",
-"framer-motion": "^10.16.x"
-}
-}
+### Installation
 
-### Enhanced Experience Packages
+1. **Clone the repository**
 
-{
-"dependencies": {
-// Maps & Location
-"@react-google-maps/api": "^2.19.x",
-"react-leaflet": "^4.2.x",
+   ```bash
+   git clone https://github.com/Dinokojt7/izinto-landing-page.git
+   cd izinto-landing-page
+   ```
 
-    // UI Components
-    "@headlessui/react": "^1.7.x",
-    "lucide-react": "^0.294.x",
+2. **Install dependencies**
 
-    // Cart & State Persistence
-    "react-use-cart": "^2.2.x",
-    "usehooks-ts": "^2.12.x",
+   ```bash
+   npm install
+   ```
 
-    // Forms & Validation
-    "zod": "^3.22.x",
-    "@hookform/resolvers": "^3.3.x",
+3. **Setup environment variable**
 
-    // Animation & UX
-    "framer-motion": "^10.16.x",
-    "react-intersection-observer": "^9.5.x",
+   ```bash
+   cp .env.example .env.local
+   ```
 
-    // Utilities
-    "date-fns": "^2.30.x",
-    "clsx": "^2.0.x",
-    "tailwind-merge": "^2.0.x"
+   Open the newly created .env.local file in your editor and fill in all the required values from your service dashboards (Firebase, Google Cloud, etc.).
 
-}
-}
+   ```bash
+   # Firebase Configuration (from your Firebase project settings)
 
-## 🗂️ Project Structure
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key_here
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
 
-izinto-web/
-├── public/
-│ ├── icons/
-│ ├── images/
-│ └── manifest.json
+   # Netlify Functions API URL
+   NEXT_PUBLIC_API_URL=https://gregarious-marshmallow-0b7661.netlify.app/.netlify/functions/api
+   # For local development, you might use:
+   # NEXT_PUBLIC_API_URL=http://localhost:9999/.netlify/functions/api
+
+   # Email Service (SMTP) Configuration
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=your_email@gmail.com
+   SMTP_PASS=your_app_specific_password
+
+   # Google Maps API
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
+   ```
+
+4. **Start the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser and navigate to http://localhost:3000**
+
+### Available Scripts
+
+```bash
+npm run dev       # Start the Next.js development server
+npm run build     # Build the application for production
+npm start         # Start the production server (after build)
+npm run lint      # Run ESLint for code quality checks
+```
+
+## 📁 Project Structure
+
+```
 ├── src/
 │ ├── app/ # Next.js 14 App Router
 │ │ ├── (auth)/
@@ -155,278 +195,47 @@ izinto-web/
 │ │ ├── useServices.js
 │ │ ├── useLocalStorage.js
 │ │ └── useGeolocation.js
-│ └── styles/ # Additional styles
-│ ├── globals.css
-│ ├── components.css
-│ └── animations.css
-├── tailwind.config.js
-├── jsconfig.json
-├── next.config.js
-├── package.json
-└── README.md
+```
 
-## 🎨 Design System
+## 🎨 Customization
 
-### Colors (Mirroring Flutter App)
+### Styling
 
-// src/lib/utils/constants.js
-export const COLORS = {
-// Primary colors
-primary: '#121212', // Main text
-cartBlue: 'rgba(0, 0, 191, 0.737)', // Main buttons
-accent: '#cfc5a5', // Banners & highlights
-white: '#ffffff', // Backgrounds & secondary
-blue: '#3b82f6', // Notices & information
+The app uses Tailwind CSS for styling. You can customize:
 
-// Semantic colors
-success: '#10b981',
-warning: '#f59e0b',
-error: '#ef4444',
+- Colors in `src/lib/utils/constants.js`
+- Dimensions in `src/lib/utils/dimensions.js`
 
-// Gray scale
-gray: {
-50: '#f9fafb',
-100: '#f3f4f6',
-200: '#e5e7eb',
-300: '#d1d5db',
-400: '#9ca3af',
-500: '#6b7280',
-600: '#4b5563',
-700: '#374151',
-800: '#1f2937',
-900: '#111827'
-}
-};
+### Installations
 
-### Dimensions & Responsive Breakpoints
+The app delivers a truly native-like mobile experience with full PWA support, status bar theming, and safe-area handling across iOS and Android devices.
 
-// src/lib/utils/dimensions.js
-export const BREAKPOINTS = {
-xs: '320px',
-sm: '640px',
-md: '768px',
-lg: '1024px',
-xl: '1280px',
-'2xl': '1536px'
-};
+- Complete manifest.json with proper app metadata
+- Service worker for offline capabilities and resource caching
+- App icon sets for all device
+- Add to Home Screen with native launch behavior
 
-export const SPACING = {
-xs: '0.25rem', // 4px
-sm: '0.5rem', // 8px
-md: '1rem', // 16px
-lg: '1.5rem', // 24px
-xl: '2rem', // 32px
-'2xl': '3rem', // 48px
-'3xl': '4rem' // 64px
-};
+- iOS (Safari/WebKit):
+  - White status bar with black icon rendering
+  - Proper handling of apple-mobile-web-app-\* meta tags
 
-### Typograhy
+- Android (Chrome):
+  - Full-screen navigation bar coverage
+  - PWA install prompt and management
 
-// tailwind.config.js
-module.exports = {
-theme: {
-extend: {
-fontFamily: {
-sans: ['Inter', 'system-ui', 'sans-serif'],
-display: ['Poppins', 'system-ui', 'sans-serif'],
-},
-fontSize: {
-'display-lg': ['3.5rem', { lineHeight: '1.1' }],
-'display-md': ['2.5rem', { lineHeight: '1.2' }],
-'display-sm': ['2rem', { lineHeight: '1.3' }],
-},
-colors: {
-primary: '#121212',
-cartBlue: 'rgba(0, 0, 191, 0.737)',
-accent: '#cfc5a5',
-notice: '#3b82f6'
-}
-}
-}
-}
+## 📄 License
 
-## 🔧 Implementation Strategy
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-For service items: Use CSS with Tailwind + Framer Motion for animations
+## 🙏 Acknowledgments
 
-### 2. Map Integration
+- [Firebase](https://firebase.google.com/) for authentication and firestore
+- [Netlify](https://www.netlify.com/) for static hosting and severless functions
+- [Google_Cloud_Console](https://console.cloud.google.com/) for project management and api services
+- [Vercel](https://vercel.com/) for hosting and deployment
 
-Package: @react-google-maps/api or react-leaflet
+---
 
-Google Maps for better address search integration
-
-Leaflet for more customization and cost control
-
-### 3. State & Session Persistence
-
-// src/lib/stores/cart-store.js
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-
-export const useCartStore = create(
-persist(
-(set, get) => ({
-items: [],
-addItem: (item) => set({ items: [...get().items, item] }),
-removeItem: (id) => set({ items: get().items.filter(i => i.id !== id) }),
-clearCart: () => set({ items: [] })
-}),
-{
-name: 'izinto-cart-storage',
-}
-)
-)
-
-### 4. API Intergration Pattern
-
-// src/lib/api/services.js
-import { useQuery } from '@tanstack/react-query'
-
-export const useServices = () => {
-return useQuery({
-queryKey: ['services'],
-queryFn: async () => {
-const response = await fetch('/api/services')
-if (!response.ok) throw new Error('Failed to fetch services')
-return response.json()
-},
-staleTime: 5 _ 60 _ 1000, // 5 minutes
-})
-}
-
-### 5. Service Data Model
-
-// src/lib/utils/serviceModels.js
-export class NewSpecialtyModel {
-constructor(data) {
-this.id = data?.id || this.generateFallbackId(data);
-this.name = data?.name || 'Unknown Item';
-this.introduction = data?.introduction || 'No description available';
-this.price = this.safeParsePriceList(data?.price);
-this.size = this.safeParseSizeList(data?.size);
-this.img = data?.img || '/images/placeholder.png';
-this.details = data?.details || [];
-this.type = data?.type || 'General';
-this.material = data?.material || 'Standard';
-this.provider = data?.provider || 'Unknown Provider';
-this.time = data?.time || '';
-this.selectedSize = data?.selectedSize || '';
-this.originalId = data?.originalId || this.id;
-this.isSizeVariant = data?.isSizeVariant || false;
-}
-
-safeParsePriceList(priceData) {
-try {
-if (Array.isArray(priceData)) {
-const result = [];
-for (let item of priceData) {
-const parsed = parseInt(item);
-if (!isNaN(parsed)) {
-result.push(parsed);
-}
-}
-return result.length > 0 ? result : [0];
-}
-return [0];
-} catch (e) {
-return [0];
-}
-}
-
-safeParseSizeList(sizeData) {
-try {
-if (Array.isArray(sizeData)) {
-return sizeData.map(item => item.toString());
-}
-return ['Standard'];
-} catch (e) {
-return ['Standard'];
-}
-}
-
-generateFallbackId(data) {
-return Math.abs(JSON.stringify(data).hashCode()) % 1000000;
-}
-
-get displayName() {
-if (this.isSizeVariant && this.selectedSize) {
-return `${this.name} (${this.selectedSize})`;
-}
-return this.name;
-}
-
-get actualPrice() {
-try {
-if (this.selectedSize && this.size && this.price) {
-const sizeIndex = this.size.indexOf(this.selectedSize);
-if (sizeIndex !== -1 && sizeIndex < this.price.length) {
-return this.price[sizeIndex];
-}
-}
-return this.firstPrice;
-} catch (e) {
-return this.firstPrice;
-}
-}
-
-get firstPrice() {
-return this.price && this.price.length > 0 ? this.price[0] : 0;
-}
-}
-
-// Add hashCode method to String prototype for fallback ID generation
-String.prototype.hashCode = function() {
-let hash = 0;
-for (let i = 0; i < this.length; i++) {
-const char = this.charCodeAt(i);
-hash = ((hash << 5) - hash) + char;
-hash = hash & hash;
-}
-return hash;
-};
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-Node.js 18+
-
-Firebase project
-
-Google Maps API key (optional)
-
-###
-
-npx create-next-app@latest izinto-web --tailwind --eslint --app
-cd izinto-web
-npm install
-
-## 📱 Core Features Matching Mobile App
-
-### Service Categories (Same as Flutter App)
-
-🧺 Laundry & Dry Cleaning
-
-⛽ Gas Refill & Exchange
-
-🐾 Pet Care & Grooming
-
-🧹 Home Cleaning Services
-
-🚗 Mobile Car Wash
-
-👟 Sneaker & Blanket Cleaning
-
-### Key Functionalities
-
-Real-time service booking
-
-Live order tracking
-
-Secure in-app payments
-
-Multi-service cart management
-
-Push notifications
-
-Location-based services
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/Dinokojt7">Tiisetso Dinoko</a>
+</p>

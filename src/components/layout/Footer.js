@@ -339,14 +339,16 @@ export default function Footer() {
                     <img
                       src={store.image}
                       alt={store.name}
-                      className="w-full h-14 object-contain rounded-lg"
+                      className="w-80% h-12 object-contain rounded-lg"
                     />
 
                     {/* Light Gray Overlay - Dims the image */}
-                    <div className="absolute inset-0 bg-gray-100/30 rounded-lg" />
+                    <div
+                      className={`absolute inset-0 rounded-lg ${index === 1 ? "bg-gray-100/30" : "cursor-pointer"}`}
+                    />
 
                     {/* Permanent Flag Badge - Top Right */}
-                    <div className="absolute -top-3.5 -right-1.5 z-10">
+                    <div className="absolute -top-3.5 -right-0.5 z-10">
                       <div
                         className="bg-white border border-gray-100 text-black 
               px-1.5 py-0.1 rounded-md  min-w-[60px]"
@@ -415,7 +417,7 @@ export default function Footer() {
         </div>
         {/* Recaptcha */}
         <div className="mt-2 pt-4 w-full ">
-          <p className="text-xs text-gray-500 text-end">
+          <p className="text-xs text-gray-500 text-center">
             This site is protected by reCAPTCHA and the Google{" "}
             <a
               href="https://policies.google.com/privacy"
