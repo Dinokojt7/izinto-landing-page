@@ -12,7 +12,6 @@ const OtpContext = createContext({});
 
 export const useOtp = () => useContext(OtpContext);
 
-// 🚨 MOVE THIS FUNCTION INSIDE THE COMPONENT
 const validateAndFormatPhoneNumber = (number) => {
   const cleaned = number.replace(/\D/g, "");
   const isSouthAfrican = cleaned.startsWith("0") && cleaned.length === 10;
@@ -62,7 +61,6 @@ export const OtpProvider = ({ children }) => {
     setCanResend(false);
   };
 
-  // ✅ FIXED: Function is now accessible inside useCallback
   const triggerOtpFromAnywhere = useCallback(
     async (phoneNumber) => {
       const formattedNumber = validateAndFormatPhoneNumber(phoneNumber);

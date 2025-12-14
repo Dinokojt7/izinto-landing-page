@@ -247,13 +247,8 @@ export default function LoginDialog({ isOpen, onClose }) {
                 <div className="text-center">
                   <p className="text-xs text-gray-500">
                     By continuing, you agree to our{" "}
-                    <button className="text-gray-600 hover:text-black">
-                      Terms
-                    </button>{" "}
-                    and{" "}
-                    <button className="text-gray-600 hover:text-black">
-                      Privacy Policy
-                    </button>
+                    <button className="text-gray-600 ">Terms</button> and{" "}
+                    <button className="text-gray-600 ">Privacy Policy</button>
                   </p>
                 </div>
               </motion.div>

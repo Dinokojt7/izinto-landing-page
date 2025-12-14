@@ -12,14 +12,9 @@ export default function ProductHeader() {
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { totalItems } = useCartStore();
-  const { user, getUserProfile } = useAuth();
+  const { user, userProfile } = useAuth(); // Use userProfile from AuthContext
   const { scrollY } = useScroll();
-  const [profile, setProfile] = useState({
-    name: "",
-    surname: "",
-  });
 
   const headerBackground = useTransform(
     scrollY,
@@ -32,27 +27,21 @@ export default function ProductHeader() {
     ["rgb(18,18,18)", "rgb(18,18,18)"],
   );
 
-  useEffect(() => {
-    if (user) {
-      loadUserProfile();
+  // Helper function to get display name
+  const getDisplayName = () => {
+    if (!userProfile) {
+      return "YOUR PROFILE";
     }
-  }, [isLoading, user]);
 
-  const loadUserProfile = async () => {
-    setIsLoading(true);
-    try {
-      const result = await getUserProfile(user.uid);
-      if (result.success) {
-        setProfile({
-          name: result.data.name || "YOUR",
-          surname: result.data.surname || "PROFILE",
-        });
-      }
-    } catch (error) {
-      console.error("Failed to load user profile:", error);
-    } finally {
-      setIsLoading(false);
+    const name = userProfile.name || "YOUR";
+    const surname = userProfile.surname || "PROFILE";
+
+    // Handle cases where we might have partial data
+    if (!userProfile.name && !userProfile.surname) {
+      return "YOUR PROFILE";
     }
+
+    return `${name.toUpperCase()}  ${surname.toUpperCase()}`;
   };
 
   return (
@@ -116,9 +105,7 @@ export default function ProductHeader() {
                     alt="User"
                     className="w-4 h-4 sm:w-5 sm:h-5"
                   />
-                  <span>
-                    {`${profile.name.toUpperCase()}  ${profile.surname.toUpperCase()}`}
-                  </span>
+                  <span>{getDisplayName()}</span>
                 </motion.button>
               ) : (
                 <motion.button

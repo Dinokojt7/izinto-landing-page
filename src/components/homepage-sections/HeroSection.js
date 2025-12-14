@@ -1,4 +1,3 @@
-// src/components/services/HeroSection.js
 "use client";
 import { useState, useEffect } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
@@ -8,13 +7,15 @@ import LoginDialog from "@/app/auth/login/loginDialog";
 import AddressSearchDialog from "../maps/AddressSearchDialog";
 import Link from "next/link";
 import { useAuth } from "@/lib/context/AuthContext";
+import ProfileDialog from "@/components/layout/ProfileDialog"; // Add this import
 
 export default function HeroSection() {
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false); // Add this state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [savedAddress, setSavedAddress] = useState(null);
-  const { user, profileComplete } = useAuth();
+  const { user, userProfile } = useAuth(); // Use userProfile instead of profileComplete
 
   const { scrollY } = useScroll();
 
@@ -60,6 +61,23 @@ export default function HeroSection() {
 
   const handleAddressSave = (addressData) => {
     setSavedAddress(addressData);
+  };
+
+  // Helper function to get display name (same as ProductHeader)
+  const getDisplayName = () => {
+    if (!userProfile) {
+      return "YOUR PROFILE";
+    }
+
+    const name = userProfile.name || "YOUR";
+    const surname = userProfile.surname || "PROFILE";
+
+    // Handle cases where we might have partial data
+    if (!userProfile.name && !userProfile.surname) {
+      return "YOUR PROFILE";
+    }
+
+    return `${name.toUpperCase()}  ${surname.toUpperCase()}`;
   };
 
   return (
@@ -146,35 +164,29 @@ export default function HeroSection() {
 
               {/* User Profile Link or Login Button */}
               {user ? (
-                // User is logged in - show name/surname link to profile
-                <Link href="/profile">
-                  <motion.button
-                    style={{
-                      color: headerTextColor,
-                      borderColor: headerTextColor,
-                    }}
-                    className="flex items-center space-x-2 border-2 px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors cursor-pointer"
+                // User is logged in - show profile button (not link)
+                <motion.button
+                  onClick={() => setIsProfileDialogOpen(true)} // Open ProfileDialog
+                  style={{
+                    color: headerTextColor,
+                    borderColor: headerTextColor,
+                  }}
+                  className="flex items-center space-x-2 border-2 px-4 py-1 rounded-4xl font-extrabold italic hover:bg-white/20 transition-colors cursor-pointer"
+                >
+                  <motion.div
+                    style={{ filter: avatarFilter }}
+                    className="w-5 h-5 relative"
                   >
-                    <motion.div
-                      style={{ filter: avatarFilter }}
-                      className="w-5 h-5 relative"
-                    >
-                      <Image
-                        src="/images/user-avatar.png"
-                        alt="User"
-                        fill
-                        className="object-contain"
-                        unoptimized // Since it's small icon
-                      />
-                    </motion.div>
-                    <span className="capitalize">
-                      {user.displayName ||
-                        (profileComplete && user.firstName && user.lastName
-                          ? `${user.firstName} ${user.lastName}`.toUpperCase()
-                          : "PROFILE")}
-                    </span>
-                  </motion.button>
-                </Link>
+                    <Image
+                      src="/images/user-avatar.png"
+                      alt="User"
+                      fill
+                      className="object-contain"
+                      unoptimized // Since it's small icon
+                    />
+                  </motion.div>
+                  <span>{getDisplayName()}</span>
+                </motion.button>
               ) : (
                 // No user - show login button
                 <motion.button
@@ -204,7 +216,7 @@ export default function HeroSection() {
           </div>
         </div>
       </motion.header>
-      {/* Rest of your component remains the same... */}
+
       {/* Hero Content */}
       <section className="relative h-[80vh] bg-grey-400 overflow-hidden -mt-16 pt-16">
         {/* Background Image - Use next/image for hero background too */}
@@ -241,26 +253,8 @@ export default function HeroSection() {
             ENTER YOUR ADDRESS
           </motion.button>
         </div>
-
-        {/* Bottom Right Controls */}
-        <div className="absolute bottom-4 right-4 z-20 flex space-x-2">
-          <button className="bg-white/20 backdrop-blur-sm text-white p-3 rounded-lg hover:bg-white/30 transition-colors">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5"
-              />
-            </svg>
-          </button>
-        </div>
       </section>
+
       {/* Dialogs */}
       <AddressSearchDialog
         isOpen={isAddressDialogOpen}
@@ -271,11 +265,16 @@ export default function HeroSection() {
         isOpen={isLoginDialogOpen}
         onClose={() => setIsLoginDialogOpen(false)}
       />
+      {/* Add ProfileDialog */}
+      <ProfileDialog
+        isOpen={isProfileDialogOpen}
+        onClose={() => setIsProfileDialogOpen(false)}
+      />
       <Sidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         showLoginDialog={() => setIsLoginDialogOpen(true)}
-      />{" "}
+      />
     </>
   );
 }

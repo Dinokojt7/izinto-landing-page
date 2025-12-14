@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { Poppins } from "next/font/google";
@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/context/AuthContext";
 import CircularProgressIndicator from "@/components/ui/CircularProgessIndicator";
 import { useAddress } from "@/providers/AddressProvider";
 import { motion, AnimatePresence } from "framer-motion";
+import { useProfileDialog } from "@/lib/context/ProfileDialogContext";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -14,9 +15,29 @@ const poppins = Poppins({
   display: "swap",
 });
 
-export default function ProfileDialog({ isOpen, onClose }) {
-  const { user, getUserProfile, handleLogout } = useAuth();
+export default function ProfileDialog({
+  isOpen: propIsOpen,
+  onClose: propOnClose,
+} = {}) {
+  // Get context values if using context pattern
+  const { showProfileDialog, closeProfileDialog, profileData } =
+    useProfileDialog();
+
+  // Determine if we're using props or context
+  const usingProps = propIsOpen !== undefined;
+
+  // Use props if provided, otherwise use context
+  const isOpen = usingProps ? propIsOpen : showProfileDialog;
+  const onClose = usingProps ? propOnClose : closeProfileDialog;
+
+  const {
+    user,
+    handleLogout,
+    userProfile: authUserProfile,
+    updateProfile,
+  } = useAuth();
   const { activeAddress } = useAddress();
+
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -33,6 +54,45 @@ export default function ProfileDialog({ isOpen, onClose }) {
     },
   });
 
+  // Initialize profile from available data sources
+  useEffect(() => {
+    if (isOpen) {
+      setIsLoading(true);
+
+      // Determine which data source to use (in order of preference):
+      // 1. Profile data from ProfileDialog context (profileData)
+      // 2. User profile from Auth context (authUserProfile)
+      // 3. Basic user info from Firebase auth (user)
+
+      let profileDataToUse = profileData || authUserProfile || {};
+
+      setProfile({
+        name: profileDataToUse.name || "",
+        surname: profileDataToUse.surname || "",
+        email: profileDataToUse.email || user?.email || "",
+        phone: profileDataToUse.phone || user?.phoneNumber || "",
+        address: profileDataToUse.address || "",
+        preferences: profileDataToUse.preferences || {
+          notifications: true,
+          marketing: false,
+        },
+      });
+
+      setIsLoading(false);
+    }
+  }, [isOpen, user, profileData, authUserProfile]);
+
+  // Load active address when it changes
+  useEffect(() => {
+    if (activeAddress && isOpen) {
+      const formattedAddress = `${activeAddress.street}, ${activeAddress.suburb || activeAddress.town}${activeAddress.zip ? `, ${activeAddress.zip}` : ""}, ${activeAddress.town}`;
+      setProfile((prev) => ({
+        ...prev,
+        address: formattedAddress,
+      }));
+    }
+  }, [activeAddress, isOpen]);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -45,7 +105,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
     };
   }, [isOpen]);
 
-  // Also handle Escape key
+  // Handle Escape key
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape" && isOpen) {
@@ -60,43 +120,6 @@ export default function ProfileDialog({ isOpen, onClose }) {
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose, showLogoutConfirm]);
-
-  useEffect(() => {
-    if (isOpen && user) {
-      loadUserProfile();
-    }
-  }, [isOpen, user]);
-
-  // Load active address when it changes
-  useEffect(() => {
-    if (activeAddress) {
-      const formattedAddress = `${activeAddress.street}, ${activeAddress.suburb || activeAddress.town}${activeAddress.zip ? `, ${activeAddress.zip}` : ""}, ${activeAddress.town}`;
-      setProfile((prev) => ({
-        ...prev,
-        address: formattedAddress,
-      }));
-    }
-  }, [activeAddress]);
-
-  const loadUserProfile = async () => {
-    setIsLoading(true);
-    const result = await getUserProfile(user.uid);
-
-    if (result.success) {
-      setProfile({
-        name: result.data.name || "",
-        surname: result.data.surname || "",
-        email: result.data.email || user.email || "",
-        phone: result.data.phone || user.phoneNumber || "",
-        address: result.data.address || "",
-        preferences: result.data.preferences || {
-          notifications: true,
-          marketing: false,
-        },
-      });
-    }
-    setIsLoading(false);
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -123,19 +146,27 @@ export default function ProfileDialog({ isOpen, onClose }) {
 
     setIsSaving(true);
     try {
-      const userRef = doc(db, "users", user.uid);
-
-      await updateDoc(userRef, {
+      // Prepare the data to save
+      const updates = {
         name: profile.name.trim(),
         surname: profile.surname.trim(),
         email: profile.email.trim(),
         phone: profile.phone.trim(),
-        address: profile.address.trim(), // This is just for backup
+        address: profile.address.trim(),
         preferences: profile.preferences,
         profileComplete: true,
         updatedAt: new Date().toISOString(),
-      });
+      };
 
+      // Save to Firebase directly
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, updates);
+
+      // ALSO update via AuthContext's updateProfile method to refresh local state
+      // This ensures the AuthContext knows about the updates
+      if (updateProfile) {
+        await updateProfile(updates);
+      }
       onClose();
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -162,24 +193,6 @@ export default function ProfileDialog({ isOpen, onClose }) {
     await handleLogout();
     setIsLoggingOut(false);
     onClose();
-  };
-
-  const handleDeleteAccount = async () => {
-    if (
-      !confirm(
-        "Are you sure you want to delete your account? This action cannot be undone.",
-      )
-    ) {
-      return;
-    }
-
-    try {
-      console.log("Account deletion would happen here");
-      alert("Account deletion feature needs to be implemented.");
-    } catch (error) {
-      console.error("Error deleting account:", error);
-      alert("Failed to delete account.");
-    }
   };
 
   if (!isOpen) return null;
@@ -249,7 +262,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                       exit={{ opacity: 0 }}
                       className="flex flex-col items-center justify-center h-full min-h-[400px] p-6"
                     >
-                      <CircularProgressIndicator size={60} strokeWidth={4} />
+                      <CircularProgressIndicator size={60} strokeWidth={6} />
                       <motion.p
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -268,7 +281,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                       exit={{ opacity: 0 }}
                       className="flex flex-col items-center justify-center h-full min-h-[400px] p-6"
                     >
-                      <CircularProgressIndicator size={60} strokeWidth={4} />
+                      <CircularProgressIndicator size={60} strokeWidth={6} />
                       <motion.p
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -313,7 +326,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                                 onChange={handleInputChange}
                                 required
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                                placeholder="name"
+                                placeholder="Enter your name"
                               />
                             </div>
                             <div>
@@ -327,7 +340,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                                 onChange={handleInputChange}
                                 required
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                                placeholder="surname"
+                                placeholder="Enter your surname"
                               />
                             </div>
                           </div>
@@ -349,16 +362,20 @@ export default function ProfileDialog({ isOpen, onClose }) {
 
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Phone Number
+                              Phone Number *
                             </label>
                             <input
                               type="tel"
                               name="phone"
                               value={profile.phone}
                               onChange={handleInputChange}
+                              required
                               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                               placeholder="+27 123 456 7890"
                             />
+                            <p className="text-sm text-gray-500 mt-1">
+                              We'll use this to contact you about your orders
+                            </p>
                           </div>
                         </motion.div>
 
@@ -452,7 +469,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                         </motion.div>
 
                         {/* Action Buttons Area */}
-                        <div className="relative h-20 pt-6 pb-4">
+                        <div className="relative h-20 pt-2 pb-4">
                           <AnimatePresence mode="wait">
                             {showLogoutConfirm ? (
                               // Logout Confirmation Buttons - Clean fade only
@@ -462,12 +479,12 @@ export default function ProfileDialog({ isOpen, onClose }) {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.15 }}
-                                className="flex flex-col sm:flex-row gap-3 absolute inset-0 pt-6 pb-4 px-6"
+                                className="flex flex-col sm:flex-row gap-3 absolute inset-0 pt-6 pb-4 "
                               >
                                 <button
                                   type="button"
                                   onClick={handleCancelLogout}
-                                  className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-colors text-center h-[50px] flex items-center justify-center" // Fixed height and centering
+                                  className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-colors text-center h-[50px] flex items-center justify-center"
                                 >
                                   Cancel
                                 </button>
@@ -475,7 +492,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                                 <button
                                   type="button"
                                   onClick={handleConfirmLogout}
-                                  className="flex-1 border border-red-300 text-red-500 py-3 px-4 rounded-lg font-bold hover:bg-red-50 transition-colors text-center h-[50px] flex items-center justify-center" // Fixed height and centering
+                                  className="flex-1 border border-red-300 text-red-500 py-3 px-4 rounded-lg font-bold hover:bg-red-50 transition-colors text-center h-[50px] flex items-center justify-center"
                                 >
                                   Confirm Logout
                                 </button>
@@ -488,12 +505,12 @@ export default function ProfileDialog({ isOpen, onClose }) {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.15 }}
-                                className="flex flex-col sm:flex-row gap-3 absolute inset-0 pt-6 pb-4 px-6"
+                                className="flex flex-col sm:flex-row gap-3 absolute inset-0 pt-6 pb-4 "
                               >
                                 <button
                                   type="button"
                                   onClick={handleLogoutClick}
-                                  className="flex-1 py-3 px-4 border border-red-300 text-red-500 rounded-lg font-bold hover:bg-red-50 transition-colors text-center h-[50px] flex items-center justify-center" // Fixed height and centering
+                                  className="flex-1 py-3 px-4 border border-red-300 text-red-500 rounded-lg font-bold hover:bg-red-50 transition-colors text-center h-[50px] flex items-center justify-center"
                                 >
                                   Log out
                                 </button>
@@ -501,7 +518,7 @@ export default function ProfileDialog({ isOpen, onClose }) {
                                 <button
                                   type="submit"
                                   disabled={isSaving}
-                                  className="flex-1 bg-black text-white py-3 px-4 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 text-center h-[50px] flex items-center justify-center" // Fixed height and centering
+                                  className="flex-1 bg-black text-white py-3 px-4 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 text-center h-[50px] flex items-center justify-center"
                                 >
                                   {isSaving ? (
                                     <div className="flex items-center justify-center gap-2">

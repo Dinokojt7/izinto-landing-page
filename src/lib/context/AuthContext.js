@@ -71,10 +71,7 @@ export const AuthProvider = ({ children }) => {
           result.newUser || !profile.profileComplete;
 
         if (shouldCompleteProfile) {
-          // Redirect to profile completion if needed
-          if (pathname !== "/profile") {
-            router.push("/profile");
-          }
+          // ProfileDialogContext will handle showing the dialog automatically
         } else if (result.returnPath && result.returnPath !== pathname) {
           // Return to original page if profile is complete
           router.push(result.returnPath);
@@ -109,7 +106,7 @@ export const AuthProvider = ({ children }) => {
         const shouldCompleteProfile =
           authData.newUser || !authData.profileComplete;
         if (shouldCompleteProfile && pathname !== "/profile" && mounted) {
-          router.push("/profile");
+          // ProfileDialogContext will handle showing the dialog automatically
         }
       } else {
         console.log("No user authenticated");
@@ -134,7 +131,7 @@ export const AuthProvider = ({ children }) => {
         const shouldCompleteProfile = result.newUser || !result.profileComplete;
 
         if (shouldCompleteProfile && pathname !== "/profile") {
-          router.push("/profile");
+          // ProfileDialogContext will handle showing the dialog automatically
         } else if (result.returnPath && result.returnPath !== pathname) {
           router.push(result.returnPath);
         }
@@ -241,12 +238,11 @@ export const AuthProvider = ({ children }) => {
       );
 
       if (result.success) {
-        // 🔧 CRITICAL: Update the main auth state, just like Google redirect does
         setUser(result.user);
         setIsNewUser(result.newUser || false);
         setProfileComplete(result.profileComplete || false);
 
-        // 🔧 Let the existing auth listener (in useEffect) handle the redirect/profile logic
+        // Here we let the existing auth listener (in useEffect) to handle the redirect/profile logic
         // It will check isNewUser/profileComplete and take appropriate action
 
         setPhoneAuthState((prev) => ({

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Poppins } from "next/font/google";
 import { useAuth } from "@/lib/context/AuthContext";
-import { useOtp } from "@/lib/context/OtpContext"; // Import the new OTP context
+import { useOtp } from "@/lib/context/OtpContext";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -15,10 +15,10 @@ const poppins = Poppins({
 export default function Footer() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isValidPhone, setIsValidPhone] = useState(false);
-  const [localError, setLocalError] = useState(""); // Local UI errors only
+  const [localError, setLocalError] = useState("");
 
   const { user, loading } = useAuth();
-  const { triggerOtpFromAnywhere, isLoading } = useOtp(); // Get from global OTP context
+  const { triggerOtpFromAnywhere, isLoading } = useOtp();
 
   const validateAndFormatPhoneNumber = (number) => {
     const cleaned = number.replace(/\D/g, "");

@@ -9,6 +9,8 @@ import { AuthProvider } from "@/lib/context/AuthContext";
 import { AddressProvider } from "@/providers/AddressProvider";
 import { OtpProvider } from "@/lib/context/OtpContext";
 import GlobalOtpDialog from "@/components/auth/GlobalOtpDialog";
+import { ProfileDialogProvider } from "@/lib/context/ProfileDialogContext";
+import ProfileDialog from "@/components/layout/ProfileDialog";
 
 const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
 
@@ -83,16 +85,19 @@ export default function RootLayout({ children }) {
         <ReactQueryProvider>
           <GoogleMapsProvider apiKey={GOOGLE_MAPS_API_KEY}>
             <AuthProvider>
-              <AddressProvider>
-                <ServicesProvider>
-                  <ClientLayoutWrapper>
-                    <OtpProvider>
-                      {children}
-                      <GlobalOtpDialog />
-                    </OtpProvider>
-                  </ClientLayoutWrapper>
-                </ServicesProvider>
-              </AddressProvider>
+              <ProfileDialogProvider>
+                <AddressProvider>
+                  <ServicesProvider>
+                    <ClientLayoutWrapper>
+                      <OtpProvider>
+                        {children}
+                        <GlobalOtpDialog />
+                        <ProfileDialog />
+                      </OtpProvider>
+                    </ClientLayoutWrapper>
+                  </ServicesProvider>
+                </AddressProvider>
+              </ProfileDialogProvider>
             </AuthProvider>
           </GoogleMapsProvider>
         </ReactQueryProvider>
