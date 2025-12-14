@@ -12,7 +12,7 @@ export async function fetchServicesClient() {
     "/home-items",
   ];
 
-  // Mock data as fallback
+  // Mock data delete later
   const mockServices = [
     {
       id: 1,

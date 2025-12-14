@@ -8,8 +8,6 @@ export async function GET() {
   const endpoints = ["/gas-refill", "/carpet-care", "/pet-care", "/home-items"];
 
   try {
-    console.log("🔄 Proxying requests...");
-
     const requests = endpoints.map((endpoint) =>
       fetch(`${API_BASE_URL}${endpoint}`)
         .then((res) => (res.ok ? res.json() : { Specialties: [] }))
@@ -23,11 +21,6 @@ export async function GET() {
       endpoint: endpoints[index],
       services: result.Specialties || result.specialties || [],
     }));
-
-    console.log("📊 Services by endpoint:");
-    servicesByEndpoint.forEach((item) => {
-      console.log(`   ${item.endpoint}: ${item.services.length} services`);
-    });
 
     // Create randomized sequential mix
     const randomizedServices = [];
@@ -50,8 +43,6 @@ export async function GET() {
         }
       });
     }
-
-    console.log(`🎯 Total randomized services: ${randomizedServices.length}`);
 
     // Return in the same format as your backend
     return NextResponse.json({

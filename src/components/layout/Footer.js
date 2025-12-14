@@ -51,23 +51,33 @@ export default function Footer() {
   };
 
   const handleSubmit = async () => {
-    if (!phoneNumber.trim()) {
+    // Clear previous errors
+    setLocalError("");
+
+    // Check for empty input
+    if (!phoneNumber) {
       setLocalError("Enter your mobile number");
       return;
     }
 
+    // Check if valid format
     if (!isValidPhone) {
       setLocalError("Enter a valid SA number (e.g., 0821234567)");
       return;
     }
-
-    setLocalError(""); // Clear any previous errors
 
     // 🔧 Use the global OTP trigger instead of local logic
     const result = await triggerOtpFromAnywhere(phoneNumber);
 
     if (!result.success) {
       setLocalError(result.error || "Failed to send OTP");
+    }
+  };
+
+  // Also handle Enter key press
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit();
     }
   };
 
@@ -93,7 +103,7 @@ export default function Footer() {
           className="w-5 h-5"
           viewBox="0 0 24 24"
           fill="#000"
-          xmlns="http://www.w3.org/2000/svg"
+          xmlns="http://www.w3.org2000/svg"
         >
           <path d="M18.9 2H22l-8.2 9.1L23 22h-5.6l-5.8-7.6L6 22H2l8.6-9.5L2 2h5.8l5.3 7.1L18.9 2zm-1.4 17.3h2.3L7.3 4.2H4.8l12.7 15.1z" />
         </svg>
@@ -238,12 +248,15 @@ export default function Footer() {
                   type="tel"
                   value={phoneNumber}
                   onChange={handlePhoneChange}
+                  onKeyPress={handleKeyPress}
                   placeholder="Mobile number"
                   maxLength={10}
                   autoComplete="tel"
                   autoCorrect="off"
                   className={`flex-1 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0096FF] focus:border-transparent transition-all text-base border text-center lg:text-left ${
-                    localError ? "border-red-500" : "border-gray-300"
+                    localError
+                      ? "border-red-500 ring-red-500"
+                      : "border-gray-300"
                   }`}
                 />
               </div>
@@ -251,8 +264,10 @@ export default function Footer() {
               {/* Submit Button */}
               <button
                 onClick={handleSubmit}
-                disabled={!isValidPhone || isLoading}
-                className="bg-[#0000ff] text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-900 transition-all transform whitespace-nowrap w-full sm:w-auto text-center"
+                disabled={isLoading}
+                className={`bg-[#0000ff] text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-extrabold italic hover:bg-blue-900 transition-all transform whitespace-nowrap w-full sm:w-auto text-center ${
+                  isLoading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -267,7 +282,13 @@ export default function Footer() {
 
             {/* Error Message - YOUR EXACT UI */}
             {localError && (
-              <p className="text-red-500 text-xs mt-2">{localError}</p>
+              <motion.p
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-red-500 text-sm mt-2 font-medium pl-1"
+              >
+                {localError}
+              </motion.p>
             )}
           </>
         )}

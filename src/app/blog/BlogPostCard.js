@@ -1,5 +1,6 @@
 // src/components/blog/BlogPostCard.js
 import Link from "next/link";
+import Image from "next/image";
 
 export default function BlogPostCard({ post }) {
   const formatDate = (dateString) => {
@@ -10,44 +11,73 @@ export default function BlogPostCard({ post }) {
     });
   };
 
+  // Default image if none provided
+  const imageSrc = post.image || "/images/blog/placeholder.jpg";
+
   return (
-    <Link href={`/blog/${post.slug}`} className="group">
-      <article className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform group-hover:scale-105">
+    <div className="group">
+      <article className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col">
         {/* Image */}
-        <div className="h-48 bg-gray-200 overflow-hidden">
-          <div className="w-full h-full bg-gradient-to-br from-blue-100 to-green-100 flex items-center justify-center">
-            <span className="text-gray-400 text-sm">Featured Image</span>
+        <div className="h-48 relative overflow-hidden bg-gray-100">
+          <Image
+            src={imageSrc}
+            alt={post.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
+          />
+          {/* Category badge */}
+          <div className="absolute top-3 left-3">
+            <span className="text-xs font-semibold bg-white/90 text-[#0096ff] uppercase tracking-wide px-3 py-1 rounded-full">
+              {post.category}
+            </span>
           </div>
-          {/* In production, use: <img src={post.image} alt={post.title} className="w-full h-full object-cover" /> */}
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          {/* Category and Read Time */}
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-xs font-semibold text-[#0096ff] uppercase tracking-wide">
-              {post.category}
-            </span>
-            <span className="text-xs text-gray-500">{post.readTime}</span>
-          </div>
-
+        <div className="p-6 flex-1 flex flex-col">
           {/* Title */}
           <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-[#0096ff] transition-colors">
             {post.title}
           </h3>
 
           {/* Excerpt */}
-          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+          <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
             {post.excerpt}
           </p>
 
-          {/* Author and Date */}
-          <div className="flex justify-between items-center text-xs text-gray-500">
-            <span>By {post.author}</span>
+          {/* Author, Date and Read Time */}
+          <div className="flex justify-between items-center text-xs text-gray-500 mb-4">
+            <div>
+              <span className="font-medium">By {post.author}</span>
+              <span className="mx-2">•</span>
+              <span>{post.readTime}</span>
+            </div>
             <span>{formatDate(post.date)}</span>
           </div>
+
+          {/* Read More Link */}
+          <Link
+            href={`/blog/${post.slug}`}
+            className="inline-flex items-center text-[#0096ff] font-semibold text-sm hover:text-blue-700 transition-colors"
+          >
+            Read article
+            <svg
+              className="w-4 h-4 ml-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M14 5l7 7m0 0l-7 7m7-7H3"
+              />
+            </svg>
+          </Link>
         </div>
       </article>
-    </Link>
+    </div>
   );
 }

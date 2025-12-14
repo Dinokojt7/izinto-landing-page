@@ -3,11 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 import blogPosts from "@/data/blog-posts.json";
 import { Poppins } from "next/font/google";
+import Link from "next/link";
+
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
   display: "swap",
 });
+
 export default function BlogHeader() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -32,14 +35,21 @@ export default function BlogHeader() {
           <div className="flex justify-between items-center h-16 sm:h-20">
             {/* Left: Logo and Blog Text */}
             <div className="flex items-center space-x-2 sm:space-x-4">
-              <img
-                src="/images/try-retro.png"
-                alt="Izinto"
-                className="h-6 sm:h-8 w-auto"
-              />
-              <span className="text-xl sm:text-2xl lg:text-3xl font-extrabold italic text-[#0096ff]">
-                Blog
-              </span>
+              <Link href="/">
+                <img
+                  src="/images/try-retro.png"
+                  alt="Izinto"
+                  className="h-6 sm:h-8 w-auto hover:opacity-80 transition-opacity cursor-pointer"
+                />
+              </Link>
+              <Link
+                href="/blog"
+                className="hover:opacity-80 transition-opacity"
+              >
+                <span className="text-xl sm:text-2xl lg:text-3xl font-extrabold italic text-[#0096ff]">
+                  Blog
+                </span>
+              </Link>
             </div>
 
             {/* Center: Home Articles Dropdown */}
@@ -47,13 +57,13 @@ export default function BlogHeader() {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center space-x-2 hover:bg-gray-50 px-3 sm:px-4 py-2 rounded-lg transition-colors"
+                  className="flex items-center space-x-2 hover:bg-gray-50 px-3 sm:px-4 py-2 rounded-lg transition-colors group"
                 >
-                  <span className="text-gray-700 font-semibold text-sm sm:text-base">
+                  <span className="text-gray-700 font-semibold text-sm sm:text-base group-hover:text-[#0096ff] transition-colors">
                     Home Articles
                   </span>
                   <svg
-                    className={`w-4 h-4 text-gray-500 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
+                    className={`w-4 h-4 text-gray-500 transition-transform group-hover:text-[#0096ff] ${isDropdownOpen ? "rotate-180" : ""}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -72,20 +82,20 @@ export default function BlogHeader() {
                   <div className="fixed sm:absolute top-16 left-4 right-4 sm:top-full sm:left-1/2 sm:transform sm:-translate-x-1/2 mt-0 sm:mt-2 w-[calc(100vw-2rem)] sm:w-80 max-h-80 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                     <div className="py-2">
                       {blogPosts.posts.map((post) => (
-                        <a
+                        <Link
                           key={post.id}
                           href={`/blog/${post.slug}`}
-                          className="block px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                          className="block px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 group"
                           onClick={() => setIsDropdownOpen(false)}
                         >
-                          <div className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2">
+                          <div className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-[#0096ff] transition-colors">
                             {post.title}
                           </div>
                           <div className="text-xs text-gray-500 flex justify-between">
-                            <span>{post.category}</span>
+                            <span className="font-medium">{post.category}</span>
                             <span>{post.readTime}</span>
                           </div>
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </div>
@@ -94,18 +104,24 @@ export default function BlogHeader() {
             </div>
 
             {/* Right: Book Now Button - Hidden on mobile */}
-            <button className="hidden sm:flex bg-[#0096ff] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-extrabold italic hover:bg-[#007acc] transition-colors transform whitespace-nowrap">
-              BOOK NOW
-            </button>
+            <Link
+              href="/services"
+              className="hidden sm:flex bg-[#0096ff] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-extrabold italic hover:bg-[#007acc] transition-all transform shadow-md hover:shadow-lg whitespace-nowrap"
+            >
+              BOOK SERVICES
+            </Link>
           </div>
         </div>
       </header>
 
       {/* Mobile Bottom Nav Book Now Button */}
       <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden bg-white border-t border-gray-200 p-4 shadow-lg">
-        <button className="bg-[#0096ff] text-white px-6 py-3 rounded-full text-sm font-extrabold italic hover:bg-[#007acc] transition-all transform whitespace-nowrap w-full text-center">
-          BOOK NOW
-        </button>
+        <Link
+          href="/services"
+          className="block bg-[#0096ff] text-white px-6 py-4 rounded-full text-sm font-extrabold italic hover:bg-[#007acc] transition-all transform shadow-lg hover:shadow-xl w-full text-center"
+        >
+          BOOK SERVICES NOW
+        </Link>
       </div>
     </>
   );
