@@ -355,31 +355,47 @@ export default function Footer() {
               {footerLinks.appStores.map((store, index) => (
                 <div key={index} className="flex-1 relative">
                   {/* Image Container with Overlay */}
-                  <div className="relative w-full h-14">
-                    {/* Original Image */}
-                    <img
-                      src={store.image}
-                      alt={store.name}
-                      className="w-80% h-12 object-contain rounded-lg"
-                    />
+                  {index === 0 ? (
+                    <Link
+                      key={index}
+                      href={store.href}
+                      target="_blank"
+                      className="relative w-full h-14"
+                    >
+                      {/* Original Image */}
+                      <img
+                        src={store.image}
+                        alt={store.name}
+                        className="w-80% h-12 object-contain rounded-lg"
+                      />
+                    </Link>
+                  ) : (
+                    <div className="relative w-full h-14">
+                      {/* Original Image */}
+                      <img
+                        src={store.image}
+                        alt={store.name}
+                        className="w-80% h-12 object-contain rounded-lg"
+                      />
 
-                    {/* Light Gray Overlay - Dims the image */}
-                    <div
-                      className={`absolute inset-0 rounded-lg ${index === 1 ? "bg-gray-100/30" : "cursor-pointer"}`}
-                    />
-
-                    {/* Permanent Flag Badge - Top Right */}
-                    <div className="absolute -top-3.5 -right-0.5 z-10">
+                      {/* Light Gray Overlay - Dims the image */}
                       <div
-                        className="bg-white border border-gray-100 text-black 
+                        className={`absolute inset-0 rounded-lg ${index === 1 ? "bg-gray-100/30" : "cursor-pointer"}`}
+                      />
+
+                      {/* Permanent Flag Badge - Top Right */}
+                      <div className="absolute -top-3.5 -right-0.5 z-10">
+                        <div
+                          className="bg-white border border-gray-100 text-black 
               px-1.5 py-0.1 rounded-md  min-w-[60px]"
-                      >
-                        <span className="text-[9px] font-semibold uppercase tracking-wide">
-                          Coming Soon
-                        </span>
+                        >
+                          <span className="text-[9px] font-semibold uppercase tracking-wide">
+                            Coming Soon
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               ))}
             </div>
