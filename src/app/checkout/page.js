@@ -4,10 +4,8 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/lib/stores/cart-store";
 import ProductHeader from "@/components/product/ProductHeader";
-import CheckoutBreadcrumbSection from "@/components/checkout/CheckoutBreadcrumbSection";
 import CheckoutItem from "@/components/checkout/CheckoutItem";
 import OrderNotesDialog from "@/components/checkout/OrderNotesDialog";
-import PaymentMethodDialog from "@/components/checkout/PaymentMethodDialog";
 import CircularProgressIndicator from "@/components/ui/CircularProgessIndicator";
 import { NewSpecialtyModel } from "@/lib/utils/serviceModels";
 import { Poppins } from "next/font/google";
@@ -34,14 +32,11 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderNotes, setOrderNotes] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("cash");
   const [showNotesDialog, setShowNotesDialog] = useState(false);
-  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [showAddressSnackbar, setShowAddressSnackbar] = useState(false);
   const [showAmountSnackbar, setShowAmountSnackbar] = useState(false);
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [isAddressSelectionOpen, setIsAddressSelectionOpen] = useState(false);
-  const [showPaymentDropdown, setShowPaymentDropdown] = useState(false);
   const [cartTotal, setCartTotal] = useState(0);
 
   // Use AddressProvider hook
@@ -89,15 +84,19 @@ export default function CheckoutPage() {
     }
   };
 
-  const handlePlaceOrder = async () => {
+  const handleCardPayment = async () => {
+    console.log("1. Starting card payment process...");
+    
     // Check for address
     if (!savedAddress) {
+      console.log("Address validation failed: No address saved");
       setShowAddressSnackbar(true);
       return;
     }
 
     // Check minimum order amount
     if (cartTotal < MINIMUM_ORDER_AMOUNT) {
+      console.log(`Amount validation failed: Cart total (${cartTotal}) < minimum (${MINIMUM_ORDER_AMOUNT})`);
       setShowAmountSnackbar(true);
       return;
     }
@@ -105,15 +104,15 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      // Prepare order data in the format expected by orderBuilder
+      console.log("2. Preparing order data...");
+      
+      // Prepare order data
       const orderData = {
         userId: user.uid,
         userEmail: user.email,
         userName: user.displayName || user.email?.split("@")[0] || "Customer",
         items: items.map((item) => {
-          // Create a NewSpecialtyModel to get the proper structure
           const serviceModel = new NewSpecialtyModel(item);
-
           return {
             id: item.id || item.cartId || `item_${Date.now()}_${Math.random()}`,
             name: item.name || "Unknown Item",
@@ -124,45 +123,120 @@ export default function CheckoutPage() {
             material: item.material || "Standard",
             quantity: item.quantity || 1,
             provider: item.provider || "Unknown Provider",
-            // Pass the specialty object for serialization
             specialty: serviceModel,
           };
         }),
         subtotal: cartTotal,
-        deliveryFee: 0, // Free delivery
-        tipAmount: 0, // No tip system yet
+        deliveryFee: 0,
+        tipAmount: 0,
         address: savedAddress,
-        paymentMethod,
+        paymentMethod: "card",
         orderNotes,
         status: "pending",
         paymentStatus: "pending",
-        walletUsed: 0, // If you implement wallet
-        promoCodeUsed: "", // If you implement promo codes
+        walletUsed: 0,
+        promoCodeUsed: "",
         promoDiscount: 0,
         walletPayment: false,
       };
 
-      // Submit to Firebase using the new service
-      const result = await submitOrder(orderData, user.uid);
+      console.log("3. Submitting order to Firebase...");
+      console.log("Order data:", orderData);
+      
+      // 1. First submit order to Firebase to get order ID
+      const orderResult = await submitOrder(orderData, user.uid);
 
-      if (result.success) {
-        // Clear cart
-        clearCart();
-
-        // Redirect to success page (replace instead of push)
-        router.replace(`/checkout/success?order=${result.orderId}`);
+      console.log("4. Firebase order result:", orderResult);
+      
+      if (!orderResult.success) {
+        throw new Error("Failed to create order: " + JSON.stringify(orderResult));
       }
+
+      const orderId = orderResult.orderId;
+      console.log("5. Order created with ID:", orderId);
+
+      // 2. Initialize payment with our backend API
+      const paymentData = {
+        email: user.email,
+        amount: cartTotal,
+        metadata: {
+          orderId: orderId,
+          userId: user.uid,
+          userName: user.displayName || user.email.split("@")[0],
+          items: items.map((item) => {
+            const serviceModel = new NewSpecialtyModel(item);
+            return {
+              id: item.id,
+              name: item.name,
+              quantity: item.quantity,
+              price: serviceModel.actualPrice || serviceModel.firstPrice || 0,
+            };
+          }),
+        },
+      };
+
+      console.log("6. Calling payment API with data:", paymentData);
+      
+      const paymentResponse = await fetch(
+        "https://izinto-api.fly.dev/api/payments/initialize",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(paymentData),
+        }
+      );
+
+      console.log("7. Payment API response status:", paymentResponse.status);
+      console.log("8. Payment API response headers:", paymentResponse.headers);
+      
+      if (!paymentResponse.ok) {
+        const errorText = await paymentResponse.text();
+        console.error("Payment API error response:", errorText);
+        throw new Error(`Payment API error: ${paymentResponse.status} - ${errorText}`);
+      }
+      
+      const paymentResult = await paymentResponse.json();
+      console.log("9. Payment API response:", paymentResult);
+
+      if (!paymentResult.success) {
+        throw new Error(paymentResult.error || "Payment initialization failed: " + JSON.stringify(paymentResult));
+      }
+
+      console.log("10. Payment initialized successfully");
+      console.log("11. Redirect URL:", paymentResult.data.authorization_url);
+      
+      // 3. Clear cart immediately before redirect
+      clearCart();
+
+      // 4. Redirect to Paystack payment page
+      window.location.href = paymentResult.data.authorization_url;
+
     } catch (error) {
-      console.error("Order submission error:", error);
-
-      // More user-friendly error message
-      if (error.message.includes("Unsupported field value")) {
-        alert(
-          "There was an issue with your order data. Please try again or contact support.",
-        );
-      } else {
-        alert("Failed to place order. Please try again.");
+      console.error("12. Card payment error:", error);
+      
+      // Log the full error object
+      console.error("Full error details:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      });
+      
+      let errorMessage = "Payment processing failed. Please try again.";
+      
+      // Check for specific errors
+      if (error.message.includes("Failed to create order")) {
+        errorMessage = "Failed to create order. Please try again.";
+      } else if (error.message.includes("Payment initialization")) {
+        errorMessage = "Payment gateway error. Please try again.";
+      } else if (error.message.includes("fetch") || error.message.includes("Network")) {
+        errorMessage = "Network error. Please check your connection and try again.";
+      } else if (error.message.includes("Payment API error")) {
+        errorMessage = "Payment service is temporarily unavailable. Please try again in a few minutes.";
       }
+      
+      alert(`${errorMessage}\n\nError: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -180,7 +254,6 @@ export default function CheckoutPage() {
     <AuthGuard requireAuth={true} redirectTo="/auth/login">
       <div className={`min-h-screen bg-white py-8 my-8 ${poppins.className}`}>
         <ProductHeader />
-        {/* <CheckoutBreadcrumbSection /> */}
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           {/* Page Header */}
@@ -290,7 +363,7 @@ export default function CheckoutPage() {
 
             {/* Right Column - Order Summary & Payment */}
             <div className="lg:col-span-1 space-y-6">
-              {/* Order Summary - FIXED: No sticky positioning */}
+              {/* Order Summary */}
               <div className="bg-white border border-gray-200 rounded-lg p-4">
                 <h2 className="text-xl font-black italic text-black mb-6">
                   Booking Summary
@@ -321,140 +394,96 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Payment Method */}
+              {/* Payment Method - Card Only */}
               <div className="bg-white border border-gray-200 rounded-lg p-4">
                 <div className="relative">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-black italic text-black">
-                      Payment Method
-                    </h2>
-                    <button
-                      onClick={() =>
-                        setShowPaymentDropdown(!showPaymentDropdown)
-                      }
-                      className="text-[#0000ff] px-3 py-1 rounded-full text-xs font-bold transition-all transform whitespace-nowrap hover:bg-blue-100 bg-blue-50 active:scale-95 flex items-center gap-1"
-                    >
-                      CHANGE
-                      <svg
-                        className={`w-4 h-4 transition-transform ${showPaymentDropdown ? "rotate-180" : ""}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
-                  </div>
+                  <h2 className="text-xl font-black italic text-black mb-6">
+                    Payment Method
+                  </h2>
 
-                  {/* Selected Method Display */}
+                  {/* Card Payment Display */}
                   <div className="p-4 rounded-lg border border-gray-300 mb-3">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center p-2">
-                        {" "}
                         <img
-                          src="/images/cash-payments.png"
-                          alt="Cash"
+                          src="/images/card-payments.png"
+                          alt="Card"
                           className="w-full h-full object-contain"
                         />
                       </div>
                       <div>
                         <p className="font-bold text-black text-sm">
-                          Cash Booking
+                          Card Payment
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          Secure online payment
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Dropdown Options */}
-                  <AnimatePresence>
-                    {showPaymentDropdown && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="space-y-2 border border-gray-300 rounded-lg p-4 bg-gray-50">
-                          {/* Cash on Delivery (Always available) */}
-                          <div
-                            className={`p-3 rounded border cursor-pointer ${
-                              paymentMethod === "cash"
-                                ? "border-black bg-white"
-                                : "border-gray-200 hover:border-gray-300"
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center p-2">
-                                  {" "}
-                                  <img
-                                    src="/images/cash-payments.png"
-                                    alt="Cash"
-                                    className="w-full h-full object-contain"
-                                  />
-                                </div>
-                                <p className="font-bold text-black text-sm">
-                                  Cash Payment
-                                </p>
-                              </div>
-                              {paymentMethod === "cash" && (
-                                <span className="text-xs font-bold text-black">
-                                  Selected
-                                </span>
-                              )}
-                            </div>
+                  {/* Unavailable Methods */}
+                  <div className="space-y-3">
+                    <div className="p-3 rounded border border-gray-200 opacity-60 cursor-not-allowed">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center p-2">
+                            <img
+                              src="/images/cash-payments.png"
+                              alt="Cash"
+                              className="w-full h-full object-contain"
+                            />
                           </div>
-
-                          {/* Other Methods (Unavailable) */}
-                          {[
-                            {
-                              name: "Card Payment",
-                              image: "/images/card-payments.png",
-                            },
-                            {
-                              name: "Yoco Payment",
-                              image: "/images/yoco-payment-link.png",
-                            },
-                            {
-                              name: "EFT Payment",
-                              image: "/images/eft-payment.png",
-                            },
-                          ].map((method) => (
-                            <div
-                              key={method.name}
-                              className="p-3 rounded border border-gray-200 opacity-60 cursor-not-allowed"
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center p-2">
-                                    {" "}
-                                    <img
-                                      src={method.image}
-                                      alt={method.name}
-                                      className="w-full h-full object-contain"
-                                    />
-                                  </div>
-                                  <div>
-                                    <p className="font-bold text-black text-sm">
-                                      {method.name}
-                                    </p>
-                                  </div>
-                                </div>
-                                <span className="text-xs font-medium text-orange-500">
-                                  Unavailable
-                                </span>
-                              </div>
-                            </div>
-                          ))}
+                          <p className="font-bold text-black text-sm">
+                            Cash Booking
+                          </p>
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        <span className="text-xs font-medium text-orange-500">
+                          Unavailable
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded border border-gray-200 opacity-60 cursor-not-allowed">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center p-2">
+                            <img
+                              src="/images/yoco-payment-link.png"
+                              alt="Yoco"
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          <p className="font-bold text-black text-sm">
+                            Yoco Payment
+                          </p>
+                        </div>
+                        <span className="text-xs font-medium text-orange-500">
+                          Unavailable
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded border border-gray-200 opacity-60 cursor-not-allowed">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center p-2">
+                            <img
+                              src="/images/eft-payment.png"
+                              alt="EFT"
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          <p className="font-bold text-black text-sm">
+                            EFT Payment
+                          </p>
+                        </div>
+                        <span className="text-xs font-medium text-orange-500">
+                          Unavailable
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -462,7 +491,7 @@ export default function CheckoutPage() {
               <div className="space-y-4">
                 <motion.button
                   whileTap={{ scale: 0.98 }}
-                  onClick={handlePlaceOrder}
+                  onClick={handleCardPayment}
                   disabled={isSubmitting || !isFormValid}
                   className={`w-full px-6 py-3 rounded-full text-base font-black italic transition-all transform whitespace-nowrap ${
                     isFormValid
@@ -476,7 +505,7 @@ export default function CheckoutPage() {
                       Processing...
                     </div>
                   ) : (
-                    `PROCEED - R${cartTotal.toFixed(2)}`
+                    `PAY NOW - R${cartTotal.toFixed(2)}`
                   )}
                 </motion.button>
               </div>
@@ -499,8 +528,10 @@ export default function CheckoutPage() {
                   </svg>
                   <div>
                     <p className="text-xs text-gray-700">
-                      Currently, only Cash bookings are available. Minimum
-                      booking amount is R150.
+                      Secure card payments only. Minimum booking amount is R150.
+                    </p>
+                    <p className="text-xs text-gray-600 mt-1">
+                      You'll be redirected to a secure payment page.
                     </p>
                   </div>
                 </div>
@@ -517,16 +548,6 @@ export default function CheckoutPage() {
           onSave={(notes) => {
             setOrderNotes(notes);
             setShowNotesDialog(false);
-          }}
-        />
-
-        <PaymentMethodDialog
-          isOpen={showPaymentDialog}
-          onClose={() => setShowPaymentDialog(false)}
-          selectedMethod={paymentMethod}
-          onSelect={(method) => {
-            setPaymentMethod(method);
-            setShowPaymentDialog(false);
           }}
         />
 

@@ -11,6 +11,7 @@ import { OtpProvider } from "@/lib/context/OtpContext";
 import GlobalOtpDialog from "@/components/auth/GlobalOtpDialog";
 import { ProfileDialogProvider } from "@/lib/context/ProfileDialogContext";
 import ProfileDialog from "@/components/layout/ProfileDialog";
+import { PaymentProvider } from "@/lib/context/PaymentContext";
 
 const inter = Inter({ weight: ["400", "900"], subsets: ["latin"] });
 
@@ -88,13 +89,15 @@ export default function RootLayout({ children }) {
               <ProfileDialogProvider>
                 <AddressProvider>
                   <ServicesProvider>
-                    <ClientLayoutWrapper>
-                      <OtpProvider>
-                        {children}
-                        <GlobalOtpDialog />
-                        <ProfileDialog />
-                      </OtpProvider>
-                    </ClientLayoutWrapper>
+                    <PaymentProvider>
+                      <ClientLayoutWrapper>
+                        <OtpProvider>
+                          {children}
+                          <GlobalOtpDialog />
+                          <ProfileDialog />
+                        </OtpProvider>
+                      </ClientLayoutWrapper>
+                    </PaymentProvider>
                   </ServicesProvider>
                 </AddressProvider>
               </ProfileDialogProvider>

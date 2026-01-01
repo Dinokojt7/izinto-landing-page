@@ -1,12 +1,16 @@
 "use client";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function PaymentMethodDialog({
   isOpen,
   onClose,
   selectedMethod,
   onSelect,
+  onCardPayment, // Add this prop
 }) {
+  const [processingCard, setProcessingCard] = useState(false);
+
   const paymentMethods = [
     {
       id: "cash",
@@ -17,8 +21,10 @@ export default function PaymentMethodDialog({
     {
       id: "card",
       name: "Card Payment",
-      description: "Pay with credit/debit card",
-      available: false,
+      description: "Secure online payment via card",
+      available: true, // Now available!
+      icon: "/images/card-payments.png",
+      action: "card", // Special action for card
     },
     {
       id: "yoco",
@@ -33,6 +39,29 @@ export default function PaymentMethodDialog({
       available: false,
     },
   ];
+
+  const handleCardPayment = async () => {
+    if (processingCard) return;
+
+    setProcessingCard(true);
+    try {
+      await onCardPayment?.();
+    } catch (error) {
+      console.error("Card payment error:", error);
+    } finally {
+      setProcessingCard(false);
+    }
+  };
+
+  const handleMethodSelect = (method) => {
+    if (!method.available) return;
+
+    if (method.action === "card") {
+      handleCardPayment();
+    } else {
+      onSelect(method.id);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -52,6 +81,7 @@ export default function PaymentMethodDialog({
           <button
             onClick={onClose}
             className="text-gray-800 hover:text-gray-900 p-2"
+            disabled={processingCard}
           >
             <svg
               className="w-6 h-6"
@@ -76,29 +106,44 @@ export default function PaymentMethodDialog({
               <motion.div
                 key={method.id}
                 whileHover={method.available ? { scale: 1.01 } : {}}
-                whileTap={method.available ? { scale: 0.99 } : {}}
+                whileTap={
+                  method.available && method.id !== "card"
+                    ? { scale: 0.99 }
+                    : {}
+                }
                 className={`p-4 rounded-lg border cursor-pointer transition-all ${
                   selectedMethod === method.id
                     ? "border-black bg-gray-50"
                     : method.available
                       ? "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                       : "border-gray-200 opacity-60 cursor-not-allowed"
-                }`}
-                onClick={() => method.available && onSelect(method.id)}
+                } ${method.id === "card" && processingCard ? "opacity-70" : ""}`}
+                onClick={() => method.available && handleMethodSelect(method)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div
-                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        selectedMethod === method.id
-                          ? "border-black bg-black"
-                          : "border-gray-300"
-                      }`}
-                    >
-                      {selectedMethod === method.id && (
-                        <div className="w-2 h-2 rounded-full bg-white"></div>
-                      )}
-                    </div>
+                    {method.icon && (
+                      <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center p-2">
+                        <img
+                          src={method.icon}
+                          alt={method.name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    )}
+                    {!method.icon && (
+                      <div
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                          selectedMethod === method.id
+                            ? "border-black bg-black"
+                            : "border-gray-300"
+                        }`}
+                      >
+                        {selectedMethod === method.id && (
+                          <div className="w-2 h-2 rounded-full bg-white"></div>
+                        )}
+                      </div>
+                    )}
                     <div>
                       <p className="font-bold text-black text-sm">
                         {method.name}
@@ -108,16 +153,21 @@ export default function PaymentMethodDialog({
                       </p>
                     </div>
                   </div>
+                  {method.id === "card" && processingCard && (
+                    <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  )}
                   {!method.available && (
                     <span className="text-xs font-medium text-orange-500">
                       Temporarily unavailable
                     </span>
                   )}
-                  {method.available && selectedMethod === method.id && (
-                    <span className="text-xs font-bold text-black">
-                      Selected
-                    </span>
-                  )}
+                  {method.available &&
+                    selectedMethod === method.id &&
+                    method.id !== "card" && (
+                      <span className="text-xs font-bold text-black">
+                        Selected
+                      </span>
+                    )}
                 </div>
               </motion.div>
             ))}
@@ -141,8 +191,11 @@ export default function PaymentMethodDialog({
               </svg>
               <div>
                 <p className="text-sm text-gray-700">
-                  Currently, only Cash on Delivery is available. Other payment
-                  methods are coming soon.
+                  Card payments are now available! Secure payment processing via
+                  Paystack.
+                </p>
+                <p className="text-xs text-gray-600 mt-1">
+                  You'll be redirected to Paystack's secure payment page.
                 </p>
               </div>
             </div>
@@ -153,9 +206,10 @@ export default function PaymentMethodDialog({
         <div className="p-6 border-t border-gray-200 bg-white">
           <button
             onClick={onClose}
-            className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors"
+            className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50"
+            disabled={processingCard}
           >
-            Confirm Selection
+            {processingCard ? "Processing..." : "Confirm Selection"}
           </button>
         </div>
       </motion.div>

@@ -11,7 +11,6 @@ const nextConfig = {
       },
     ],
   },
-  // 🔧 CRITICAL: Add these rewrite rules for Firebase Auth
   async rewrites() {
     return [
       {
