@@ -7,7 +7,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**.izinto.africa",
+        hostname: "**.Izinto",
       },
     ],
   },
